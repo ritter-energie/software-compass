@@ -91,10 +91,12 @@ final readonly class AuthController
 
         $personIds = array_map(static fn (array $person): int => (int) $person['id'], $people);
 
-        return query('users')
+        $users = query('users')
             ->select()
             ->whereIn('person_id', $personIds)
             ->whereField('is_active', true)
-            ->first();
+            ->all();
+
+        return count($users) === 1 ? $users[0] : null;
     }
 }
