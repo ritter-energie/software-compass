@@ -11,6 +11,7 @@ use App\Domain\Component\ComponentRepository;
 use App\Domain\Governance\GovernanceReviewRepository;
 use App\Infrastructure\Security\BasicAuthMiddleware;
 use App\Infrastructure\Security\CurrentUser;
+use App\Presentation\ViewModel\GovernanceReviewListItemViewModel;
 use App\Shared\Support\Csrf;
 use App\Shared\Support\Translator;
 use RuntimeException;
@@ -38,7 +39,10 @@ final readonly class GovernanceController
     #[Get('/governance/reviews')]
     public function index(): Response
     {
-        return new Ok(view('../../View/governance/index.view.php', reviews: $this->governance->openReviews(), components: $this->components->all()));
+        return new Ok(view(
+            '../../View/governance/index.view.php',
+            reviews: $this->governanceReviewListItems($this->governance->openReviews(), $this->components->all()),
+        ));
     }
 
     #[Get('/governance/reviews/{id}')]
@@ -115,5 +119,45 @@ final readonly class GovernanceController
     {
         $trimmed = trim((string) ($value ?? ''));
         return $trimmed === '' ? null : $trimmed;
+    }
+
+    /**
+     * @param \App\Domain\Governance\GovernanceReview[] $reviews
+     * @param \App\Domain\Component\Component[] $components
+     * @return GovernanceReviewListItemViewModel[]
+     */
+    private function governanceReviewListItems(array $reviews, array $components): array
+    {
+        return array_map(
+            fn ($review): GovernanceReviewListItemViewModel => new GovernanceReviewListItemViewModel(
+                review: $review,
+                componentName: $this->componentName($components, $review->componentId()),
+                checksDoneLabel: str_replace('{count}', (string) $this->checksDone($review), Translator::translate('governance.checks_done')),
+            ),
+            $reviews,
+        );
+    }
+
+    private function checksDone(\App\Domain\Governance\GovernanceReview $review): int
+    {
+        return (
+            (int) $review->duplicateCheckDone()
+            + (int) $review->interfaceCheckDone()
+            + (int) $review->ownerCheckDone()
+            + (int) $review->dataCheckDone()
+            + (int) $review->deploymentCheckDone()
+        );
+    }
+
+    /** @param \App\Domain\Component\Component[] $components */
+    private function componentName(array $components, int $id): string
+    {
+        foreach ($components as $component) {
+            if ($component->id() === $id) {
+                return $component->name();
+            }
+        }
+
+        return 'C' . $id;
     }
 }

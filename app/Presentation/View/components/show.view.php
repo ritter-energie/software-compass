@@ -2,41 +2,27 @@
 /**
  * @var \App\Domain\Component\Component|null $component
  * @var \App\Application\Component\ComponentDetailViewModel|null $detail
- * @var \App\Domain\Person\Person[] $people
+ * @var string $businessOwnerName
+ * @var string $technicalOwnerName
  */
-$personName = static function (?int $id, array $people): ?string {
-    if ($id === null) {
-        return null;
-    }
-
-    foreach ($people as $person) {
-        if ($person->id() === $id) {
-            return $person->name();
-        }
-    }
-
-    return null;
-};
-
-$t = \App\Shared\Support\Translator::translate(...);
 ?>
 <x-layout>
     <?php if ($component === null): ?>
-        <h2><?= htmlspecialchars($t('components.not_found')) ?></h2>
-        <p><a href="/components"><?= htmlspecialchars($t('components.back_to_list')) ?></a></p>
+        <h2><?= htmlspecialchars(\App\Shared\Support\Translator::translate('components.not_found')) ?></h2>
+        <p><a href="/components"><?= htmlspecialchars(\App\Shared\Support\Translator::translate('components.back_to_list')) ?></a></p>
     <?php else: ?>
         <div class="page-header">
             <h2><?= htmlspecialchars($component->name()) ?></h2>
             <div class="actions">
-                <a class="button-secondary" href="/components/<?= $component->id() ?>/edit"><?= htmlspecialchars($t('common.edit')) ?></a>
-                <a class="button-secondary" href="/components/<?= $component->id() ?>/diagram"><?= htmlspecialchars($t('nav.diagrams')) ?></a>
-                <a class="button-secondary" href="/components/<?= $component->id() ?>/governance"><?= htmlspecialchars($t('nav.governance')) ?></a>
+                <a class="button-secondary" href="/components/<?= $component->id() ?>/edit"><?= htmlspecialchars(\App\Shared\Support\Translator::translate('common.edit')) ?></a>
+                <a class="button-secondary" href="/components/<?= $component->id() ?>/diagram"><?= htmlspecialchars(\App\Shared\Support\Translator::translate('nav.diagrams')) ?></a>
+                <a class="button-secondary" href="/components/<?= $component->id() ?>/governance"><?= htmlspecialchars(\App\Shared\Support\Translator::translate('nav.governance')) ?></a>
             </div>
         </div>
 
         <?php if ($detail !== null && $detail->warnings !== []): ?>
             <div class="alert alert-warning">
-                <strong><?= htmlspecialchars($t('components.incomplete_information')) ?></strong>
+                <strong><?= htmlspecialchars(\App\Shared\Support\Translator::translate('components.incomplete_information')) ?></strong>
                 <ul>
                     <?php foreach ($detail->warnings as $warning): ?>
                         <li><?= htmlspecialchars($warning) ?></li>
@@ -47,52 +33,56 @@ $t = \App\Shared\Support\Translator::translate(...);
 
         <section class="detail-grid">
             <div>
-                <h3><?= htmlspecialchars($t('components.overview')) ?></h3>
+                <h3><?= htmlspecialchars(\App\Shared\Support\Translator::translate('components.overview')) ?></h3>
                 <dl>
                     <dt>Slug</dt><dd><?= htmlspecialchars($component->slug()) ?></dd>
-                    <dt><?= htmlspecialchars($t('form.short_name')) ?></dt><dd><?= htmlspecialchars((string) $component->shortName()) ?: '—' ?></dd>
-                    <dt><?= htmlspecialchars($t('form.project_name')) ?></dt><dd><?= htmlspecialchars((string) $component->projectName()) ?: '—' ?></dd>
-                    <dt><?= htmlspecialchars($t('form.vendor')) ?></dt><dd><?= htmlspecialchars((string) $component->vendor()) ?: '—' ?></dd>
-                    <dt><?= htmlspecialchars($t('table.external')) ?></dt><dd><?= $component->isExternal() ? htmlspecialchars($t('common.yes')) : htmlspecialchars($t('common.no')) ?></dd>
-                    <dt><?= htmlspecialchars($t('form.started_on')) ?></dt><dd><?= $component->startedOn()?->format('Y-m-d') ?? '—' ?></dd>
+                    <dt><?= htmlspecialchars(\App\Shared\Support\Translator::translate('form.short_name')) ?></dt><dd><?= htmlspecialchars((string) $component->shortName()) ?: '—' ?></dd>
+                    <dt><?= htmlspecialchars(\App\Shared\Support\Translator::translate('form.project_name')) ?></dt><dd><?= htmlspecialchars((string) $component->projectName())
+                        ?: '—' ?></dd>
+                    <dt><?= htmlspecialchars(\App\Shared\Support\Translator::translate('form.vendor')) ?></dt><dd><?= htmlspecialchars((string) $component->vendor()) ?: '—' ?></dd>
+                    <dt><?= htmlspecialchars(\App\Shared\Support\Translator::translate('table.external')) ?></dt><dd><?= $component->isExternal()
+                        ? htmlspecialchars(\App\Shared\Support\Translator::translate('common.yes'))
+                        : htmlspecialchars(\App\Shared\Support\Translator::translate('common.no')) ?></dd>
+                    <dt><?= htmlspecialchars(\App\Shared\Support\Translator::translate('form.started_on')) ?></dt><dd><?= $component->startedOn()?->format('Y-m-d') ?? '—' ?></dd>
                 </dl>
             </div>
 
             <div>
-                <h3><?= htmlspecialchars($t('components.responsibilities')) ?></h3>
+                <h3><?= htmlspecialchars(\App\Shared\Support\Translator::translate('components.responsibilities')) ?></h3>
                 <dl>
-                    <dt><?= htmlspecialchars($t('form.business_owner')) ?></dt><dd><?= htmlspecialchars($personName($component->businessOwnerId(), $people) ?? '—') ?></dd>
-                    <dt><?= htmlspecialchars($t('form.technical_owner')) ?></dt><dd><?= htmlspecialchars($personName($component->technicalOwnerId(), $people) ?? '—') ?></dd>
+                    <dt><?= htmlspecialchars(\App\Shared\Support\Translator::translate('form.business_owner')) ?></dt><dd><?= htmlspecialchars($businessOwnerName) ?></dd>
+                    <dt><?= htmlspecialchars(\App\Shared\Support\Translator::translate('form.technical_owner')) ?></dt><dd><?= htmlspecialchars($technicalOwnerName) ?></dd>
                 </dl>
             </div>
         </section>
 
         <section>
-            <h3><?= htmlspecialchars($t('components.purpose_and_description')) ?></h3>
-            <p><?= nl2br(htmlspecialchars((string) $component->purpose())) ?: '<em>' . htmlspecialchars($t('common.no_purpose_documented')) . '</em>' ?></p>
+            <h3><?= htmlspecialchars(\App\Shared\Support\Translator::translate('components.purpose_and_description')) ?></h3>
+            <p><?= nl2br(htmlspecialchars((string) $component->purpose()))
+                ?: '<em>' . htmlspecialchars(\App\Shared\Support\Translator::translate('common.no_purpose_documented')) . '</em>' ?></p>
             <p><?= nl2br(htmlspecialchars((string) $component->description())) ?></p>
         </section>
 
         <section>
-            <h3><?= htmlspecialchars($t('components.documentation')) ?></h3>
+            <h3><?= htmlspecialchars(\App\Shared\Support\Translator::translate('components.documentation')) ?></h3>
             <ul>
-                <li><?= htmlspecialchars($t('form.documentation_url')) ?>: <?= $component->documentationUrl()
+                <li><?= htmlspecialchars(\App\Shared\Support\Translator::translate('form.documentation_url')) ?>: <?= $component->documentationUrl()
                     ? '<a href="' . htmlspecialchars($component->documentationUrl()) . '">' . htmlspecialchars($component->documentationUrl()) . '</a>'
-                    : '<em>' . htmlspecialchars($t('common.none')) . '</em>' ?></li>
-                <li><?= htmlspecialchars($t('form.repository_url')) ?>: <?= $component->repositoryUrl()
+                    : '<em>' . htmlspecialchars(\App\Shared\Support\Translator::translate('common.none')) . '</em>' ?></li>
+                <li><?= htmlspecialchars(\App\Shared\Support\Translator::translate('form.repository_url')) ?>: <?= $component->repositoryUrl()
                     ? '<a href="' . htmlspecialchars($component->repositoryUrl()) . '">' . htmlspecialchars($component->repositoryUrl()) . '</a>'
-                    : '<em>' . htmlspecialchars($t('common.none')) . '</em>' ?></li>
+                    : '<em>' . htmlspecialchars(\App\Shared\Support\Translator::translate('common.none')) . '</em>' ?></li>
             </ul>
         </section>
 
         <?php if ($detail !== null): ?>
             <section>
-                <h3><?= htmlspecialchars($t('components.inheritance')) ?></h3>
+                <h3><?= htmlspecialchars(\App\Shared\Support\Translator::translate('components.inheritance')) ?></h3>
                 <div class="detail-grid">
                     <div>
-                        <h4><?= htmlspecialchars($t('components.parent_components')) ?> (<?= count($detail->parentComponents) ?>)</h4>
+                        <h4><?= htmlspecialchars(\App\Shared\Support\Translator::translate('components.parent_components')) ?> (<?= count($detail->parentComponents) ?>)</h4>
                         <?php if ($detail->parentComponents === []): ?>
-                            <p><em><?= htmlspecialchars($t('components.no_parent_components')) ?></em></p>
+                            <p><em><?= htmlspecialchars(\App\Shared\Support\Translator::translate('components.no_parent_components')) ?></em></p>
                         <?php else: ?>
                             <ul>
                                 <?php foreach ($detail->parentComponents as $parentComponent): ?>
@@ -102,9 +92,9 @@ $t = \App\Shared\Support\Translator::translate(...);
                         <?php endif; ?>
                     </div>
                     <div>
-                        <h4><?= htmlspecialchars($t('components.child_components')) ?> (<?= count($detail->childComponents) ?>)</h4>
+                        <h4><?= htmlspecialchars(\App\Shared\Support\Translator::translate('components.child_components')) ?> (<?= count($detail->childComponents) ?>)</h4>
                         <?php if ($detail->childComponents === []): ?>
-                            <p><em><?= htmlspecialchars($t('components.no_child_components')) ?></em></p>
+                            <p><em><?= htmlspecialchars(\App\Shared\Support\Translator::translate('components.no_child_components')) ?></em></p>
                         <?php else: ?>
                             <ul>
                                 <?php foreach ($detail->childComponents as $childComponent): ?>
@@ -117,48 +107,54 @@ $t = \App\Shared\Support\Translator::translate(...);
             </section>
 
             <section>
-                <h3><?= htmlspecialchars($t('components.incoming_dependencies')) ?> (<?= count($detail->incomingDependencies) ?>)</h3>
+                <h3><?= htmlspecialchars(\App\Shared\Support\Translator::translate('components.incoming_dependencies')) ?> (<?= count($detail->incomingDependencies) ?>)</h3>
                 <table class="data-table">
-                    <thead><tr><th><?= htmlspecialchars($t('table.name')) ?></th><th><?= htmlspecialchars($t('components.from')) ?></th><th><?= htmlspecialchars($t('table.data')) ?></th></tr></thead>
+                    <thead><tr><th><?= htmlspecialchars(\App\Shared\Support\Translator::translate('table.name')) ?></th><th><?= htmlspecialchars(\App\Shared\Support\Translator::translate(
+                        'components.from',
+                    )) ?></th><th><?= htmlspecialchars(\App\Shared\Support\Translator::translate('table.data')) ?></th></tr></thead>
                     <tbody>
                     <?php foreach ($detail->incomingDependencies as $dependency): ?>
                         <tr><td><?= htmlspecialchars($dependency->name()) ?></td><td>C<?= $dependency->sourceComponentId() ?></td><td><?= htmlspecialchars((string) $dependency->dataDescription()) ?></td></tr>
                     <?php endforeach; ?>
                     <?php if ($detail->incomingDependencies === []): ?>
-                        <tr><td colspan="3"><?= htmlspecialchars($t('common.none')) ?></td></tr>
+                        <tr><td colspan="3"><?= htmlspecialchars(\App\Shared\Support\Translator::translate('common.none')) ?></td></tr>
                     <?php endif; ?>
                     </tbody>
                 </table>
             </section>
 
             <section>
-                <h3><?= htmlspecialchars($t('components.outgoing_dependencies')) ?> (<?= count($detail->outgoingDependencies) ?>)</h3>
+                <h3><?= htmlspecialchars(\App\Shared\Support\Translator::translate('components.outgoing_dependencies')) ?> (<?= count($detail->outgoingDependencies) ?>)</h3>
                 <table class="data-table">
-                    <thead><tr><th><?= htmlspecialchars($t('table.name')) ?></th><th><?= htmlspecialchars($t('components.to')) ?></th><th><?= htmlspecialchars($t('table.data')) ?></th></tr></thead>
+                    <thead><tr><th><?= htmlspecialchars(\App\Shared\Support\Translator::translate('table.name')) ?></th><th><?= htmlspecialchars(\App\Shared\Support\Translator::translate(
+                        'components.to',
+                    )) ?></th><th><?= htmlspecialchars(\App\Shared\Support\Translator::translate('table.data')) ?></th></tr></thead>
                     <tbody>
                     <?php foreach ($detail->outgoingDependencies as $dependency): ?>
                         <tr><td><?= htmlspecialchars($dependency->name()) ?></td><td>C<?= $dependency->targetComponentId() ?></td><td><?= htmlspecialchars((string) $dependency->dataDescription()) ?></td></tr>
                     <?php endforeach; ?>
                     <?php if ($detail->outgoingDependencies === []): ?>
-                        <tr><td colspan="3"><?= htmlspecialchars($t('common.none')) ?></td></tr>
+                        <tr><td colspan="3"><?= htmlspecialchars(\App\Shared\Support\Translator::translate('common.none')) ?></td></tr>
                     <?php endif; ?>
                     </tbody>
                 </table>
-                <p><a href="/dependencies/create?source_component_id=<?= $component->id() ?>">+ <?= htmlspecialchars($t('components.add_dependency_from_component')) ?></a></p>
+                <p><a href="/dependencies/create?source_component_id=<?= $component->id() ?>">+ <?= htmlspecialchars(\App\Shared\Support\Translator::translate(
+                    'components.add_dependency_from_component',
+                )) ?></a></p>
             </section>
 
             <section>
-                <h3><?= htmlspecialchars($t('components.governance_status')) ?></h3>
+                <h3><?= htmlspecialchars(\App\Shared\Support\Translator::translate('components.governance_status')) ?></h3>
                 <?php if ($detail->governanceReview !== null): ?>
-                    <p><?= htmlspecialchars($t('table.status')) ?>: <strong><?= htmlspecialchars(\App\Shared\Support\GovernanceStatusLabel::from($detail->governanceReview->reviewStatus())) ?></strong></p>
+                    <p><?= htmlspecialchars(\App\Shared\Support\Translator::translate('table.status')) ?>: <strong><?= htmlspecialchars(\App\Shared\Support\GovernanceStatusLabel::from($detail->governanceReview->reviewStatus())) ?></strong></p>
                 <?php else: ?>
-                    <p><em><?= htmlspecialchars($t('components.no_governance_review_yet')) ?></em></p>
+                    <p><em><?= htmlspecialchars(\App\Shared\Support\Translator::translate('components.no_governance_review_yet')) ?></em></p>
                 <?php endif; ?>
-                <p><a href="/components/<?= $component->id() ?>/governance"><?= htmlspecialchars($t('components.view_governance_details')) ?></a></p>
+                <p><a href="/components/<?= $component->id() ?>/governance"><?= htmlspecialchars(\App\Shared\Support\Translator::translate('components.view_governance_details')) ?></a></p>
             </section>
 
             <section>
-                <h3><?= htmlspecialchars($t('components.local_diagram')) ?></h3>
+                <h3><?= htmlspecialchars(\App\Shared\Support\Translator::translate('components.local_diagram')) ?></h3>
                 <pre class="mermaid"><?= htmlspecialchars($detail->mermaidDiagram) ?></pre>
             </section>
         <?php endif; ?>

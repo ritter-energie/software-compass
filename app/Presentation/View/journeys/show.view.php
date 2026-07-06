@@ -2,26 +2,12 @@
 /**
  * @var \App\Domain\Journey\Journey $journey
  * @var \App\Domain\Journey\JourneyStep[] $steps
- * @var array<int, \App\Domain\Journey\JourneyStepComponent[]> $assignments
- * @var \App\Domain\Person\Person[] $people
+ * @var array<int, \App\Presentation\ViewModel\JourneyStepAssignmentViewModel[]> $assignments
+ * @var string $ownerName
  * @var \App\Domain\Component\Component[] $components
  * @var string[] $roles
  * @var string $mermaid
  */
-$personName = static function (?int $id) use ($people): string {
-    if ($id === null)
-        return '—';
-    foreach ($people as $person)
-        if ($person->id() === $id)
-            return $person->name();
-    return '—';
-};
-$componentName = static function (int $id) use ($components): string {
-    foreach ($components as $component)
-        if ($component->id() === $id)
-            return $component->name();
-    return 'C' . $id;
-};
 ?>
 <x-layout>
     <div class="page-header"><h2><?= htmlspecialchars($journey->name()) ?></h2><div class="actions"><a class="button-secondary" href="/journeys/<?= $journey->id() ?>/edit"><?= htmlspecialchars(\App\Shared\Support\Translator::translate(
@@ -29,7 +15,7 @@ $componentName = static function (int $id) use ($components): string {
     )) ?></a><a class="button-secondary" href="/diagrams/journeys/<?= $journey->id() ?>"><?= htmlspecialchars(\App\Shared\Support\Translator::translate('nav.diagrams')) ?></a></div></div>
     <section class="panel"><h3><?= htmlspecialchars(\App\Shared\Support\Translator::translate('journeys.master_data')) ?></h3><dl><dt><?= htmlspecialchars(\App\Shared\Support\Translator::translate(
         'table.owner',
-    )) ?></dt><dd><?= htmlspecialchars($personName($journey->ownerId())) ?></dd><dt><?= htmlspecialchars(\App\Shared\Support\Translator::translate('table.status_id')) ?></dt><dd><?= $journey->statusId() ?></dd><dt><?= htmlspecialchars(\App\Shared\Support\Translator::translate(
+    )) ?></dt><dd><?= htmlspecialchars($ownerName) ?></dd><dt><?= htmlspecialchars(\App\Shared\Support\Translator::translate('table.status_id')) ?></dt><dd><?= $journey->statusId() ?></dd><dt><?= htmlspecialchars(\App\Shared\Support\Translator::translate(
         'table.description',
     )) ?></dt><dd><?= nl2br(htmlspecialchars((string) $journey->description())) ?: '—' ?></dd></dl></section>
 
@@ -53,8 +39,9 @@ $componentName = static function (int $id) use ($components): string {
                 )) ?></th><th><?= htmlspecialchars(\App\Shared\Support\Translator::translate('governance.notes')) ?></th><th><?= htmlspecialchars(\App\Shared\Support\Translator::translate(
                     'table.actions',
                 )) ?></th></tr></thead><tbody>
-                <?php foreach ($assignments[(int) $step->id()] ?? [] as $assignment): ?>
-                    <tr><td><?= htmlspecialchars($componentName($assignment->componentId())) ?></td><td><?= htmlspecialchars($assignment->roleInStep()) ?></td><td><?= htmlspecialchars((string) $assignment->notes()) ?></td><td><form method="POST" action="/journey-step-components/<?= $assignment->id() ?>/delete" data-confirm="<?= htmlspecialchars(\App\Shared\Support\Translator::translate(
+                <?php foreach ($assignments[(int) $step->id()] ?? [] as $assignmentItem): ?>
+                    <?php $assignment = $assignmentItem->assignment; ?>
+                    <tr><td><?= htmlspecialchars($assignmentItem->componentName) ?></td><td><?= htmlspecialchars($assignment->roleInStep()) ?></td><td><?= htmlspecialchars((string) $assignment->notes()) ?></td><td><form method="POST" action="/journey-step-components/<?= $assignment->id() ?>/delete" data-confirm="<?= htmlspecialchars(\App\Shared\Support\Translator::translate(
                         'journeys.confirm_remove_assignment',
                     )) ?>"><?= \App\Shared\Support\Csrf::input() ?><input type="hidden" name="journey_id" value="<?= $journey->id() ?>"><button class="button-danger" type="submit"><?= htmlspecialchars(\App\Shared\Support\Translator::translate(
                         'journeys.remove_assignment',

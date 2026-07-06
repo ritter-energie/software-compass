@@ -12,6 +12,8 @@ use App\Domain\Dependency\DependencySearchCriteria;
 use App\Domain\Person\PersonRepository;
 use App\Infrastructure\Persistence\LookupRepository;
 use App\Infrastructure\Security\BasicAuthMiddleware;
+use App\Presentation\ViewModel\DependencyDetailViewModel;
+use App\Presentation\ViewModel\DependencyListItemViewModel;
 use App\Shared\Support\Csrf;
 use App\Shared\Support\Translator;
 use InvalidArgumentException;
@@ -53,11 +55,13 @@ final readonly class DependencyController
             dataObjectId: $this->intOrNull($request->get('data_object_id')),
         );
 
+        $components = $this->components->all();
+
         return new Ok(view(
             '../../View/dependencies/index.view.php',
-            dependencies: $this->dependencies->search($criteria),
+            dependencies: $this->dependencyListItems($this->dependencies->search($criteria), $components),
             criteria: $criteria,
-            components: $this->components->all(),
+            components: $components,
             dependencyTypes: $this->lookups->dependencyTypes(),
             protocols: $this->lookups->communicationProtocols(),
             statuses: $this->lookups->componentStatuses(),
@@ -122,14 +126,19 @@ final readonly class DependencyController
         $dependency = $this->dependencies->findById($id);
 
         if ($dependency === null) {
-            return new Ok(view('../../View/dependencies/show.view.php', dependency: null))->setStatus(Status::NOT_FOUND);
+            return new Ok(view('../../View/dependencies/show.view.php', detail: null))->setStatus(Status::NOT_FOUND);
         }
+
+        $components = $this->components->all();
 
         return new Ok(view(
             '../../View/dependencies/show.view.php',
-            dependency: $dependency,
-            components: $this->components->all(),
-            people: $this->people->all(),
+            detail: new DependencyDetailViewModel(
+                dependency: $dependency,
+                sourceComponentName: $this->componentName($components, $dependency->sourceComponentId()),
+                targetComponentName: $this->componentName($components, $dependency->targetComponentId()),
+                ownerName: $this->personName($this->people->all(), $dependency->ownerId()),
+            ),
         ));
     }
 
@@ -223,6 +232,55 @@ final readonly class DependencyController
         $trimmed = trim((string) $value);
 
         return $trimmed === '' ? null : $trimmed;
+    }
+
+    /**
+     * @param \App\Domain\Dependency\Dependency[] $dependencies
+     * @param \App\Domain\Component\Component[] $components
+     * @return DependencyListItemViewModel[]
+     */
+    private function dependencyListItems(array $dependencies, array $components): array
+    {
+        return array_map(
+            fn ($dependency): DependencyListItemViewModel => new DependencyListItemViewModel(
+                id: (int) $dependency->id(),
+                name: $dependency->name(),
+                sourceComponentName: $this->componentName($components, $dependency->sourceComponentId()),
+                targetComponentName: $this->componentName($components, $dependency->targetComponentId()),
+                dataDescription: $dependency->dataDescription(),
+                frequency: $dependency->frequency(),
+                isIncomplete: $dependency->isIncomplete(),
+            ),
+            $dependencies,
+        );
+    }
+
+    /** @param \App\Domain\Component\Component[] $components */
+    private function componentName(array $components, int $id): string
+    {
+        foreach ($components as $component) {
+            if ($component->id() === $id) {
+                return $component->name();
+            }
+        }
+
+        return 'C' . $id;
+    }
+
+    /** @param \App\Domain\Person\Person[] $people */
+    private function personName(array $people, ?int $id): string
+    {
+        if ($id === null) {
+            return '—';
+        }
+
+        foreach ($people as $person) {
+            if ($person->id() === $id) {
+                return $person->name();
+            }
+        }
+
+        return '—';
     }
 
     private function intOrNull(mixed $value): ?int

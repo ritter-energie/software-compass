@@ -1,83 +1,64 @@
 <?php
 /**
- * @var \App\Domain\Dependency\Dependency|null $dependency
- * @var \App\Domain\Component\Component[] $components
- * @var \App\Domain\Person\Person[] $people
+ * @var \App\Presentation\ViewModel\DependencyDetailViewModel|null $detail
  */
-$componentName = static function (int $id) use ($components): string {
-    foreach ($components as $component) {
-        if ($component->id() === $id) {
-            return $component->name();
-        }
-    }
-
-    return 'C' . $id;
-};
-$personName = static function (?int $id) use ($people): string {
-    if ($id === null) {
-        return '—';
-    }
-    foreach ($people as $person) {
-        if ($person->id() === $id) {
-            return $person->name();
-        }
-    }
-
-    return '—';
-};
-
-$t = \App\Shared\Support\Translator::translate(...);
 ?>
 <x-layout>
-    <?php if ($dependency === null): ?>
-        <h2><?= htmlspecialchars($t('dependencies.not_found')) ?></h2>
-        <p><a href="/dependencies"><?= htmlspecialchars($t('dependencies.back_to_list')) ?></a></p>
+    <?php if ($detail === null): ?>
+        <h2><?= htmlspecialchars(\App\Shared\Support\Translator::translate('dependencies.not_found')) ?></h2>
+        <p><a href="/dependencies"><?= htmlspecialchars(\App\Shared\Support\Translator::translate('dependencies.back_to_list')) ?></a></p>
     <?php else: ?>
+        <?php $dependency = $detail->dependency; ?>
         <div class="page-header">
             <h2><?= htmlspecialchars($dependency->name()) ?></h2>
-            <div class="actions"><a class="button-secondary" href="/dependencies/<?= $dependency->id() ?>/edit"><?= htmlspecialchars($t('common.edit')) ?></a><a class="button-secondary" href="/diagrams/components"><?= htmlspecialchars($t(
+            <div class="actions"><a class="button-secondary" href="/dependencies/<?= $dependency->id() ?>/edit"><?= htmlspecialchars(\App\Shared\Support\Translator::translate(
+                'common.edit',
+            )) ?></a><a class="button-secondary" href="/diagrams/components"><?= htmlspecialchars(\App\Shared\Support\Translator::translate(
                 'dependencies.overview_diagram',
             )) ?></a></div>
         </div>
 
         <?php if ($dependency->isIncomplete()): ?>
-            <div class="alert alert-warning"><?= htmlspecialchars($t('dependencies.incomplete_warning')) ?></div>
+            <div class="alert alert-warning"><?= htmlspecialchars(\App\Shared\Support\Translator::translate('dependencies.incomplete_warning')) ?></div>
         <?php endif; ?>
 
         <section class="two-column">
             <div class="panel">
-                <h3><?= htmlspecialchars($t('dependencies.source_and_target')) ?></h3>
+                <h3><?= htmlspecialchars(\App\Shared\Support\Translator::translate('dependencies.source_and_target')) ?></h3>
                 <dl>
-                    <dt><?= htmlspecialchars($t('table.source')) ?></dt><dd><?= htmlspecialchars($componentName($dependency->sourceComponentId())) ?></dd>
-                    <dt><?= htmlspecialchars($t('table.target')) ?></dt><dd><?= htmlspecialchars($componentName($dependency->targetComponentId())) ?></dd>
-                    <dt><?= htmlspecialchars($t('form.direction')) ?></dt><dd><?= htmlspecialchars($dependency->direction()) ?></dd>
-                    <dt><?= htmlspecialchars($t('form.bidirectional')) ?></dt><dd><?= $dependency->isBidirectional()
-                        ? htmlspecialchars($t('common.yes'))
-                        : htmlspecialchars($t('common.no')) ?></dd>
+                    <dt><?= htmlspecialchars(\App\Shared\Support\Translator::translate('table.source')) ?></dt><dd><?= htmlspecialchars($detail->sourceComponentName) ?></dd>
+                    <dt><?= htmlspecialchars(\App\Shared\Support\Translator::translate('table.target')) ?></dt><dd><?= htmlspecialchars($detail->targetComponentName) ?></dd>
+                    <dt><?= htmlspecialchars(\App\Shared\Support\Translator::translate('form.direction')) ?></dt><dd><?= htmlspecialchars($dependency->direction()) ?></dd>
+                    <dt><?= htmlspecialchars(\App\Shared\Support\Translator::translate('form.bidirectional')) ?></dt><dd><?= $dependency->isBidirectional()
+                        ? htmlspecialchars(\App\Shared\Support\Translator::translate('common.yes'))
+                        : htmlspecialchars(\App\Shared\Support\Translator::translate('common.no')) ?></dd>
                 </dl>
             </div>
             <div class="panel">
-                <h3><?= htmlspecialchars($t('dependencies.classification')) ?></h3>
+                <h3><?= htmlspecialchars(\App\Shared\Support\Translator::translate('dependencies.classification')) ?></h3>
                 <dl>
-                    <dt><?= htmlspecialchars($t('dependencies.type_id')) ?></dt><dd><?= $dependency->dependencyTypeId() ?></dd>
-                    <dt><?= htmlspecialchars($t('dependencies.protocol_id')) ?></dt><dd><?= $dependency->protocolId() ?? '—' ?></dd>
-                    <dt><?= htmlspecialchars($t('table.status_id')) ?></dt><dd><?= $dependency->statusId() ?></dd>
-                    <dt><?= htmlspecialchars($t('dependencies.criticality_id')) ?></dt><dd><?= $dependency->criticalityId() ?? '—' ?></dd>
-                    <dt><?= htmlspecialchars($t('table.owner')) ?></dt><dd><?= htmlspecialchars($personName($dependency->ownerId())) ?></dd>
+                    <dt><?= htmlspecialchars(\App\Shared\Support\Translator::translate('dependencies.type_id')) ?></dt><dd><?= $dependency->dependencyTypeId() ?></dd>
+                    <dt><?= htmlspecialchars(\App\Shared\Support\Translator::translate('dependencies.protocol_id')) ?></dt><dd><?= $dependency->protocolId() ?? '—' ?></dd>
+                    <dt><?= htmlspecialchars(\App\Shared\Support\Translator::translate('table.status_id')) ?></dt><dd><?= $dependency->statusId() ?></dd>
+                    <dt><?= htmlspecialchars(\App\Shared\Support\Translator::translate('dependencies.criticality_id')) ?></dt><dd><?= $dependency->criticalityId() ?? '—' ?></dd>
+                    <dt><?= htmlspecialchars(\App\Shared\Support\Translator::translate('table.owner')) ?></dt><dd><?= htmlspecialchars($detail->ownerName) ?></dd>
                 </dl>
             </div>
         </section>
 
         <section class="panel">
-            <h3><?= htmlspecialchars($t('dependencies.documentation')) ?></h3>
+            <h3><?= htmlspecialchars(\App\Shared\Support\Translator::translate('dependencies.documentation')) ?></h3>
             <dl>
-                <dt><?= htmlspecialchars($t('form.data_description')) ?></dt><dd><?= nl2br(htmlspecialchars((string) $dependency->dataDescription())) ?: '—' ?></dd>
-                <dt><?= htmlspecialchars($t('table.frequency')) ?></dt><dd><?= htmlspecialchars((string) $dependency->frequency()) ?: '—' ?></dd>
-                <dt><?= htmlspecialchars($t('dependencies.authentication')) ?></dt><dd><?= htmlspecialchars((string) $dependency->authenticationMethod()) ?: '—' ?></dd>
-                <dt><?= htmlspecialchars($t('form.documentation_url')) ?></dt><dd><?= $dependency->documentationUrl()
+                <dt><?= htmlspecialchars(\App\Shared\Support\Translator::translate('form.data_description')) ?></dt><dd><?= nl2br(htmlspecialchars((string) $dependency->dataDescription()))
+                    ?: '—' ?></dd>
+                <dt><?= htmlspecialchars(\App\Shared\Support\Translator::translate('table.frequency')) ?></dt><dd><?= htmlspecialchars((string) $dependency->frequency()) ?: '—' ?></dd>
+                <dt><?= htmlspecialchars(\App\Shared\Support\Translator::translate('dependencies.authentication')) ?></dt><dd><?= htmlspecialchars((string) $dependency->authenticationMethod())
+                    ?: '—' ?></dd>
+                <dt><?= htmlspecialchars(\App\Shared\Support\Translator::translate('form.documentation_url')) ?></dt><dd><?= $dependency->documentationUrl()
                     ? '<a href="' . htmlspecialchars($dependency->documentationUrl()) . '">' . htmlspecialchars($dependency->documentationUrl()) . '</a>'
                     : '—' ?></dd>
-                <dt><?= htmlspecialchars($t('form.technical_notes')) ?></dt><dd><?= nl2br(htmlspecialchars((string) $dependency->technicalNotes())) ?: '—' ?></dd>
+                <dt><?= htmlspecialchars(\App\Shared\Support\Translator::translate('form.technical_notes')) ?></dt><dd><?= nl2br(htmlspecialchars((string) $dependency->technicalNotes()))
+                    ?: '—' ?></dd>
             </dl>
         </section>
     <?php endif; ?>
