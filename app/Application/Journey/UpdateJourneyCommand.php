@@ -15,4 +15,3 @@ final readonly class UpdateJourneyCommand
         public int $sortOrder = 0,
     ) {}
 }
-

@@ -1,0 +1,21 @@
+
+parameters:
+    level: 5
+    paths:
+        - app
+        - database
+        - tests
+    bootstrapFiles:
+        - vendor/autoload.php
+    reportUnmatchedIgnoredErrors: false
+
+services:
+    -
+        class: App\PHPStan\TempestTableQueryBuilderSelectReturnTypeExtension
+        tags:
+            - phpstan.broker.dynamicMethodReturnTypeExtension
+    -
+        class: App\PHPStan\TempestTableSelectReturnTypeExtension
+        tags:
+            - phpstan.broker.dynamicMethodReturnTypeExtension
+

@@ -13,4 +13,3 @@
         <pre><?= htmlspecialchars($mermaid) ?></pre>
     </details>
 </x-layout>
-

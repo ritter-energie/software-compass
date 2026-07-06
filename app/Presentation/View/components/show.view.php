@@ -18,7 +18,7 @@ $personName = static function (?int $id, array $people): ?string {
     return null;
 };
 
-$t = static fn (string $key, mixed ...$arguments): string => \App\Shared\Support\Translator::translate($key, ...$arguments);
+$t = \App\Shared\Support\Translator::translate(...);
 ?>
 <x-layout>
     <?php if ($component === null): ?>
@@ -76,12 +76,46 @@ $t = static fn (string $key, mixed ...$arguments): string => \App\Shared\Support
         <section>
             <h3><?= htmlspecialchars($t('components.documentation')) ?></h3>
             <ul>
-                <li><?= htmlspecialchars($t('form.documentation_url')) ?>: <?= $component->documentationUrl() ? '<a href="' . htmlspecialchars($component->documentationUrl()) . '">' . htmlspecialchars($component->documentationUrl()) . '</a>' : '<em>' . htmlspecialchars($t('common.none')) . '</em>' ?></li>
-                <li><?= htmlspecialchars($t('form.repository_url')) ?>: <?= $component->repositoryUrl() ? '<a href="' . htmlspecialchars($component->repositoryUrl()) . '">' . htmlspecialchars($component->repositoryUrl()) . '</a>' : '<em>' . htmlspecialchars($t('common.none')) . '</em>' ?></li>
+                <li><?= htmlspecialchars($t('form.documentation_url')) ?>: <?= $component->documentationUrl()
+                    ? '<a href="' . htmlspecialchars($component->documentationUrl()) . '">' . htmlspecialchars($component->documentationUrl()) . '</a>'
+                    : '<em>' . htmlspecialchars($t('common.none')) . '</em>' ?></li>
+                <li><?= htmlspecialchars($t('form.repository_url')) ?>: <?= $component->repositoryUrl()
+                    ? '<a href="' . htmlspecialchars($component->repositoryUrl()) . '">' . htmlspecialchars($component->repositoryUrl()) . '</a>'
+                    : '<em>' . htmlspecialchars($t('common.none')) . '</em>' ?></li>
             </ul>
         </section>
 
         <?php if ($detail !== null): ?>
+            <section>
+                <h3><?= htmlspecialchars($t('components.inheritance')) ?></h3>
+                <div class="detail-grid">
+                    <div>
+                        <h4><?= htmlspecialchars($t('components.parent_components')) ?> (<?= count($detail->parentComponents) ?>)</h4>
+                        <?php if ($detail->parentComponents === []): ?>
+                            <p><em><?= htmlspecialchars($t('components.no_parent_components')) ?></em></p>
+                        <?php else: ?>
+                            <ul>
+                                <?php foreach ($detail->parentComponents as $parentComponent): ?>
+                                    <li><a href="/components/<?= $parentComponent->id() ?>"><?= htmlspecialchars($parentComponent->name()) ?></a></li>
+                                <?php endforeach; ?>
+                            </ul>
+                        <?php endif; ?>
+                    </div>
+                    <div>
+                        <h4><?= htmlspecialchars($t('components.child_components')) ?> (<?= count($detail->childComponents) ?>)</h4>
+                        <?php if ($detail->childComponents === []): ?>
+                            <p><em><?= htmlspecialchars($t('components.no_child_components')) ?></em></p>
+                        <?php else: ?>
+                            <ul>
+                                <?php foreach ($detail->childComponents as $childComponent): ?>
+                                    <li><a href="/components/<?= $childComponent->id() ?>"><?= htmlspecialchars($childComponent->name()) ?></a></li>
+                                <?php endforeach; ?>
+                            </ul>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </section>
+
             <section>
                 <h3><?= htmlspecialchars($t('components.incoming_dependencies')) ?> (<?= count($detail->incomingDependencies) ?>)</h3>
                 <table class="data-table">

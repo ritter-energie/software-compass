@@ -106,4 +106,3 @@ final class LookupRepository
         return query($table)->select()->orderBy($orderBy)->all();
     }
 }
-

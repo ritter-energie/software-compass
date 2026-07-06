@@ -7,10 +7,9 @@ namespace Tests\Feature;
 use App\Application\Setup\SetupService;
 use App\Application\User\AdminUserService;
 use App\Infrastructure\Persistence\AppSettingsRepository;
+use Tests\IntegrationTestCase;
 
 use function Tempest\Database\query;
-
-use Tests\IntegrationTestCase;
 
 final class SystemDefaultLocaleTest extends IntegrationTestCase
 {
@@ -33,7 +32,7 @@ final class SystemDefaultLocaleTest extends IntegrationTestCase
     {
         $settings = new AppSettingsRepository();
 
-        (new SetupService($settings))->initialize(
+        new SetupService($settings)->initialize(
             networkName: 'Architecture Network',
             adminName: 'Admin User',
             adminEmail: 'admin@example.test',
@@ -51,7 +50,7 @@ final class SystemDefaultLocaleTest extends IntegrationTestCase
         $settings = new AppSettingsRepository();
         $settings->setDefaultLocale('de');
 
-        (new AdminUserService($settings))->createUser(
+        new AdminUserService($settings)->createUser(
             name: 'Viewer User',
             email: 'viewer@example.test',
             username: 'viewer',

@@ -16,4 +16,3 @@ final readonly class ComponentDiagramFilter
         public int $maxNodes = 80,
     ) {}
 }
-

@@ -1,7 +1,10 @@
 <?php
 declare(strict_types=1);
+
 namespace App\Application\Component;
+
 use DateTimeImmutable;
+
 final readonly class CreateComponentCommand
 {
     public function __construct(
@@ -23,5 +26,9 @@ final readonly class CreateComponentCommand
         public ?string $vendor,
         public ?string $lifecycleNotes,
         public bool $isExternal,
+        /** @var int[] */
+        public array $parentComponentIds = [],
+        /** @var int[] */
+        public array $childComponentIds = [],
     ) {}
 }

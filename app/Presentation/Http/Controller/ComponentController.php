@@ -80,6 +80,7 @@ final readonly class ComponentController
             environments: $this->lookups->environments(),
             deploymentLocations: $this->lookups->deploymentLocations(),
             people: $this->people->allActive(),
+            availableComponents: $this->components->all(),
         ));
     }
 
@@ -122,6 +123,8 @@ final readonly class ComponentController
             vendor: $this->stringOrNull($request->get('vendor')),
             lifecycleNotes: $this->stringOrNull($request->get('lifecycle_notes')),
             isExternal: $this->boolOrNull($request->get('is_external')) ?? false,
+            parentComponentIds: $this->intList($request->get('parent_component_ids')),
+            childComponentIds: $this->intList($request->get('child_component_ids')),
         ));
 
         return new Redirect("/components/{$component->id()}")->flash('success', Translator::translate('flash.success.component_created'));
@@ -163,6 +166,7 @@ final readonly class ComponentController
             environments: $this->lookups->environments(),
             deploymentLocations: $this->lookups->deploymentLocations(),
             people: $this->people->allActive(),
+            availableComponents: $this->components->all(),
         ));
     }
 
@@ -206,6 +210,8 @@ final readonly class ComponentController
             vendor: $this->stringOrNull($request->get('vendor')),
             lifecycleNotes: $this->stringOrNull($request->get('lifecycle_notes')),
             isExternal: $this->boolOrNull($request->get('is_external')) ?? false,
+            parentComponentIds: $this->intList($request->get('parent_component_ids'), $id),
+            childComponentIds: $this->intList($request->get('child_component_ids'), $id),
         ));
 
         return new Redirect("/components/{$id}")->flash('success', Translator::translate('flash.success.component_updated'));
@@ -266,6 +272,35 @@ final readonly class ComponentController
         }
 
         return (int) $value;
+    }
+
+    /**
+     * @return int[]
+     */
+    private function intList(mixed $value, ?int $excludingId = null): array
+    {
+        if ($value === null || $value === '') {
+            return [];
+        }
+
+        $values = is_array($value) ? $value : [$value];
+        $ids = [];
+
+        foreach ($values as $item) {
+            if ($item === null || $item === '') {
+                continue;
+            }
+
+            $id = (int) $item;
+
+            if ($id <= 0 || $id === $excludingId) {
+                continue;
+            }
+
+            $ids[$id] = $id;
+        }
+
+        return array_values($ids);
     }
 
     private function boolOrNull(mixed $value): ?bool

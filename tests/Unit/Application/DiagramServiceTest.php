@@ -42,6 +42,28 @@ final class DiagramServiceTest extends TestCase
         $this->assertStringContainsString('C1 -->|"Orders / Order Data"| C2', $diagram);
     }
 
+    public function test_component_overview_renders_parent_components_as_containers(): void
+    {
+        $service = new DiagramService(
+            components: $this->componentRepository([
+                $this->component(id: 1, name: 'Platform'),
+                $this->component(id: 2, name: 'CRM', parentComponentIds: [1]),
+                $this->component(id: 3, name: 'Shared Services', parentComponentIds: [1, 4]),
+                $this->component(id: 4, name: 'Operations'),
+            ]),
+            dependencies: $this->dependencyRepository([]),
+            journeys: $this->journeyRepository([], [], []),
+        );
+
+        $diagram = $service->componentOverview(new ComponentDiagramFilter());
+
+        $this->assertStringContainsString('subgraph SGC1["Platform"]', $diagram);
+        $this->assertStringContainsString('        C2["CRM"]', $diagram);
+        $this->assertStringContainsString('        C3["Shared Services"]', $diagram);
+        $this->assertStringContainsString('subgraph SGC4["Operations"]', $diagram);
+        $this->assertStringContainsString('C3 -. "inherits" .-> C4', $diagram);
+    }
+
     public function test_component_neighborhood_throws_for_unknown_component(): void
     {
         $service = new DiagramService(
@@ -99,7 +121,8 @@ final class DiagramServiceTest extends TestCase
         $this->assertStringContainsString('S101 -. "target_system" .-> C2', $diagram);
     }
 
-    private function component(int $id, string $name): Component
+    /** @param int[] $parentComponentIds */
+    private function component(int $id, string $name, array $parentComponentIds = []): Component
     {
         return new Component(
             id: $id,
@@ -122,6 +145,7 @@ final class DiagramServiceTest extends TestCase
             vendor: null,
             lifecycleNotes: null,
             isExternal: false,
+            parentComponentIds: $parentComponentIds,
         );
     }
 
@@ -151,7 +175,7 @@ final class DiagramServiceTest extends TestCase
     /** @param Component[] $components */
     private function componentRepository(array $components): ComponentRepository
     {
-        return new class ($components) implements ComponentRepository {
+        return new class($components) implements ComponentRepository {
             /** @var array<int, Component> */
             private array $items;
 
@@ -190,6 +214,28 @@ final class DiagramServiceTest extends TestCase
                 return array_values($this->items);
             }
 
+            public function parentsOf(int $componentId): array
+            {
+                $component = $this->items[$componentId] ?? null;
+
+                if ($component === null) {
+                    return [];
+                }
+
+                return array_values(array_filter(
+                    $this->items,
+                    static fn (Component $candidate): bool => in_array($candidate->id(), $component->parentComponentIds(), true),
+                ));
+            }
+
+            public function childrenOf(int $componentId): array
+            {
+                return array_values(array_filter(
+                    $this->items,
+                    static fn (Component $candidate): bool => in_array($componentId, $candidate->parentComponentIds(), true),
+                ));
+            }
+
             public function save(Component $component): Component
             {
                 $this->items[(int) $component->id()] = $component;
@@ -221,7 +267,7 @@ final class DiagramServiceTest extends TestCase
     /** @param Dependency[] $dependencies */
     private function dependencyRepository(array $dependencies): DependencyRepository
     {
-        return new class ($dependencies) implements DependencyRepository {
+        return new class($dependencies) implements DependencyRepository {
             /** @var array<int, Dependency> */
             private array $items;
 
@@ -294,7 +340,7 @@ final class DiagramServiceTest extends TestCase
      */
     private function journeyRepository(array $journeys, array $stepsByJourney, array $componentsByStep): JourneyRepository
     {
-        return new class ($journeys, $stepsByJourney, $componentsByStep) implements JourneyRepository {
+        return new class($journeys, $stepsByJourney, $componentsByStep) implements JourneyRepository {
             /** @var array<int, Journey> */
             private array $journeysById = [];
 
@@ -424,4 +470,3 @@ final class DiagramServiceTest extends TestCase
         };
     }
 }
-

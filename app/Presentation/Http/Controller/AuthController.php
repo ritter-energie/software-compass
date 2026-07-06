@@ -29,7 +29,6 @@ final readonly class AuthController
             return new Redirect('/setup');
         }
 
-
         return new Ok(view('../../View/auth/login.view.php'));
     }
 
@@ -78,4 +77,3 @@ final readonly class AuthController
         return new Redirect('/login')->flash('success', Translator::translate('auth.success.logged_out'));
     }
 }
-

@@ -192,4 +192,3 @@ final class MariaDbDependencyRepository implements DependencyRepository
         return $row;
     }
 }
-

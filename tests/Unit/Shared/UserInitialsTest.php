@@ -31,4 +31,3 @@ final class UserInitialsTest extends TestCase
         $this->assertSame('?', UserInitials::fromName(null));
     }
 }
-

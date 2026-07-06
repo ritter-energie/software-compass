@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 namespace App\Infrastructure\Security;
 
 use Tempest\Http\Request;
@@ -9,8 +10,8 @@ use Tempest\Http\Session\Session;
 use Tempest\Router\HttpMiddleware;
 use Tempest\Router\HttpMiddlewareCallable;
 
-use function Tempest\get;
 use function Tempest\Database\query;
+use function Tempest\get;
 
 /**
  * Session-based authentication middleware backed by the `users` table.
@@ -33,7 +34,6 @@ final readonly class BasicAuthMiddleware implements HttpMiddleware
 
         // First-run UX: if no users exist yet, route protected pages to setup.
         if (query('users')->count()->execute() === 0) {
-
             return new Redirect('/setup');
         }
 
@@ -77,7 +77,7 @@ final readonly class BasicAuthMiddleware implements HttpMiddleware
         CurrentUser::authenticate(
             (int) $user['id'],
             $user['person_id'] !== null ? (int) $user['person_id'] : null,
-            array_key_exists('preferred_locale', $user) ? (string) $user['preferred_locale'] : 'en',
+            (string) ($user['preferred_locale'] ?? 'en'),
             $roles,
             $displayName,
         );

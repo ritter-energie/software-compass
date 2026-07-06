@@ -82,4 +82,3 @@ final class DependencyTest extends TestCase
         );
     }
 }
-

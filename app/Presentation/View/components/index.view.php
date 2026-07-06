@@ -19,7 +19,9 @@
     </div>
 
     <form class="filter-bar" method="GET" action="/components">
-        <input type="text" name="q" placeholder="<?= htmlspecialchars(\App\Shared\Support\Translator::translate('filter.search_components')) ?>" value="<?= htmlspecialchars($criteria->query ?? '') ?>">
+        <input type="text" name="q" placeholder="<?= htmlspecialchars(\App\Shared\Support\Translator::translate('filter.search_components')) ?>" value="<?= htmlspecialchars(
+            $criteria->query ?? '',
+        ) ?>">
 
         <select name="component_type_id">
             <option value=""><?= htmlspecialchars(\App\Shared\Support\Translator::translate('filter.all_types')) ?></option>
@@ -57,7 +59,9 @@
         </select>
 
         <label class="checkbox-inline">
-            <input type="checkbox" name="is_external" value="1" <?= $criteria->isExternal === true ? 'checked' : '' ?>> <?= htmlspecialchars(\App\Shared\Support\Translator::translate('filter.external_only')) ?>
+            <input type="checkbox" name="is_external" value="1" <?= $criteria->isExternal === true ? 'checked' : '' ?>> <?= htmlspecialchars(\App\Shared\Support\Translator::translate(
+                'filter.external_only',
+            )) ?>
         </label>
 
         <button type="submit" class="button-secondary"><?= htmlspecialchars(\App\Shared\Support\Translator::translate('common.filter')) ?></button>

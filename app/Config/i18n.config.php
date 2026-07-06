@@ -14,4 +14,3 @@ $config->addTranslationMessageFile(Locale::ENGLISH, __DIR__ . '/../../resources/
 $config->addTranslationMessageFile(Locale::GERMAN, __DIR__ . '/../../resources/lang/messages.de.yaml');
 
 return $config;
-

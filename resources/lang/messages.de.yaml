@@ -236,6 +236,11 @@ components:
   local_diagram: Lokales Diagramm
   neighborhood_diagram: Nachbarschaftsdiagramm
   back_to_component: Zurück zur Komponente
+  inheritance: Vererbung
+  parent_components: Parent-Komponenten
+  child_components: Child-Komponenten
+  no_parent_components: Keine Parent-Komponenten zugeordnet.
+  no_child_components: Keine Child-Komponenten zugeordnet.
 dependencies:
   title: Schnittstellen / Abhängigkeiten
   description: Dokumentiere, wie Komponenten miteinander kommunizieren, welche Daten ausgetauscht werden, welche Protokolle genutzt werden und wie kritisch die Verbindung ist.
@@ -295,6 +300,10 @@ form:
   documentation_url: Dokumentations-URL
   repository_url: Repository-URL
   lifecycle_notes: Lebenszyklusnotizen
+  parent_components: Parent-Komponenten
+  parent_components_hint: Optional. Strg/Cmd gedrückt halten, um mehrere Parent-Komponenten auszuwählen.
+  child_components: Child-Komponenten
+  child_components_hint: Optional. Strg/Cmd gedrückt halten, um mehrere Child-Komponenten auszuwählen.
   source_component_required: Quellkomponente *
   target_component_required: Zielkomponente *
   protocol: Protokoll

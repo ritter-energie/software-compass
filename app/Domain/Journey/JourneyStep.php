@@ -50,4 +50,3 @@ final class JourneyStep
         return $this->sortOrder;
     }
 }
-

@@ -13,8 +13,9 @@ final readonly class UserInitials
             return '?';
         }
 
+        $matches = [];
         preg_match_all('/[\p{L}\p{N}]+/u', $normalized, $matches);
-        $tokens = $matches[0] ?? [];
+        $tokens = $matches[0];
         if ($tokens === []) {
             return '?';
         }
@@ -32,4 +33,3 @@ final readonly class UserInitials
         return mb_substr($token, $position, 1, 'UTF-8');
     }
 }
-

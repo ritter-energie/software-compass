@@ -30,7 +30,9 @@
                 <td><?= htmlspecialchars((string) ($user['preferred_locale'] ?? 'en')) ?></td>
                 <td>
                     <span class="badge <?= $user['is_active'] ? 'badge-success' : 'badge-warning' ?>">
-                        <?= htmlspecialchars($user['is_active'] ? \App\Shared\Support\Translator::translate('users.active') : \App\Shared\Support\Translator::translate('users.inactive')) ?>
+                        <?= htmlspecialchars(
+                            $user['is_active'] ? \App\Shared\Support\Translator::translate('users.active') : \App\Shared\Support\Translator::translate('users.inactive'),
+                        ) ?>
                     </span>
                 </td>
                 <td>
@@ -40,7 +42,9 @@
                     <form method="POST" action="/admin/users/<?= (int) $user['id'] ?>/toggle-active">
                         <?= \App\Shared\Support\Csrf::input() ?>
                         <button class="button-secondary" type="submit">
-                            <?= htmlspecialchars($user['is_active'] ? \App\Shared\Support\Translator::translate('users.deactivate') : \App\Shared\Support\Translator::translate('users.activate')) ?>
+                            <?= htmlspecialchars(
+                                $user['is_active'] ? \App\Shared\Support\Translator::translate('users.deactivate') : \App\Shared\Support\Translator::translate('users.activate'),
+                            ) ?>
                         </button>
                     </form>
                 </td>
@@ -52,4 +56,3 @@
         </tbody>
     </table>
 </x-layout>
-

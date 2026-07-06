@@ -13,4 +13,3 @@ use Tempest\Router\RouteConfig;
 return new RouteConfig(
     throwHttpExceptions: false,
 );
-

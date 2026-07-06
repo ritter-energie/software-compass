@@ -9,6 +9,7 @@ use App\Domain\Component\ComponentRepository;
 use App\Domain\Component\ComponentSearchCriteria;
 use App\Shared\ValueObject\Slug;
 use DateTimeImmutable;
+use Tempest\Database\Builder\WhereOperator;
 
 use function Tempest\Database\query;
 
@@ -26,6 +27,7 @@ final class MariaDbComponentRepository implements ComponentRepository
     use ResolvesLastInsertId;
 
     private const string TABLE = 'components';
+    private const string INHERITANCE_TABLE = 'component_inheritance';
 
     public function findById(int $id): ?Component
     {
@@ -98,20 +100,33 @@ final class MariaDbComponentRepository implements ComponentRepository
         return array_map($this->toDomain(...), $rows);
     }
 
+    public function parentsOf(int $componentId): array
+    {
+        return $this->componentsByIds($this->parentIdsForComponent($componentId));
+    }
+
+    public function childrenOf(int $componentId): array
+    {
+        return $this->componentsByIds($this->childIdsForComponent($componentId));
+    }
+
     public function save(Component $component): Component
     {
         $data = $this->toRow($component);
 
         if ($component->id() === null) {
             query(self::TABLE)->insert($data)->execute();
+            $componentId = $this->lastInsertId();
+            $this->syncInheritance($componentId, $component->parentComponentIds(), $component->childComponentIds());
 
-            return $this->findById($this->lastInsertId());
+            return $this->findById($componentId);
         }
 
         query(self::TABLE)
             ->update(...$data)
             ->whereField('id', $component->id())
             ->execute();
+        $this->syncInheritance($component->id(), $component->parentComponentIds(), $component->childComponentIds());
 
         return $this->findById($component->id());
     }
@@ -126,7 +141,7 @@ final class MariaDbComponentRepository implements ComponentRepository
         $builder = query(self::TABLE)->select()->whereField('slug', $slug);
 
         if ($excludingId !== null) {
-            $builder->andWhere('id', $excludingId, '!=');
+            $builder->andWhere('id', $excludingId, WhereOperator::NOT_EQUALS);
         }
 
         return $builder->first() !== null;
@@ -158,7 +173,102 @@ final class MariaDbComponentRepository implements ComponentRepository
             vendor: $row['vendor'],
             lifecycleNotes: $row['lifecycle_notes'],
             isExternal: (bool) $row['is_external'],
+            parentComponentIds: $this->parentIdsForComponent((int) $row['id']),
+            childComponentIds: $this->childIdsForComponent((int) $row['id']),
         );
+    }
+
+    /**
+     * @param int[] $parentComponentIds
+     * @param int[] $childComponentIds
+     */
+    private function syncInheritance(int $componentId, array $parentComponentIds, array $childComponentIds): void
+    {
+        query(self::INHERITANCE_TABLE)->delete()->whereField('child_component_id', $componentId)->execute();
+        foreach ($this->normalizeRelatedComponentIds($parentComponentIds, $componentId) as $parentComponentId) {
+            query(self::INHERITANCE_TABLE)->insert([
+                'parent_component_id' => $parentComponentId,
+                'child_component_id' => $componentId,
+            ])->execute();
+        }
+
+        query(self::INHERITANCE_TABLE)->delete()->whereField('parent_component_id', $componentId)->execute();
+        foreach ($this->normalizeRelatedComponentIds($childComponentIds, $componentId) as $childComponentId) {
+            query(self::INHERITANCE_TABLE)->insert([
+                'parent_component_id' => $componentId,
+                'child_component_id' => $childComponentId,
+            ])->execute();
+        }
+    }
+
+    /**
+     * @return int[]
+     */
+    private function parentIdsForComponent(int $componentId): array
+    {
+        $rows = query(self::INHERITANCE_TABLE)
+            ->select()
+            ->whereField('child_component_id', $componentId)
+            ->orderBy('parent_component_id')
+            ->all();
+
+        return array_map(static fn (array $row): int => (int) $row['parent_component_id'], $rows);
+    }
+
+    /**
+     * @return int[]
+     */
+    private function childIdsForComponent(int $componentId): array
+    {
+        $rows = query(self::INHERITANCE_TABLE)
+            ->select()
+            ->whereField('parent_component_id', $componentId)
+            ->orderBy('child_component_id')
+            ->all();
+
+        return array_map(static fn (array $row): int => (int) $row['child_component_id'], $rows);
+    }
+
+    /**
+     * @param int[] $componentIds
+     * @return Component[]
+     */
+    private function componentsByIds(array $componentIds): array
+    {
+        $componentIds = array_values(array_unique(array_map(static fn (int $componentId): int => $componentId, $componentIds)));
+
+        if ($componentIds === []) {
+            return [];
+        }
+
+        $rows = query(self::TABLE)
+            ->select()
+            ->whereIn('id', $componentIds)
+            ->orderBy('name')
+            ->all();
+
+        return array_map($this->toDomain(...), $rows);
+    }
+
+    /**
+     * @param int[] $componentIds
+     * @return int[]
+     */
+    private function normalizeRelatedComponentIds(array $componentIds, int $componentId): array
+    {
+        $normalized = [];
+
+        foreach ($componentIds as $relatedComponentId) {
+            $relatedComponentId = (int) $relatedComponentId;
+
+            if ($relatedComponentId <= 0 || $relatedComponentId === $componentId) {
+                continue;
+            }
+
+            $normalized[$relatedComponentId] = $relatedComponentId;
+        }
+
+        return array_values($normalized);
     }
 
     /**
@@ -198,4 +308,3 @@ final class MariaDbComponentRepository implements ComponentRepository
         return $row;
     }
 }
-

@@ -12,11 +12,15 @@ $componentName = static function (int $id) use ($components): string {
 };
 ?>
 <x-layout>
-    <div class="page-header"><div><h2><?= htmlspecialchars(\App\Shared\Support\Translator::translate('governance.reviews')) ?></h2><p class="muted"><?= htmlspecialchars(\App\Shared\Support\Translator::translate('governance.description')) ?></p></div><a class="button-secondary" href="/components/create"><?= htmlspecialchars(\App\Shared\Support\Translator::translate(
+    <div class="page-header"><div><h2><?= htmlspecialchars(\App\Shared\Support\Translator::translate('governance.reviews')) ?></h2><p class="muted"><?= htmlspecialchars(\App\Shared\Support\Translator::translate(
+        'governance.description',
+    )) ?></p></div><a class="button-secondary" href="/components/create"><?= htmlspecialchars(\App\Shared\Support\Translator::translate(
         'governance.create_component',
     )) ?></a></div>
     <table class="data-table">
-        <thead><tr><th><?= htmlspecialchars(\App\Shared\Support\Translator::translate('table.component')) ?></th><th><?= htmlspecialchars(\App\Shared\Support\Translator::translate('table.status')) ?></th><th><?= htmlspecialchars(\App\Shared\Support\Translator::translate(
+        <thead><tr><th><?= htmlspecialchars(\App\Shared\Support\Translator::translate('table.component')) ?></th><th><?= htmlspecialchars(\App\Shared\Support\Translator::translate(
+            'table.status',
+        )) ?></th><th><?= htmlspecialchars(\App\Shared\Support\Translator::translate(
             'table.checklist',
         )) ?></th><th><?= htmlspecialchars(\App\Shared\Support\Translator::translate('table.actions')) ?></th></tr></thead>
         <tbody>

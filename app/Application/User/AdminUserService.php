@@ -15,7 +15,9 @@ use function Tempest\Database\query;
 /** Admin-facing user provisioning and read-model helpers. */
 final readonly class AdminUserService
 {
-    public function __construct(private AppSettingsRepository $settings) {}
+    public function __construct(
+        private AppSettingsRepository $settings,
+    ) {}
 
     /** @return array<int, array<string, mixed>> */
     public function users(): array
@@ -56,7 +58,7 @@ final readonly class AdminUserService
         }
 
         return array_map(function (array $user) use ($peopleById, $rolesByUser): array {
-            $person = $user['person_id'] !== null ? ($peopleById[(int) $user['person_id']] ?? null) : null;
+            $person = $user['person_id'] !== null ? $peopleById[(int) $user['person_id']] ?? null : null;
 
             return [
                 'id' => (int) $user['id'],
@@ -136,8 +138,16 @@ final readonly class AdminUserService
             'updated_at' => $now,
         ])->execute();
 
-        $userId = (int) query('users')->select()->whereField('username', $username)->first()['id'];
-        $roleId = (int) query('roles')->select()->whereField('name', $role)->first()['id'];
+        /** @var array<string, mixed>|null $createdUser */
+        $createdUser = query('users')->select()->whereField('username', $username)->first();
+        /** @var array<string, mixed>|null $selectedRole */
+        $selectedRole = query('roles')->select()->whereField('name', $role)->first();
+        if ($createdUser === null || $selectedRole === null) {
+            throw new InvalidArgumentException('Unable to create user with selected role.');
+        }
+
+        $userId = (int) $createdUser['id'];
+        $roleId = (int) $selectedRole['id'];
 
         query('user_roles')->insert([
             'user_id' => $userId,
@@ -198,7 +208,12 @@ final readonly class AdminUserService
 
         query('users')->update(...$userUpdate)->whereField('id', $id)->execute();
 
-        $roleId = (int) query('roles')->select()->whereField('name', $role)->first()['id'];
+        $selectedRole = query('roles')->select()->whereField('name', $role)->first();
+        if ($selectedRole === null) {
+            throw new InvalidArgumentException('Invalid role selected.');
+        }
+
+        $roleId = (int) $selectedRole['id'];
         query('user_roles')->delete()->whereField('user_id', $id)->execute();
         query('user_roles')->insert([
             'user_id' => $id,
@@ -234,11 +249,8 @@ final readonly class AdminUserService
         }
 
         query('users')
-            ->update(is_active: ! (bool) $user['is_active'], updated_at: (new DateTimeImmutable())->format('Y-m-d H:i:s'))
+            ->update(is_active: ! (bool) $user['is_active'], updated_at: new DateTimeImmutable()->format('Y-m-d H:i:s'))
             ->whereField('id', $userId)
             ->execute();
     }
 }
-
-
-

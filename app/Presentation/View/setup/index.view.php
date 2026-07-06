@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Shared\Support\Csrf;
 use App\Shared\Support\Translator;
+
 ?>
 <!doctype html>
 <html lang="en">
@@ -63,4 +64,3 @@ use App\Shared\Support\Translator;
 </main>
 </body>
 </html>
-

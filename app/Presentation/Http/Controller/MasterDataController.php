@@ -16,7 +16,9 @@ use function Tempest\view;
 #[WithMiddleware(BasicAuthMiddleware::class)]
 final readonly class MasterDataController
 {
-    public function __construct(private LookupRepository $lookups) {}
+    public function __construct(
+        private LookupRepository $lookups,
+    ) {}
 
     #[Get('/master-data')]
     public function index(): Response
@@ -34,4 +36,3 @@ final readonly class MasterDataController
         ]));
     }
 }
-

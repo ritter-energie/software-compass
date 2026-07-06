@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use Tempest\Http\Status;
+use Tests\IntegrationTestCase;
 
 use function Tempest\Database\query;
-
-use Tests\IntegrationTestCase;
 
 final class SetupFlowTest extends IntegrationTestCase
 {
@@ -26,7 +25,8 @@ final class SetupFlowTest extends IntegrationTestCase
 
     public function test_dashboard_redirects_to_setup_when_no_users_exist(): void
     {
-        $this->http->get('/dashboard')
+        $this->http
+            ->get('/dashboard')
             ->assertStatus(Status::FOUND)
             ->assertHeaderContains('Location', '/setup');
     }
@@ -36,4 +36,3 @@ final class SetupFlowTest extends IntegrationTestCase
         $this->http->get('/setup')->assertOk();
     }
 }
-

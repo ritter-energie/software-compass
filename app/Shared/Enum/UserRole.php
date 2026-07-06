@@ -20,4 +20,3 @@ enum UserRole: string
         return array_map(static fn (self $role): string => $role->value, self::cases());
     }
 }
-

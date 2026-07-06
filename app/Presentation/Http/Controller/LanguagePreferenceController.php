@@ -44,4 +44,3 @@ final readonly class LanguagePreferenceController
         return new Redirect((string) ($request->get('redirect_to') ?: '/dashboard'))->flash('success', Translator::translate('language.updated'));
     }
 }
-

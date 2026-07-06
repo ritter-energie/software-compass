@@ -1,7 +1,7 @@
 <?php
 /** @var array<string, mixed> $user */
 /** @var string[] $roles */
-$currentRole = (string) (($user['roles'][0] ?? 'viewer'));
+$currentRole = (string) ($user['roles'][0] ?? 'viewer');
 ?>
 <x-layout>
     <div class="page-header">
@@ -36,7 +36,9 @@ $currentRole = (string) (($user['roles'][0] ?? 'viewer'));
                 <label for="preferred_locale"><?= htmlspecialchars(\App\Shared\Support\Translator::translate('users.locale')) ?></label>
                 <select id="preferred_locale" name="preferred_locale">
                                 <?php foreach (\App\Shared\Support\Translator::supportedLocales() as $code => $label): ?>
-                                    <option value="<?= htmlspecialchars($code) ?>" <?= $code === (string) ($user['preferred_locale'] ?? 'en') ? 'selected' : '' ?>><?= htmlspecialchars($label) ?></option>
+                                    <option value="<?= htmlspecialchars($code) ?>" <?= $code === (string) ($user['preferred_locale'] ?? 'en') ? 'selected' : '' ?>><?= htmlspecialchars(
+                                        $label,
+                                    ) ?></option>
                                 <?php endforeach; ?>
                 </select>
             </div>
@@ -55,4 +57,3 @@ $currentRole = (string) (($user['roles'][0] ?? 'viewer'));
         </div>
     </form>
 </x-layout>
-

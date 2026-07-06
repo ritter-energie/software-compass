@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
+
 namespace App\Application\Governance;
+
 final readonly class UpdateGovernanceReviewCommand
 {
     public function __construct(

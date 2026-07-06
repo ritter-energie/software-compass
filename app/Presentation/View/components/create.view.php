@@ -11,6 +11,7 @@
             :environments="$environments"
             :deployment-locations="$deploymentLocations"
             :people="$people"
+            :available-components="$availableComponents"
         />
 
         <div class="form-actions">
@@ -19,4 +20,3 @@
         </div>
     </x-form>
 </x-layout>
-

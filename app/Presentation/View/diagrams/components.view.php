@@ -1,3 +1,6 @@
+<?php
+/** @var string $mermaid */
+?>
 <x-layout>
     <div class="page-header">
         <div>

@@ -8,8 +8,12 @@
  * @var array<int, array<string, mixed>> $criticalityLevels
  * @var array<int, array<string, mixed>> $environments
  * @var array<int, array<string, mixed>> $deploymentLocations
- * @var array<int, array<string, mixed>> $people
+ * @var \App\Domain\Person\Person[] $people
+ * @var \App\Domain\Component\Component[] $availableComponents
  */
+$selectedParentIds = array_flip($component?->parentComponentIds() ?? []);
+$selectedChildIds = array_flip($component?->childComponentIds() ?? []);
+$personOptions = array_map(static fn (\App\Domain\Person\Person $person): array => ['id' => $person->id(), 'name' => $person->name()], $people);
 ?>
 <div class="form-grid">
     <div class="form-field">
@@ -56,8 +60,8 @@
         <label for="business_owner_id"><?= htmlspecialchars(\App\Shared\Support\Translator::translate('form.business_owner')) ?></label>
         <select id="business_owner_id" name="business_owner_id">
             <option value=""><?= htmlspecialchars(\App\Shared\Support\Translator::translate('common.none_option')) ?></option>
-            <?php foreach ($people as $person): ?>
-                <option value="<?= $person->id() ?>" <?= $component?->businessOwnerId() === $person->id() ? 'selected' : '' ?>><?= htmlspecialchars($person->name()) ?></option>
+            <?php foreach ($personOptions as $person): ?>
+                <option value="<?= $person['id'] ?>" <?= $component?->businessOwnerId() === $person['id'] ? 'selected' : '' ?>><?= htmlspecialchars($person['name']) ?></option>
             <?php endforeach; ?>
         </select>
         <p class="hint"><?= htmlspecialchars(\App\Shared\Support\Translator::translate('form.governance_owner_hint')) ?></p>
@@ -67,8 +71,8 @@
         <label for="technical_owner_id"><?= htmlspecialchars(\App\Shared\Support\Translator::translate('form.technical_owner')) ?></label>
         <select id="technical_owner_id" name="technical_owner_id">
             <option value=""><?= htmlspecialchars(\App\Shared\Support\Translator::translate('common.none_option')) ?></option>
-            <?php foreach ($people as $person): ?>
-                <option value="<?= $person->id() ?>" <?= $component?->technicalOwnerId() === $person->id() ? 'selected' : '' ?>><?= htmlspecialchars($person->name()) ?></option>
+            <?php foreach ($personOptions as $person): ?>
+                <option value="<?= $person['id'] ?>" <?= $component?->technicalOwnerId() === $person['id'] ? 'selected' : '' ?>><?= htmlspecialchars($person['name']) ?></option>
             <?php endforeach; ?>
         </select>
     </div>
@@ -78,7 +82,9 @@
         <select id="deployment_location_id" name="deployment_location_id">
             <option value=""><?= htmlspecialchars(\App\Shared\Support\Translator::translate('common.none_option')) ?></option>
             <?php foreach ($deploymentLocations as $location): ?>
-                <option value="<?= $location['id'] ?>" <?= $component?->deploymentLocationId() === (int) $location['id'] ? 'selected' : '' ?>><?= htmlspecialchars($location['name']) ?></option>
+                <option value="<?= $location['id'] ?>" <?= $component?->deploymentLocationId() === (int) $location['id'] ? 'selected' : '' ?>><?= htmlspecialchars(
+                    $location['name'],
+                ) ?></option>
             <?php endforeach; ?>
         </select>
     </div>
@@ -88,7 +94,9 @@
         <select id="environment_id" name="environment_id">
             <option value=""><?= htmlspecialchars(\App\Shared\Support\Translator::translate('common.none_option')) ?></option>
             <?php foreach ($environments as $environment): ?>
-                <option value="<?= $environment['id'] ?>" <?= $component?->environmentId() === (int) $environment['id'] ? 'selected' : '' ?>><?= htmlspecialchars($environment['name']) ?></option>
+                <option value="<?= $environment['id'] ?>" <?= $component?->environmentId() === (int) $environment['id'] ? 'selected' : '' ?>><?= htmlspecialchars(
+                    $environment['name'],
+                ) ?></option>
             <?php endforeach; ?>
         </select>
     </div>
@@ -109,7 +117,35 @@
     </div>
 
     <div class="form-field form-field-checkbox">
-        <label><input type="checkbox" name="is_external" value="1" <?= $component?->isExternal() ? 'checked' : '' ?>> <?= htmlspecialchars(\App\Shared\Support\Translator::translate('form.external_component')) ?></label>
+        <label><input type="checkbox" name="is_external" value="1" <?= $component?->isExternal() ? 'checked' : '' ?>> <?= htmlspecialchars(\App\Shared\Support\Translator::translate(
+            'form.external_component',
+        )) ?></label>
+    </div>
+
+    <div class="form-field form-field-wide">
+        <label for="parent_component_ids"><?= htmlspecialchars(\App\Shared\Support\Translator::translate('form.parent_components')) ?></label>
+        <select id="parent_component_ids" name="parent_component_ids[]" multiple size="6">
+            <?php foreach ($availableComponents as $availableComponent): ?>
+                <?php if ($component?->id() === $availableComponent->id()) {
+                    continue;
+                } ?>
+                <option value="<?= $availableComponent->id() ?>" <?= isset($selectedParentIds[(int) $availableComponent->id()]) ? 'selected' : '' ?>><?= htmlspecialchars($availableComponent->name()) ?></option>
+            <?php endforeach; ?>
+        </select>
+        <p class="hint"><?= htmlspecialchars(\App\Shared\Support\Translator::translate('form.parent_components_hint')) ?></p>
+    </div>
+
+    <div class="form-field form-field-wide">
+        <label for="child_component_ids"><?= htmlspecialchars(\App\Shared\Support\Translator::translate('form.child_components')) ?></label>
+        <select id="child_component_ids" name="child_component_ids[]" multiple size="6">
+            <?php foreach ($availableComponents as $availableComponent): ?>
+                <?php if ($component?->id() === $availableComponent->id()) {
+                    continue;
+                } ?>
+                <option value="<?= $availableComponent->id() ?>" <?= isset($selectedChildIds[(int) $availableComponent->id()]) ? 'selected' : '' ?>><?= htmlspecialchars($availableComponent->name()) ?></option>
+            <?php endforeach; ?>
+        </select>
+        <p class="hint"><?= htmlspecialchars(\App\Shared\Support\Translator::translate('form.child_components_hint')) ?></p>
     </div>
 
     <div class="form-field form-field-wide">
@@ -137,4 +173,3 @@
         <textarea id="lifecycle_notes" name="lifecycle_notes" rows="2"><?= htmlspecialchars($component?->lifecycleNotes() ?? '') ?></textarea>
     </div>
 </div>
-

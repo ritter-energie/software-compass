@@ -6,11 +6,10 @@ namespace Tests\Feature;
 
 use App\Infrastructure\Security\CurrentUser;
 use Tempest\Http\Session\Session;
-
-use function Tempest\get;
-use function Tempest\Database\query;
-
 use Tests\IntegrationTestCase;
+
+use function Tempest\Database\query;
+use function Tempest\get;
 
 final class UserRoleResolutionTest extends IntegrationTestCase
 {
@@ -69,4 +68,3 @@ final class UserRoleResolutionTest extends IntegrationTestCase
         $this->assertSame(['admin'], CurrentUser::roles());
     }
 }
-

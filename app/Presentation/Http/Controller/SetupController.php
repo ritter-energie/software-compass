@@ -19,7 +19,9 @@ use function Tempest\view;
 /** Public first-run setup flow for creating the first admin and network name. */
 final readonly class SetupController
 {
-    public function __construct(private SetupService $setup) {}
+    public function __construct(
+        private SetupService $setup,
+    ) {}
 
     #[Get('/setup')]
     public function index(): Response
@@ -81,4 +83,3 @@ final readonly class SetupController
         return $trimmed === '' ? null : $trimmed;
     }
 }
-

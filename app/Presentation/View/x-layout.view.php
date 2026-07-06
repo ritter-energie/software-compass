@@ -78,4 +78,3 @@ $currentUserInitials = UserInitials::fromName($currentUserDisplayName);
 <script type="module" src="/assets/app.js"></script>
 </body>
 </html>
-

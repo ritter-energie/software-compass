@@ -44,4 +44,3 @@ final readonly class RepositoryInitializer implements DynamicInitializer
         return $container->get(self::MAP[$class->getName()]);
     }
 }
-

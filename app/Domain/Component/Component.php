@@ -38,8 +38,14 @@ final class Component
         private ?string $vendor,
         private ?string $lifecycleNotes,
         private bool $isExternal,
+        private array $parentComponentIds = [],
+        private array $childComponentIds = [],
     ) {
         $this->guardNameIsNotBlank($name);
+        $this->parentComponentIds = $this->normalizeRelatedComponentIds($parentComponentIds);
+        $this->childComponentIds = $this->normalizeRelatedComponentIds($childComponentIds);
+        $this->guardInheritanceDoesNotReferenceSelf();
+        $this->guardInheritanceDoesNotConflict();
     }
 
     public function id(): ?int
@@ -142,6 +148,22 @@ final class Component
         return $this->isExternal;
     }
 
+    /**
+     * @return int[]
+     */
+    public function parentComponentIds(): array
+    {
+        return $this->parentComponentIds;
+    }
+
+    /**
+     * @return int[]
+     */
+    public function childComponentIds(): array
+    {
+        return $this->childComponentIds;
+    }
+
     public function rename(string $name): void
     {
         $this->guardNameIsNotBlank($name);
@@ -175,12 +197,14 @@ final class Component
      */
     public function isIncomplete(): bool
     {
-        return $this->businessOwnerId === null
+        return (
+            $this->businessOwnerId === null
             || $this->technicalOwnerId === null
             || $this->purpose === null
             || trim((string) $this->purpose) === ''
             || $this->deploymentLocationId === null
-            || $this->environmentId === null;
+            || $this->environmentId === null
+        );
     }
 
     /**
@@ -219,5 +243,43 @@ final class Component
             throw new InvalidArgumentException('A component name must not be blank.');
         }
     }
-}
 
+    /**
+     * @param int[] $componentIds
+     * @return int[]
+     */
+    private function normalizeRelatedComponentIds(array $componentIds): array
+    {
+        $normalized = [];
+
+        foreach ($componentIds as $componentId) {
+            $componentId = (int) $componentId;
+
+            if ($componentId <= 0) {
+                throw new InvalidArgumentException('Related component IDs must be positive integers.');
+            }
+
+            $normalized[$componentId] = $componentId;
+        }
+
+        return array_values($normalized);
+    }
+
+    private function guardInheritanceDoesNotReferenceSelf(): void
+    {
+        if ($this->id === null) {
+            return;
+        }
+
+        if (in_array($this->id, $this->parentComponentIds, true) || in_array($this->id, $this->childComponentIds, true)) {
+            throw new InvalidArgumentException('A component cannot inherit from itself.');
+        }
+    }
+
+    private function guardInheritanceDoesNotConflict(): void
+    {
+        if (array_intersect($this->parentComponentIds, $this->childComponentIds) !== []) {
+            throw new InvalidArgumentException('A component cannot inherit from and be parent of the same component.');
+        }
+    }
+}

@@ -236,6 +236,11 @@ components:
   local_diagram: Local diagram
   neighborhood_diagram: Neighborhood diagram
   back_to_component: Back to component
+  inheritance: Inheritance
+  parent_components: Parent components
+  child_components: Child components
+  no_parent_components: No parent components assigned.
+  no_child_components: No child components assigned.
 dependencies:
   title: Interfaces / Dependencies
   description: Document how components communicate with each other, which data is exchanged, which protocols are used and how critical each connection is.
@@ -295,6 +300,10 @@ form:
   documentation_url: Documentation URL
   repository_url: Repository URL
   lifecycle_notes: Lifecycle notes
+  parent_components: Parent components
+  parent_components_hint: Optional. Hold Ctrl/Cmd to select multiple parent components.
+  child_components: Child components
+  child_components_hint: Optional. Hold Ctrl/Cmd to select multiple child components.
   source_component_required: Source Component *
   target_component_required: Target Component *
   protocol: Protocol

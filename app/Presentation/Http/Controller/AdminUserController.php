@@ -24,13 +24,15 @@ use function Tempest\view;
 #[WithMiddleware(BasicAuthMiddleware::class)]
 final readonly class AdminUserController
 {
-    public function __construct(private AdminUserService $users) {}
+    public function __construct(
+        private AdminUserService $users,
+    ) {}
 
     #[Get('/admin/users')]
     public function index(): Response
     {
         if (! CurrentUser::hasRole('admin')) {
-            return (new Ok('Admin role required.'))->setStatus(Status::FORBIDDEN);
+            return new Ok('Admin role required.')->setStatus(Status::FORBIDDEN);
         }
 
         return new Ok(view('../../View/admin/users/index.view.php', users: $this->users->users()));
@@ -40,7 +42,7 @@ final readonly class AdminUserController
     public function create(): Response
     {
         if (! CurrentUser::hasRole('admin')) {
-            return (new Ok('Admin role required.'))->setStatus(Status::FORBIDDEN);
+            return new Ok('Admin role required.')->setStatus(Status::FORBIDDEN);
         }
 
         return new Ok(view(
@@ -54,7 +56,7 @@ final readonly class AdminUserController
     public function store(Request $request): Response
     {
         if (! CurrentUser::hasRole('admin')) {
-            return (new Ok('Admin role required.'))->setStatus(Status::FORBIDDEN);
+            return new Ok('Admin role required.')->setStatus(Status::FORBIDDEN);
         }
 
         if (! Csrf::isValid($request)) {
@@ -101,7 +103,7 @@ final readonly class AdminUserController
     public function edit(int $id): Response
     {
         if (! CurrentUser::hasRole('admin')) {
-            return (new Ok('Admin role required.'))->setStatus(Status::FORBIDDEN);
+            return new Ok('Admin role required.')->setStatus(Status::FORBIDDEN);
         }
 
         $user = $this->users->userById($id);
@@ -120,7 +122,7 @@ final readonly class AdminUserController
     public function update(int $id, Request $request): Response
     {
         if (! CurrentUser::hasRole('admin')) {
-            return (new Ok('Admin role required.'))->setStatus(Status::FORBIDDEN);
+            return new Ok('Admin role required.')->setStatus(Status::FORBIDDEN);
         }
 
         if (! Csrf::isValid($request)) {
@@ -168,7 +170,7 @@ final readonly class AdminUserController
     public function toggleActive(int $id, Request $request): Response
     {
         if (! CurrentUser::hasRole('admin')) {
-            return (new Ok('Admin role required.'))->setStatus(Status::FORBIDDEN);
+            return new Ok('Admin role required.')->setStatus(Status::FORBIDDEN);
         }
 
         if (! Csrf::isValid($request)) {
@@ -187,5 +189,3 @@ final readonly class AdminUserController
         return $trimmed === '' ? null : $trimmed;
     }
 }
-
-

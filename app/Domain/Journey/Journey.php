@@ -71,4 +71,3 @@ final class Journey
         $this->name = $name;
     }
 }
-

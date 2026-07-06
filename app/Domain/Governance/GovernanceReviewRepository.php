@@ -22,4 +22,3 @@ interface GovernanceReviewRepository
 
     public function save(GovernanceReview $review): GovernanceReview;
 }
-

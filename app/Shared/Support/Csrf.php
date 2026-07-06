@@ -35,4 +35,3 @@ final readonly class Csrf
         return $submitted !== '' && hash_equals(self::token(), $submitted);
     }
 }
-

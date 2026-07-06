@@ -55,4 +55,3 @@ final class Person
         return $this->isActive;
     }
 }
-

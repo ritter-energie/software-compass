@@ -24,5 +24,3 @@ return new MysqlConfig(
     password: env('DB_PASSWORD', ''),
     database: env('DB_DATABASE', 'software_compass'),
 );
-
-
