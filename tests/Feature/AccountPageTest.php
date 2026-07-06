@@ -34,7 +34,7 @@ final class AccountPageTest extends IntegrationTestCase
 
     public function test_account_page_requires_authentication(): void
     {
-        $this->seedUser('existing-user', 'secret');
+        $this->seedUser('existing-user@example.test', 'secret');
 
         $this->http
             ->get('/account')
@@ -44,18 +44,18 @@ final class AccountPageTest extends IntegrationTestCase
 
     public function test_authenticated_user_can_open_account_page(): void
     {
-        $userId = $this->seedUser('account-user', 'secret');
+        $userId = $this->seedUser('account-user@example.test', 'secret');
         get(Session::class)->set('auth_user_id', $userId);
 
         $this->http
             ->get('/account')
             ->assertOk()
-            ->assertSee('account-user');
+            ->assertSee('account-user@example.test');
     }
 
     public function test_authenticated_header_shows_initials_account_menu(): void
     {
-        $userId = $this->seedUser('account-menu-user', 'secret');
+        $userId = $this->seedUser('account-menu-user@example.test', 'secret');
         get(Session::class)->set('auth_user_id', $userId);
 
         $this->http
@@ -67,20 +67,19 @@ final class AccountPageTest extends IntegrationTestCase
             ->assertSee('Sign out');
     }
 
-    private function seedUser(string $username, string $password): int
+    private function seedUser(string $email, string $password): int
     {
         query('people')->insert([
             'name' => 'Account User',
-            'email' => 'account@example.test',
+            'email' => $email,
             'is_active' => true,
             'created_at' => date('Y-m-d H:i:s'),
             'updated_at' => date('Y-m-d H:i:s'),
         ])->execute();
 
-        $personId = (int) query('people')->select()->whereField('email', 'account@example.test')->first()['id'];
+        $personId = (int) query('people')->select()->whereField('email', $email)->first()['id'];
 
         query('users')->insert([
-            'username' => $username,
             'password_hash' => password_hash($password, PASSWORD_DEFAULT),
             'person_id' => $personId,
             'preferred_locale' => 'en',
@@ -89,7 +88,7 @@ final class AccountPageTest extends IntegrationTestCase
             'updated_at' => date('Y-m-d H:i:s'),
         ])->execute();
 
-        $userId = (int) query('users')->select()->whereField('username', $username)->first()['id'];
+        $userId = (int) query('users')->select()->whereField('person_id', $personId)->first()['id'];
         $roleId = (int) query('roles')->select()->whereField('name', 'admin')->first()['id'];
 
         query('user_roles')->insert([

@@ -26,7 +26,7 @@ final class DemoDataSeeder implements DatabaseSeeder
         $architect = $this->person('Sam Architect', 'sam.architect@example.org', 'Architecture', 'Enterprise Architect');
 
         $this->seedRoles();
-        $adminUserId = $this->user('admin', 'admin', $architect);
+        $adminUserId = $this->user('admin', $architect);
         $this->assignRole($adminUserId, UserRole::ADMIN->value);
 
         $typeApplication = $this->idByName('component_types', 'Application');
@@ -97,10 +97,9 @@ final class DemoDataSeeder implements DatabaseSeeder
         ]);
     }
 
-    private function user(string $username, string $password, int $personId): int
+    private function user(string $password, int $personId): int
     {
-        return $this->upsert('users', ['username' => $username], [
-            'username' => $username,
+        return $this->upsert('users', ['person_id' => $personId], [
             'password_hash' => password_hash($password, PASSWORD_DEFAULT),
             'person_id' => $personId,
             'preferred_locale' => 'en',

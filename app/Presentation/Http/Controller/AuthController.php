@@ -43,14 +43,18 @@ final readonly class AuthController
             return new Redirect('/login')->flash('error', Translator::translate('flash.error.invalid_security_token'));
         }
 
-        $username = trim((string) $request->get('username', ''));
+        $email = strtolower(trim((string) $request->get('email', '')));
         $password = (string) $request->get('password', '');
 
-        if ($username === '' || $password === '') {
+        if ($email === '' || $password === '') {
             return new Redirect('/login')->flash('error', Translator::translate('auth.error.required_fields'));
         }
 
-        $user = query('users')->select()->whereField('username', $username)->whereField('is_active', true)->first();
+        if (filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
+            return new Redirect('/login')->flash('error', Translator::translate('auth.error.invalid_credentials'));
+        }
+
+        $user = $this->findActiveUserByEmail($email);
         if ($user === null || ! password_verify($password, (string) $user['password_hash'])) {
             return new Redirect('/login')->flash('error', Translator::translate('auth.error.invalid_credentials'));
         }
@@ -75,5 +79,24 @@ final readonly class AuthController
         get(Session::class)->remove(self::SESSION_USER_ID);
 
         return new Redirect('/login')->flash('success', Translator::translate('auth.success.logged_out'));
+    }
+
+    /** @return array<string, mixed>|null */
+    private function findActiveUserByEmail(string $email): ?array
+    {
+        $people = query('people')->select()->whereField('email', $email)->all();
+        if ($people === []) {
+            return null;
+        }
+
+        $personIds = array_map(static fn (array $person): int => (int) $person['id'], $people);
+
+        $users = query('users')
+            ->select()
+            ->whereIn('person_id', $personIds)
+            ->whereField('is_active', true)
+            ->all();
+
+        return count($users) === 1 ? $users[0] : null;
     }
 }

@@ -28,13 +28,13 @@ auth:
   highlight_components: Maintain components and interfaces with clear ownership.
   highlight_governance: Track governance reviews and missing documentation.
   highlight_diagrams: Explore software landscapes with live Mermaid diagrams.
-  username: Username
+  email: Email
   password: Password
   login_submit: Sign in
   logout: Sign out
   error:
-    required_fields: Please enter username and password.
-    invalid_credentials: Invalid username or password.
+    required_fields: Please enter email and password.
+    invalid_credentials: Invalid email or password.
   success:
     logged_in: Signed in successfully.
     logged_out: Signed out successfully.
@@ -48,8 +48,7 @@ setup:
   description: Configure your network name and create the first administrator account.
   network_name: Network Name
   admin_name: Administrator Name
-  admin_email: Administrator Email (optional)
-  username: Admin Username
+  admin_email: Administrator Email
   default_locale: Default Language
   preferred_locale: Preferred Language
   password: Password
@@ -70,7 +69,6 @@ users:
   none: No users found.
   person: Person
   email: Email
-  username: Username
   roles: Roles
   locale: Language
   password_optional: New Password (optional)
@@ -84,6 +82,7 @@ users:
     status_updated: User status updated.
   error:
     required_fields: Please fill in all required fields.
+    invalid_email: Please enter a valid email address.
 footer:
   tagline: Self-hosted Enterprise Architecture repository
 dashboard:

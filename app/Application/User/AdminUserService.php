@@ -22,7 +22,7 @@ final readonly class AdminUserService
     /** @return array<int, array<string, mixed>> */
     public function users(): array
     {
-        $users = query('users')->select()->orderBy('username')->all();
+        $users = query('users')->select()->orderBy('id')->all();
         if ($users === []) {
             return [];
         }
@@ -57,19 +57,22 @@ final readonly class AdminUserService
             $rolesByUser[$userId][] = $roleName;
         }
 
-        return array_map(function (array $user) use ($peopleById, $rolesByUser): array {
+        $readModel = array_map(function (array $user) use ($peopleById, $rolesByUser): array {
             $person = $user['person_id'] !== null ? $peopleById[(int) $user['person_id']] ?? null : null;
 
             return [
                 'id' => (int) $user['id'],
-                'username' => (string) $user['username'],
                 'is_active' => (bool) $user['is_active'],
                 'preferred_locale' => (string) ($user['preferred_locale'] ?? 'en'),
                 'person_name' => $person['name'] ?? null,
-                'person_email' => $person['email'] ?? null,
+                'email' => $person['email'] ?? null,
                 'roles' => $rolesByUser[(int) $user['id']] ?? [],
             ];
         }, $users);
+
+        usort($readModel, static fn (array $left, array $right): int => strcmp((string) ($left['email'] ?? ''), (string) ($right['email'] ?? '')));
+
+        return $readModel;
     }
 
     /** @return string[] */
@@ -97,8 +100,7 @@ final readonly class AdminUserService
 
     public function createUser(
         string $name,
-        ?string $email,
-        string $username,
+        string $email,
         string $password,
         ?string $locale,
         string $role,
@@ -109,8 +111,10 @@ final readonly class AdminUserService
             throw new InvalidArgumentException('Invalid role selected.');
         }
 
-        if (query('users')->select()->whereField('username', $username)->first() !== null) {
-            throw new InvalidArgumentException('Username already exists.');
+        $email = $this->normalizeEmail($email);
+
+        if ($this->findUserByEmail($email) !== null) {
+            throw new InvalidArgumentException('Email already exists.');
         }
 
         $preferredLocale = LocaleSupport::normalize($locale, $this->defaultLocale());
@@ -129,7 +133,6 @@ final readonly class AdminUserService
         $personId = (int) end($people)['id'];
 
         query('users')->insert([
-            'username' => $username,
             'password_hash' => password_hash($password, PASSWORD_DEFAULT),
             'person_id' => $personId,
             'preferred_locale' => $preferredLocale,
@@ -139,7 +142,7 @@ final readonly class AdminUserService
         ])->execute();
 
         /** @var array<string, mixed>|null $createdUser */
-        $createdUser = query('users')->select()->whereField('username', $username)->first();
+        $createdUser = query('users')->select()->whereField('person_id', $personId)->first();
         /** @var array<string, mixed>|null $selectedRole */
         $selectedRole = query('roles')->select()->whereField('name', $role)->first();
         if ($createdUser === null || $selectedRole === null) {
@@ -160,8 +163,7 @@ final readonly class AdminUserService
     public function updateUser(
         int $id,
         string $name,
-        ?string $email,
-        string $username,
+        string $email,
         ?string $password,
         string $locale,
         string $role,
@@ -177,9 +179,11 @@ final readonly class AdminUserService
             throw new InvalidArgumentException('User not found.');
         }
 
-        $usernameOwner = query('users')->select()->whereField('username', $username)->first();
-        if ($usernameOwner !== null && (int) $usernameOwner['id'] !== $id) {
-            throw new InvalidArgumentException('Username already exists.');
+        $email = $this->normalizeEmail($email);
+
+        $emailOwner = $this->findUserByEmail($email);
+        if ($emailOwner !== null && (int) $emailOwner['id'] !== $id) {
+            throw new InvalidArgumentException('Email already exists.');
         }
 
         $now = new DateTimeImmutable()->format('Y-m-d H:i:s');
@@ -194,10 +198,23 @@ final readonly class AdminUserService
                 )
                 ->whereField('id', $personId)
                 ->execute();
+        } else {
+            query('people')->insert([
+                'name' => $name,
+                'email' => $email,
+                'department' => null,
+                'role_title' => null,
+                'is_active' => true,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ])->execute();
+
+            $people = query('people')->select()->orderBy('id')->all();
+            $personId = (int) end($people)['id'];
         }
 
         $userUpdate = [
-            'username' => $username,
+            'person_id' => $personId,
             'preferred_locale' => LocaleSupport::normalize($locale, $this->defaultLocale()),
             'updated_at' => $now,
         ];
@@ -252,5 +269,28 @@ final readonly class AdminUserService
             ->update(is_active: ! (bool) $user['is_active'], updated_at: new DateTimeImmutable()->format('Y-m-d H:i:s'))
             ->whereField('id', $userId)
             ->execute();
+    }
+
+    private function normalizeEmail(string $email): string
+    {
+        $normalized = strtolower(trim($email));
+        if (filter_var($normalized, FILTER_VALIDATE_EMAIL) === false) {
+            throw new InvalidArgumentException('Please enter a valid email address.');
+        }
+
+        return $normalized;
+    }
+
+    /** @return array<string, mixed>|null */
+    private function findUserByEmail(string $email): ?array
+    {
+        $people = query('people')->select()->whereField('email', $email)->all();
+        if ($people === []) {
+            return null;
+        }
+
+        $personIds = array_map(static fn (array $person): int => (int) $person['id'], $people);
+
+        return query('users')->select()->whereIn('person_id', $personIds)->first();
     }
 }

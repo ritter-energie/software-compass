@@ -30,7 +30,7 @@ final class AdminUserManagementTest extends IntegrationTestCase
 
     public function test_admin_can_access_user_management(): void
     {
-        $adminId = $this->seedUser('admin-user', 'secret', 'admin');
+        $adminId = $this->seedUser('admin-user@example.test', 'secret', 'admin');
         $this->authenticateAs($adminId);
 
         $this->http->get('/admin/users')->assertOk();
@@ -38,7 +38,7 @@ final class AdminUserManagementTest extends IntegrationTestCase
 
     public function test_non_admin_gets_forbidden_on_user_management(): void
     {
-        $viewerId = $this->seedUser('viewer-user', 'secret', 'viewer');
+        $viewerId = $this->seedUser('viewer-user@example.test', 'secret', 'viewer');
         $this->authenticateAs($viewerId);
 
         $this->http->get('/admin/users')->assertStatus(Status::FORBIDDEN);
@@ -46,8 +46,8 @@ final class AdminUserManagementTest extends IntegrationTestCase
 
     public function test_admin_can_open_user_edit_page(): void
     {
-        $adminId = $this->seedUser('admin-user', 'secret', 'admin');
-        $editedUserId = $this->seedUser('editor-user', 'secret', 'viewer');
+        $adminId = $this->seedUser('admin-user@example.test', 'secret', 'admin');
+        $editedUserId = $this->seedUser('editor-user@example.test', 'secret', 'viewer');
         $this->authenticateAs($adminId);
 
         $this->http->get("/admin/users/{$editedUserId}/edit")->assertOk();
@@ -55,8 +55,8 @@ final class AdminUserManagementTest extends IntegrationTestCase
 
     public function test_non_admin_gets_forbidden_on_user_edit_page(): void
     {
-        $viewerId = $this->seedUser('viewer-user', 'secret', 'viewer');
-        $editedUserId = $this->seedUser('editor-user', 'secret', 'viewer');
+        $viewerId = $this->seedUser('viewer-user@example.test', 'secret', 'viewer');
+        $editedUserId = $this->seedUser('editor-user@example.test', 'secret', 'viewer');
         $this->authenticateAs($viewerId);
 
         $this->http->get("/admin/users/{$editedUserId}/edit")->assertStatus(Status::FORBIDDEN);
@@ -79,20 +79,19 @@ final class AdminUserManagementTest extends IntegrationTestCase
         return (int) query('roles')->select()->whereField('name', $name)->first()['id'];
     }
 
-    private function seedUser(string $username, string $password, string $role): int
+    private function seedUser(string $email, string $password, string $role): int
     {
         query('people')->insert([
-            'name' => ucfirst($username),
-            'email' => $username . '@example.test',
+            'name' => ucfirst(strstr($email, '@', true) ?: $email),
+            'email' => $email,
             'is_active' => true,
             'created_at' => date('Y-m-d H:i:s'),
             'updated_at' => date('Y-m-d H:i:s'),
         ])->execute();
 
-        $personId = (int) query('people')->select()->whereField('email', $username . '@example.test')->first()['id'];
+        $personId = (int) query('people')->select()->whereField('email', $email)->first()['id'];
 
         query('users')->insert([
-            'username' => $username,
             'password_hash' => password_hash($password, PASSWORD_DEFAULT),
             'person_id' => $personId,
             'preferred_locale' => 'en',
@@ -101,7 +100,7 @@ final class AdminUserManagementTest extends IntegrationTestCase
             'updated_at' => date('Y-m-d H:i:s'),
         ])->execute();
 
-        $userId = (int) query('users')->select()->whereField('username', $username)->first()['id'];
+        $userId = (int) query('users')->select()->whereField('person_id', $personId)->first()['id'];
         $roleId = (int) query('roles')->select()->whereField('name', $role)->first()['id'];
 
         query('user_roles')->insert([

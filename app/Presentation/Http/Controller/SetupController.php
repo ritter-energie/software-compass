@@ -47,13 +47,16 @@ final readonly class SetupController
         $networkName = trim((string) $request->get('network_name', ''));
         $adminName = trim((string) $request->get('admin_name', ''));
         $adminEmail = $this->stringOrNull($request->get('admin_email'));
-        $username = trim((string) $request->get('username', ''));
         $password = (string) $request->get('password', '');
         $passwordConfirmation = (string) $request->get('password_confirmation', '');
         $locale = (string) ($request->get('default_locale') ?? $request->get('preferred_locale') ?? 'en');
 
-        if ($networkName === '' || $adminName === '' || $username === '' || $password === '') {
+        if ($networkName === '' || $adminName === '' || $adminEmail === null || $password === '') {
             return new Redirect('/setup')->flash('error', Translator::translate('setup.error.required_fields'));
+        }
+
+        if (filter_var($adminEmail, FILTER_VALIDATE_EMAIL) === false) {
+            return new Redirect('/setup')->flash('error', Translator::translate('users.error.invalid_email'));
         }
 
         if ($password !== $passwordConfirmation) {
@@ -68,7 +71,6 @@ final readonly class SetupController
             networkName: $networkName,
             adminName: $adminName,
             adminEmail: $adminEmail,
-            username: $username,
             password: $password,
             locale: $locale,
         );

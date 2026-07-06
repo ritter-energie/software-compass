@@ -47,8 +47,8 @@ $error = $session->consume('error');
             <?= Csrf::input() ?>
             <div class="form-grid">
                 <div class="form-field form-field-wide">
-                    <label for="username"><?= htmlspecialchars(Translator::translate('auth.username')) ?></label>
-                    <input id="username" name="username" required autofocus>
+                    <label for="email"><?= htmlspecialchars(Translator::translate('auth.email')) ?></label>
+                    <input id="email" name="email" type="email" autocomplete="email" required autofocus>
                 </div>
                 <div class="form-field form-field-wide">
                     <label for="password"><?= htmlspecialchars(Translator::translate('auth.password')) ?></label>

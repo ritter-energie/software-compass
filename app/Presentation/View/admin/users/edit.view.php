@@ -5,7 +5,7 @@ $currentRole = (string) ($user['roles'][0] ?? 'viewer');
 ?>
 <x-layout>
     <div class="page-header">
-        <h2><?= htmlspecialchars(\App\Shared\Support\Translator::translate('users.edit')) ?>: <?= htmlspecialchars((string) $user['username']) ?></h2>
+        <h2><?= htmlspecialchars(\App\Shared\Support\Translator::translate('users.edit')) ?>: <?= htmlspecialchars((string) ($user['email'] ?? '')) ?></h2>
         <a class="button-secondary" href="/admin/users"><?= htmlspecialchars(\App\Shared\Support\Translator::translate('users.back_to_list')) ?></a>
     </div>
 
@@ -18,11 +18,7 @@ $currentRole = (string) ($user['roles'][0] ?? 'viewer');
             </div>
             <div class="form-field">
                 <label for="email"><?= htmlspecialchars(\App\Shared\Support\Translator::translate('users.email')) ?></label>
-                <input id="email" name="email" type="email" value="<?= htmlspecialchars((string) ($user['person_email'] ?? '')) ?>">
-            </div>
-            <div class="form-field">
-                <label for="username"><?= htmlspecialchars(\App\Shared\Support\Translator::translate('users.username')) ?></label>
-                <input id="username" name="username" required value="<?= htmlspecialchars((string) $user['username']) ?>">
+                <input id="email" name="email" type="email" autocomplete="email" required value="<?= htmlspecialchars((string) ($user['email'] ?? '')) ?>">
             </div>
             <div class="form-field">
                 <label for="role"><?= htmlspecialchars(\App\Shared\Support\Translator::translate('users.roles')) ?></label>

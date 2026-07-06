@@ -30,7 +30,6 @@ final class UserRoleResolutionTest extends IntegrationTestCase
         $personId = (int) query('people')->select()->whereField('email', 'robin@example.test')->first()['id'];
 
         query('users')->insert([
-            'username' => 'robin',
             'password_hash' => password_hash('secret', PASSWORD_DEFAULT),
             'person_id' => $personId,
             'is_active' => true,
@@ -46,7 +45,7 @@ final class UserRoleResolutionTest extends IntegrationTestCase
             'updated_at' => date('Y-m-d H:i:s'),
         ])->execute();
 
-        $userId = (int) query('users')->select()->whereField('username', 'robin')->first()['id'];
+        $userId = (int) query('users')->select()->whereField('person_id', $personId)->first()['id'];
         $roleId = (int) query('roles')->select()->whereField('name', 'admin')->first()['id'];
 
         query('user_roles')->insert([
@@ -59,7 +58,8 @@ final class UserRoleResolutionTest extends IntegrationTestCase
 
     public function test_authenticated_user_roles_are_loaded_into_current_user_context(): void
     {
-        $userId = (int) query('users')->select()->whereField('username', 'robin')->first()['id'];
+        $personId = (int) query('people')->select()->whereField('email', 'robin@example.test')->first()['id'];
+        $userId = (int) query('users')->select()->whereField('person_id', $personId)->first()['id'];
         get(Session::class)->set('auth_user_id', $userId);
 
         $this->http->get('/dashboard')->assertOk();

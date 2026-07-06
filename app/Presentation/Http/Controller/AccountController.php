@@ -40,10 +40,9 @@ final readonly class AccountController
             '../../View/account/index.view.php',
             user: [
                 'id' => (int) $user['id'],
-                'username' => (string) $user['username'],
                 'preferred_locale' => (string) ($user['preferred_locale'] ?? 'en'),
                 'person_name' => $person['name'] ?? null,
-                'person_email' => $person['email'] ?? null,
+                'email' => $person['email'] ?? null,
                 'roles' => CurrentUser::roles(),
             ],
         ));

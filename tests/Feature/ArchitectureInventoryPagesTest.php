@@ -101,7 +101,6 @@ final class ArchitectureInventoryPagesTest extends IntegrationTestCase
     private function seedUser(): int
     {
         query('users')->insert([
-            'username' => 'inventory-user',
             'password_hash' => password_hash('secret', PASSWORD_DEFAULT),
             'person_id' => $this->personId,
             'preferred_locale' => 'en',
@@ -110,7 +109,7 @@ final class ArchitectureInventoryPagesTest extends IntegrationTestCase
             'updated_at' => $this->now(),
         ])->execute();
 
-        return (int) query('users')->select()->whereField('username', 'inventory-user')->first()['id'];
+        return (int) query('users')->select()->whereField('person_id', $this->personId)->first()['id'];
     }
 
     /** @param array<string, mixed> $values */

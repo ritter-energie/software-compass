@@ -36,13 +36,13 @@ final class SystemDefaultLocaleTest extends IntegrationTestCase
             networkName: 'Architecture Network',
             adminName: 'Admin User',
             adminEmail: 'admin@example.test',
-            username: 'admin',
             password: 'secret123',
             locale: 'de',
         );
 
         self::assertSame('de', $settings->defaultLocale());
-        self::assertSame('de', (string) query('users')->select()->whereField('username', 'admin')->first()['preferred_locale']);
+        $personId = (int) query('people')->select()->whereField('email', 'admin@example.test')->first()['id'];
+        self::assertSame('de', (string) query('users')->select()->whereField('person_id', $personId)->first()['preferred_locale']);
     }
 
     public function test_new_users_fall_back_to_system_default_locale(): void
@@ -53,13 +53,13 @@ final class SystemDefaultLocaleTest extends IntegrationTestCase
         new AdminUserService($settings)->createUser(
             name: 'Viewer User',
             email: 'viewer@example.test',
-            username: 'viewer',
             password: 'secret123',
             locale: null,
             role: 'viewer',
         );
 
-        self::assertSame('de', (string) query('users')->select()->whereField('username', 'viewer')->first()['preferred_locale']);
+        $personId = (int) query('people')->select()->whereField('email', 'viewer@example.test')->first()['id'];
+        self::assertSame('de', (string) query('users')->select()->whereField('person_id', $personId)->first()['preferred_locale']);
     }
 
     private function clearData(): void

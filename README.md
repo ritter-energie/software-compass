@@ -52,7 +52,7 @@ credentials you configured.
 The demo seeder creates a default login (via `/login`):
 
 ```text
-username: admin
+email: sam.architect@example.org
 password: admin
 ```
 
@@ -201,14 +201,14 @@ is persisted exclusively in MariaDB:
 
 ## Authentication (MVP)
 
-The MVP protects the whole application with a **session-based login form**,
-checked against the `users` table (see `App\Presentation\Http\Controller\AuthController`
-and `App\Infrastructure\Security\BasicAuthMiddleware`).
-The demo seeder (`Database\Seeders\DemoDataSeeder`) creates a default
-`admin` / `admin` user linked to a `people` record. To add further users,
-insert a row into `users` with a `password_hash` generated via
-`password_hash($password, PASSWORD_DEFAULT)`, e.g. through Adminer or a
-custom seeder.
+The MVP protects the whole application with a **session-based login form**.
+Users sign in with the email address of their linked `people` record; password
+hashes and account status are stored in `users` (see
+`App\Presentation\Http\Controller\AuthController` and
+`App\Infrastructure\Security\BasicAuthMiddleware`). The demo seeder
+(`Database\Seeders\DemoDataSeeder`) creates a default
+`sam.architect@example.org` / `admin` login. Add further users through the
+admin user management UI so each account has a linked person email and role.
 
 The authenticated user can open `/account` to view profile details and change
 the preferred UI language.
