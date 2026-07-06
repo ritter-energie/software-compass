@@ -33,11 +33,7 @@ use App\Shared\Support\Translator;
                 </div>
                 <div class="form-field">
                     <label for="admin_email"><?= htmlspecialchars(Translator::translate('setup.admin_email')) ?></label>
-                    <input id="admin_email" name="admin_email" type="email">
-                </div>
-                <div class="form-field">
-                    <label for="username"><?= htmlspecialchars(Translator::translate('setup.username')) ?></label>
-                    <input id="username" name="username" required>
+                    <input id="admin_email" name="admin_email" type="email" autocomplete="email" required>
                 </div>
                 <div class="form-field">
                     <label for="default_locale"><?= htmlspecialchars(Translator::translate('setup.default_locale')) ?></label>

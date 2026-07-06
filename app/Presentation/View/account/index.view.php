@@ -12,12 +12,10 @@
     <section class="panel">
         <h3><?= htmlspecialchars(\App\Shared\Support\Translator::translate('account.profile')) ?></h3>
         <dl>
-            <dt><?= htmlspecialchars(\App\Shared\Support\Translator::translate('users.username')) ?></dt>
-            <dd><?= htmlspecialchars((string) $user['username']) ?></dd>
+            <dt><?= htmlspecialchars(\App\Shared\Support\Translator::translate('users.email')) ?></dt>
+            <dd><?= htmlspecialchars((string) ($user['email'] ?? '—')) ?></dd>
             <dt><?= htmlspecialchars(\App\Shared\Support\Translator::translate('users.person')) ?></dt>
             <dd><?= htmlspecialchars((string) ($user['person_name'] ?? '—')) ?></dd>
-            <dt><?= htmlspecialchars(\App\Shared\Support\Translator::translate('users.email')) ?></dt>
-            <dd><?= htmlspecialchars((string) ($user['person_email'] ?? '—')) ?></dd>
             <dt><?= htmlspecialchars(\App\Shared\Support\Translator::translate('users.roles')) ?></dt>
             <dd><?= htmlspecialchars(implode(', ', $user['roles'] ?? [])) ?></dd>
         </dl>

@@ -72,7 +72,7 @@ final readonly class BasicAuthMiddleware implements HttpMiddleware
 
         $displayName = $person !== null
             ? (string) $person['name']
-            : (string) $user['username'];
+            : 'Account #' . (string) $user['id'];
 
         CurrentUser::authenticate(
             (int) $user['id'],

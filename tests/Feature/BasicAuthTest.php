@@ -38,9 +38,9 @@ final class BasicAuthTest extends IntegrationTestCase
         $personId = (int) query('people')->select()->whereField('email', 'ada@example.test')->first()['id'];
 
         query('users')->insert([
-            'username' => 'ada',
             'password_hash' => password_hash('secret', PASSWORD_DEFAULT),
             'person_id' => $personId,
+            'preferred_locale' => 'en',
             'is_active' => true,
             'created_at' => date('Y-m-d H:i:s'),
             'updated_at' => date('Y-m-d H:i:s'),
@@ -74,9 +74,21 @@ final class BasicAuthTest extends IntegrationTestCase
 
     public function test_it_accepts_requests_with_valid_session_user(): void
     {
-        $userId = (int) query('users')->select()->whereField('username', 'ada')->first()['id'];
+        $personId = (int) query('people')->select()->whereField('email', 'ada@example.test')->first()['id'];
+        $userId = (int) query('users')->select()->whereField('person_id', $personId)->first()['id'];
         get(Session::class)->set('auth_user_id', $userId);
 
         $this->http->get('/dashboard')->assertOk();
+    }
+
+    public function test_it_logs_in_with_email_and_password(): void
+    {
+        $this->http
+            ->post('/login', [
+                Session::CSRF_TOKEN_KEY => get(Session::class)->token,
+                'email' => 'ada@example.test',
+                'password' => 'secret',
+            ])
+            ->assertRedirect('/dashboard');
     }
 }

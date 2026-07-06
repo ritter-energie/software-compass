@@ -11,11 +11,9 @@ use Tempest\Database\QueryStatements\CreateTableStatement;
 use Tempest\Database\QueryStatements\DropTableStatement;
 
 /**
- * Creates the `users` table, which stores HTTP Basic Auth credentials for
- * the MVP.
+ * Creates the `users` table, which stores session login credentials.
  *
- * `person_id` is nullable so technical/service accounts can exist without a
- * corresponding `people` entry.
+ * Users sign in with the email address of their linked `people` record.
  */
 final class CreateUsersTable implements MigratesUp, MigratesDown
 {
@@ -25,13 +23,12 @@ final class CreateUsersTable implements MigratesUp, MigratesDown
     {
         return new CreateTableStatement('users')
             ->primary()
-            ->varchar('username', 255)
             ->varchar('password_hash', 255)
             ->belongsTo('users.person_id', 'people.id', nullable: true)
             ->boolean('is_active', default: true)
             ->datetime('created_at')
             ->datetime('updated_at')
-            ->unique('username');
+            ->unique('person_id');
     }
 
     public function down(): QueryStatement

@@ -65,13 +65,12 @@ final readonly class AdminUserController
 
         $name = trim((string) $request->get('name', ''));
         $email = $this->stringOrNull($request->get('email'));
-        $username = trim((string) $request->get('username', ''));
         $password = (string) $request->get('password', '');
         $passwordConfirmation = (string) $request->get('password_confirmation', '');
         $role = (string) ($request->get('role') ?? 'viewer');
         $locale = (string) ($request->get('preferred_locale') ?? $this->users->defaultLocale());
 
-        if ($name === '' || $username === '' || $password === '') {
+        if ($name === '' || $email === null || $password === '') {
             return new Redirect('/admin/users/create')->flash('error', Translator::translate('users.error.required_fields'));
         }
 
@@ -87,7 +86,6 @@ final readonly class AdminUserController
             $this->users->createUser(
                 name: $name,
                 email: $email,
-                username: $username,
                 password: $password,
                 locale: $locale,
                 role: $role,
@@ -131,13 +129,12 @@ final readonly class AdminUserController
 
         $name = trim((string) $request->get('name', ''));
         $email = $this->stringOrNull($request->get('email'));
-        $username = trim((string) $request->get('username', ''));
         $password = $this->stringOrNull($request->get('password'));
         $passwordConfirmation = (string) $request->get('password_confirmation', '');
         $role = (string) ($request->get('role') ?? 'viewer');
         $locale = (string) ($request->get('preferred_locale') ?? 'en');
 
-        if ($name === '' || $username === '') {
+        if ($name === '' || $email === null) {
             return new Redirect("/admin/users/{$id}/edit")->flash('error', Translator::translate('users.error.required_fields'));
         }
 
@@ -154,7 +151,6 @@ final readonly class AdminUserController
                 id: $id,
                 name: $name,
                 email: $email,
-                username: $username,
                 password: $password,
                 locale: $locale,
                 role: $role,

@@ -8,6 +8,7 @@ use App\Infrastructure\Persistence\AppSettingsRepository;
 use App\Shared\Enum\UserRole;
 use App\Shared\Support\LocaleSupport;
 use DateTimeImmutable;
+use InvalidArgumentException;
 use RuntimeException;
 
 use function Tempest\Database\query;
@@ -39,8 +40,7 @@ final readonly class SetupService
     public function initialize(
         string $networkName,
         string $adminName,
-        ?string $adminEmail,
-        string $username,
+        string $adminEmail,
         string $password,
         string $locale = 'en',
     ): void {
@@ -51,6 +51,7 @@ final readonly class SetupService
         $this->seedRoles();
 
         $defaultLocale = LocaleSupport::normalize($locale);
+        $adminEmail = $this->normalizeEmail($adminEmail);
 
         $now = new DateTimeImmutable()->format('Y-m-d H:i:s');
         query('people')->insert([
@@ -67,7 +68,6 @@ final readonly class SetupService
         $personId = (int) end($people)['id'];
 
         query('users')->insert([
-            'username' => $username,
             'password_hash' => password_hash($password, PASSWORD_DEFAULT),
             'person_id' => $personId,
             'preferred_locale' => $defaultLocale,
@@ -76,7 +76,7 @@ final readonly class SetupService
             'updated_at' => $now,
         ])->execute();
 
-        $userId = (int) query('users')->select()->whereField('username', $username)->first()['id'];
+        $userId = (int) query('users')->select()->whereField('person_id', $personId)->first()['id'];
         $adminRoleId = (int) query('roles')->select()->whereField('name', UserRole::ADMIN->value)->first()['id'];
 
         query('user_roles')->insert([
@@ -93,6 +93,16 @@ final readonly class SetupService
     private function userCount(): int
     {
         return query('users')->count()->execute();
+    }
+
+    private function normalizeEmail(string $email): string
+    {
+        $normalized = strtolower(trim($email));
+        if (filter_var($normalized, FILTER_VALIDATE_EMAIL) === false) {
+            throw new InvalidArgumentException('Please enter a valid email address.');
+        }
+
+        return $normalized;
     }
 
     private function seedRoles(): void

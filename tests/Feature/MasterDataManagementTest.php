@@ -127,11 +127,13 @@ final class MasterDataManagementTest extends IntegrationTestCase
         get(Session::class)->set('auth_user_id', $userId);
     }
 
-    private function seedUser(string $username, string $role): int
+    private function seedUser(string $accountName, string $role): int
     {
+        $email = $accountName . '@example.test';
+
         query('people')->insert([
-            'name' => ucfirst($username),
-            'email' => $username . '@example.test',
+            'name' => ucfirst($accountName),
+            'email' => $email,
             'is_active' => true,
             'created_at' => date('Y-m-d H:i:s'),
             'updated_at' => date('Y-m-d H:i:s'),
@@ -144,11 +146,10 @@ final class MasterDataManagementTest extends IntegrationTestCase
             'updated_at' => date('Y-m-d H:i:s'),
         ])->execute();
 
-        $personId = (int) query('people')->select()->whereField('email', $username . '@example.test')->first()['id'];
+        $personId = (int) query('people')->select()->whereField('email', $email)->first()['id'];
         $roleId = (int) query('roles')->select()->whereField('name', $role)->first()['id'];
 
         query('users')->insert([
-            'username' => $username,
             'password_hash' => password_hash('secret', PASSWORD_DEFAULT),
             'person_id' => $personId,
             'preferred_locale' => 'en',
@@ -157,7 +158,7 @@ final class MasterDataManagementTest extends IntegrationTestCase
             'updated_at' => date('Y-m-d H:i:s'),
         ])->execute();
 
-        $userId = (int) query('users')->select()->whereField('username', $username)->first()['id'];
+        $userId = (int) query('users')->select()->whereField('person_id', $personId)->first()['id'];
 
         query('user_roles')->insert([
             'user_id' => $userId,

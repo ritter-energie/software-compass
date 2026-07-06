@@ -17,11 +17,7 @@
             </div>
             <div class="form-field">
                 <label for="email"><?= htmlspecialchars(\App\Shared\Support\Translator::translate('users.email')) ?></label>
-                <input id="email" name="email" type="email">
-            </div>
-            <div class="form-field">
-                <label for="username"><?= htmlspecialchars(\App\Shared\Support\Translator::translate('users.username')) ?></label>
-                <input id="username" name="username" required>
+                <input id="email" name="email" type="email" autocomplete="email" required>
             </div>
             <div class="form-field">
                 <label for="role"><?= htmlspecialchars(\App\Shared\Support\Translator::translate('users.roles')) ?></label>

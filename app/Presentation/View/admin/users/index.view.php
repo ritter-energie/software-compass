@@ -14,7 +14,7 @@
         <thead>
         <tr>
             <th><?= htmlspecialchars(\App\Shared\Support\Translator::translate('users.person')) ?></th>
-            <th><?= htmlspecialchars(\App\Shared\Support\Translator::translate('users.username')) ?></th>
+            <th><?= htmlspecialchars(\App\Shared\Support\Translator::translate('users.email')) ?></th>
             <th><?= htmlspecialchars(\App\Shared\Support\Translator::translate('users.roles')) ?></th>
             <th><?= htmlspecialchars(\App\Shared\Support\Translator::translate('users.locale')) ?></th>
             <th><?= htmlspecialchars(\App\Shared\Support\Translator::translate('table.status')) ?></th>
@@ -25,7 +25,7 @@
         <?php foreach ($users as $user): ?>
             <tr>
                 <td><?= htmlspecialchars((string) ($user['person_name'] ?? '—')) ?></td>
-                <td><?= htmlspecialchars((string) $user['username']) ?></td>
+                <td><?= htmlspecialchars((string) ($user['email'] ?? '—')) ?></td>
                 <td><?= htmlspecialchars(implode(', ', $user['roles'] ?? [])) ?></td>
                 <td><?= htmlspecialchars((string) ($user['preferred_locale'] ?? 'en')) ?></td>
                 <td>

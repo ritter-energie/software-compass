@@ -28,13 +28,13 @@ auth:
   highlight_components: Pflege Komponenten und Schnittstellen mit klaren Verantwortlichkeiten.
   highlight_governance: Verfolge Governance Reviews und fehlende Dokumentation.
   highlight_diagrams: Erkunde Software-Landschaften mit Live-Mermaid-Diagrammen.
-  username: Benutzername
+  email: E-Mail
   password: Passwort
   login_submit: Anmelden
   logout: Abmelden
   error:
-    required_fields: Bitte Benutzername und Passwort eingeben.
-    invalid_credentials: Ungültiger Benutzername oder Passwort.
+    required_fields: Bitte E-Mail und Passwort eingeben.
+    invalid_credentials: Ungültige E-Mail oder Passwort.
   success:
     logged_in: Erfolgreich angemeldet.
     logged_out: Erfolgreich abgemeldet.
@@ -48,8 +48,7 @@ setup:
   description: Konfiguriere den Netzwerknamen und lege das erste Administratorkonto an.
   network_name: Netzwerkname
   admin_name: Administratorname
-  admin_email: Administrator-E-Mail (optional)
-  username: Admin-Benutzername
+  admin_email: Administrator-E-Mail
   default_locale: Standardsprache
   preferred_locale: Bevorzugte Sprache
   password: Passwort
@@ -70,7 +69,6 @@ users:
   none: Keine Benutzer gefunden.
   person: Person
   email: E-Mail
-  username: Benutzername
   roles: Rollen
   locale: Sprache
   password_optional: Neues Passwort (optional)
@@ -84,6 +82,7 @@ users:
     status_updated: Benutzerstatus aktualisiert.
   error:
     required_fields: Bitte alle Pflichtfelder ausfüllen.
+    invalid_email: Bitte eine gültige E-Mail-Adresse eingeben.
 footer:
   tagline: Selbst gehostetes Enterprise-Architecture-Repository
 dashboard:
