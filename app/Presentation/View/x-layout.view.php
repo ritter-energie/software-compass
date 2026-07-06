@@ -1,5 +1,6 @@
 <?php
 
+use App\Application\Setup\DatabaseUpdateService;
 use App\Infrastructure\Persistence\AppSettingsRepository;
 use App\Infrastructure\Security\CurrentUser;
 use App\Shared\Support\Csrf;
@@ -16,6 +17,7 @@ $locale = \App\Shared\Support\Translator::locale();
 $networkName = get(AppSettingsRepository::class)->get('network_name');
 $currentUserDisplayName = CurrentUser::displayName();
 $currentUserInitials = UserInitials::fromName($currentUserDisplayName);
+$databaseUpdateStatus = CurrentUser::hasRole('admin') ? get(DatabaseUpdateService::class)->status() : null;
 ?>
 <!doctype html>
 <html lang="<?= htmlspecialchars($locale) ?>">
@@ -59,6 +61,9 @@ $currentUserInitials = UserInitials::fromName($currentUserDisplayName);
             ><?= htmlspecialchars($currentUserInitials) ?></button>
             <div id="user-menu-dropdown" class="user-menu__dropdown" role="menu" hidden data-user-menu-dropdown>
                 <a class="user-menu__item" role="menuitem" href="/account"><?= htmlspecialchars(\App\Shared\Support\Translator::translate('nav.account')) ?></a>
+                <?php if (CurrentUser::hasRole('admin')): ?>
+                    <a class="user-menu__item" role="menuitem" href="/admin/settings"><?= htmlspecialchars(\App\Shared\Support\Translator::translate('app_settings.title')) ?></a>
+                <?php endif; ?>
                 <form method="POST" action="/logout" role="none">
                     <?= Csrf::input() ?>
                     <button type="submit" class="user-menu__item user-menu__item-button" role="menuitem">
@@ -72,6 +77,12 @@ $currentUserInitials = UserInitials::fromName($currentUserDisplayName);
 <main class="container">
     <?php if ($success): ?><div class="alert alert-success"><?= htmlspecialchars((string) $success) ?></div><?php endif; ?>
     <?php if ($error): ?><div class="alert alert-error"><?= htmlspecialchars((string) $error) ?></div><?php endif; ?>
+    <?php if ($databaseUpdateStatus !== null && $databaseUpdateStatus->hasPendingMigrations()): ?>
+        <div class="alert alert-warning">
+            <?= htmlspecialchars(\App\Shared\Support\Translator::translate('database_update.layout_notice')) ?>
+            <a href="/admin/settings"><?= htmlspecialchars(\App\Shared\Support\Translator::translate('database_update.open_update_page')) ?></a>
+        </div>
+    <?php endif; ?>
     <x-slot />
 </main>
 <footer class="footer"><?= htmlspecialchars(\App\Shared\Support\Translator::translate('footer.tagline')) ?></footer>

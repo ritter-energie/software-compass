@@ -24,9 +24,12 @@ installation required:
 ```bash
 cp .env.example .env
 docker compose up -d --build
-docker compose exec app php tempest migrate:up --force
 docker compose exec app php tempest database:seed --all --force
 ```
+
+The local Docker app container automatically refreshes Tempest discovery and
+runs pending database migrations before Apache starts. Set `AUTO_MIGRATE=false`
+in `.env` if you need manual control over schema changes.
 
 The lookup/reference-data seeder creates 2–5 neutral sample entries for each
 reference data type, such as component types, statuses, criticality levels,
@@ -66,6 +69,7 @@ docker compose run --rm vite npm run build
 Useful commands:
 
 ```bash
+docker compose exec app php tempest migrate:up --force       # run pending migrations manually
 docker compose exec app php tempest migrate:fresh --force   # drop & rebuild schema
 docker compose exec app php tempest database:seed --all --force # seed lookup + demo data
 docker compose exec app php ./vendor/bin/tempest discovery:generate --no-interaction # refresh Tempest discovery/cache after adding/removing classes/views
@@ -247,6 +251,10 @@ node in multiple containers.
 
 ## Tempest cache notes
 
+In the local Docker setup, discovery is refreshed automatically when the app
+container starts. You can disable this with `AUTO_DISCOVERY_GENERATE=false` in
+`.env`.
+
 After adding, renaming or deleting discovered classes or view components,
 refresh discovery:
 
@@ -260,6 +268,34 @@ views as well:
 ```bash
 docker compose exec app sh -lc 'rm -rf .tempest/cache/views/* && php ./vendor/bin/tempest discovery:generate --no-interaction'
 ```
+
+## Migration troubleshooting
+
+Tempest records a hash for every executed migration. If an already executed
+migration file is changed later, `migrate:up` stops with a `HASH MISMATCH` error
+instead of applying newer migrations on top of an unknown schema state.
+
+Treat committed migration files as immutable. When the schema changes, add a new
+forward migration instead of editing an existing one. A PHPUnit guard compares
+`database/migrations/*.php` against `database/migrations/.migration-hashes.json`
+so accidental edits fail during tests.
+
+After adding a new migration, update the manifest intentionally:
+
+```bash
+composer migrations:hashes
+```
+
+For a disposable local development database, rebuild and seed it again:
+
+```bash
+docker compose exec app php tempest migrate:fresh --force
+docker compose exec app php tempest database:seed --all --force
+```
+
+If you need to keep data, do not run `migrate:fresh`; restore the original
+migration file or add a new forward migration that transforms the existing
+schema safely.
 
 ## Governance process
 

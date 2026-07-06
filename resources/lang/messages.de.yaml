@@ -83,6 +83,33 @@ users:
   error:
     required_fields: Bitte alle Pflichtfelder ausfüllen.
     invalid_email: Bitte eine gültige E-Mail-Adresse eingeben.
+app_settings:
+  title: App-Einstellungen
+  description: Verwalte globale Anwendungseinstellungen und betriebliche Updates.
+  global_settings: Globale Einstellungen
+  global_settings_description: Konfiguriere Standardwerte, die in der Anwendung gelten.
+  default_locale: Standardsprache
+  default_locale_hint: Wird für Setup-Standardwerte und neue Benutzer genutzt, wenn keine individuelle Sprache ausgewählt wurde.
+  success:
+    default_locale_updated: Standardsprache aktualisiert.
+database_update:
+  title: Datenbank-Update
+  description: Prüfe ausstehende Datenbankschema-Migrationen und starte sie nach Bestätigung.
+  current_status: Aktueller Status
+  up_to_date: Das Datenbankschema ist aktuell.
+  pending_notice: Ein Datenbankschema-Update ist verfügbar. Prüfe die ausstehenden Migrationen, bevor du das Update startest.
+  layout_notice: Ein Datenbankschema-Update ist verfügbar.
+  open_update_page: Update-Seite öffnen
+  pending_migrations: Ausstehende Migrationen
+  migration_table_missing: Die Migration-Historientabelle fehlt. Der Updater legt sie an, bevor Migrationen angewendet werden.
+  validation_errors: Validierungsfehler der Migrationen
+  run_update: Datenbank-Update starten
+  success:
+    applied: Datenbank-Update abgeschlossen. {count} Migration(en) angewendet.
+    none_needed: Es war kein Datenbank-Update erforderlich.
+  error:
+    validation_failed: Das Datenbank-Update wurde blockiert, weil die Migrationsvalidierung fehlgeschlagen ist.
+    update_failed: Datenbank-Update fehlgeschlagen.
 footer:
   tagline: Selbst gehostetes Enterprise-Architecture-Repository
 dashboard:
