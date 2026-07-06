@@ -40,4 +40,3 @@ enum ReferenceDataField: string
         return in_array($this, [self::NAME, self::LOCATION_TYPE], true);
     }
 }
-

@@ -69,10 +69,14 @@ enum ReferenceDataType: string
         return match ($this) {
             self::COMPONENT_STATUS, self::CRITICALITY_LEVEL => [ReferenceDataField::NAME, ReferenceDataField::DESCRIPTION, ReferenceDataField::SORT_ORDER],
             self::DEPLOYMENT_LOCATION => [ReferenceDataField::NAME, ReferenceDataField::LOCATION_TYPE, ReferenceDataField::DESCRIPTION],
-            self::DATA_OBJECT => [ReferenceDataField::NAME, ReferenceDataField::DESCRIPTION, ReferenceDataField::CONTAINS_PERSONAL_DATA, ReferenceDataField::CONTAINS_SENSITIVE_DATA],
+            self::DATA_OBJECT => [
+                ReferenceDataField::NAME,
+                ReferenceDataField::DESCRIPTION,
+                ReferenceDataField::CONTAINS_PERSONAL_DATA,
+                ReferenceDataField::CONTAINS_SENSITIVE_DATA,
+            ],
             self::TAG => [ReferenceDataField::NAME],
             default => [ReferenceDataField::NAME, ReferenceDataField::DESCRIPTION],
         };
     }
 }
-

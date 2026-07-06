@@ -27,7 +27,9 @@ use function Tempest\view;
 #[WithMiddleware(BasicAuthMiddleware::class)]
 final readonly class ReferenceDataController
 {
-    public function __construct(private ReferenceDataService $referenceData) {}
+    public function __construct(
+        private ReferenceDataService $referenceData,
+    ) {}
 
     #[Get('/master-data')]
     public function index(): Response
@@ -173,4 +175,3 @@ final readonly class ReferenceDataController
         return in_array($value, ['1', 1, true, 'true', 'on'], true);
     }
 }
-

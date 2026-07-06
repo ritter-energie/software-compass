@@ -14,7 +14,9 @@ use Throwable;
 
 final readonly class ReferenceDataService
 {
-    public function __construct(private LookupRepository $lookups) {}
+    public function __construct(
+        private LookupRepository $lookups,
+    ) {}
 
     /**
      * @return ReferenceDataType[]
@@ -118,4 +120,3 @@ final readonly class ReferenceDataService
         }
     }
 }
-

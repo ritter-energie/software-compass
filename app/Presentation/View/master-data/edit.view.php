@@ -17,5 +17,3 @@
         </div>
     </x-form>
 </x-layout>
-
-

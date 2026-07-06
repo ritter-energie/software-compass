@@ -43,28 +43,34 @@ final class MasterDataManagementTest extends IntegrationTestCase
     {
         $this->authenticateAs($this->seedUser('admin-user', 'admin'));
 
-        $this->http->post('/master-data/component-types', [
-            Session::CSRF_TOKEN_KEY => get(Session::class)->token,
-            'name' => 'Platform Capability',
-            'description' => 'Groups reusable platform services.',
-        ])->assertRedirect('/master-data');
+        $this->http
+            ->post('/master-data/component-types', [
+                Session::CSRF_TOKEN_KEY => get(Session::class)->token,
+                'name' => 'Platform Capability',
+                'description' => 'Groups reusable platform services.',
+            ])
+            ->assertRedirect('/master-data');
 
         $created = query('component_types')->select()->whereField('name', 'Platform Capability')->first();
         $this->assertNotNull($created);
 
-        $this->http->post('/master-data/component-types/' . (int) $created['id'], [
-            Session::CSRF_TOKEN_KEY => get(Session::class)->token,
-            'name' => 'Platform Capability Updated',
-            'description' => 'Updated description.',
-        ])->assertRedirect('/master-data');
+        $this->http
+            ->post('/master-data/component-types/' . (int) $created['id'], [
+                Session::CSRF_TOKEN_KEY => get(Session::class)->token,
+                'name' => 'Platform Capability Updated',
+                'description' => 'Updated description.',
+            ])
+            ->assertRedirect('/master-data');
 
         $updated = query('component_types')->select()->whereField('id', $created['id'])->first();
         $this->assertSame('Platform Capability Updated', $updated['name']);
         $this->assertSame('Updated description.', $updated['description']);
 
-        $this->http->post('/master-data/component-types/' . (int) $created['id'] . '/delete', [
-            Session::CSRF_TOKEN_KEY => get(Session::class)->token,
-        ])->assertRedirect('/master-data');
+        $this->http
+            ->post('/master-data/component-types/' . (int) $created['id'] . '/delete', [
+                Session::CSRF_TOKEN_KEY => get(Session::class)->token,
+            ])
+            ->assertRedirect('/master-data');
 
         $this->assertNull(query('component_types')->select()->whereField('id', $created['id'])->first());
     }
@@ -73,25 +79,29 @@ final class MasterDataManagementTest extends IntegrationTestCase
     {
         $this->authenticateAs($this->seedUser('admin-user', 'admin'));
 
-        $this->http->post('/master-data/data-objects', [
-            Session::CSRF_TOKEN_KEY => get(Session::class)->token,
-            'name' => 'Telemetry Data',
-            'description' => 'Operational telemetry.',
-            'contains_personal_data' => '1',
-            'contains_sensitive_data' => '1',
-        ])->assertRedirect('/master-data');
+        $this->http
+            ->post('/master-data/data-objects', [
+                Session::CSRF_TOKEN_KEY => get(Session::class)->token,
+                'name' => 'Telemetry Data',
+                'description' => 'Operational telemetry.',
+                'contains_personal_data' => '1',
+                'contains_sensitive_data' => '1',
+            ])
+            ->assertRedirect('/master-data');
 
         $dataObject = query('data_objects')->select()->whereField('name', 'Telemetry Data')->first();
         $this->assertNotNull($dataObject);
         $this->assertTrue((bool) $dataObject['contains_personal_data']);
         $this->assertTrue((bool) $dataObject['contains_sensitive_data']);
 
-        $this->http->post('/master-data/deployment-locations', [
-            Session::CSRF_TOKEN_KEY => get(Session::class)->token,
-            'name' => 'Edge Location',
-            'location_type' => 'Edge',
-            'description' => 'Near-user runtime location.',
-        ])->assertRedirect('/master-data');
+        $this->http
+            ->post('/master-data/deployment-locations', [
+                Session::CSRF_TOKEN_KEY => get(Session::class)->token,
+                'name' => 'Edge Location',
+                'location_type' => 'Edge',
+                'description' => 'Near-user runtime location.',
+            ])
+            ->assertRedirect('/master-data');
 
         $location = query('deployment_locations')->select()->whereField('name', 'Edge Location')->first();
         $this->assertNotNull($location);
@@ -102,10 +112,12 @@ final class MasterDataManagementTest extends IntegrationTestCase
     {
         $this->authenticateAs($this->seedUser('admin-user', 'admin'));
 
-        $this->http->post('/master-data/tags', [
-            Session::CSRF_TOKEN_KEY => 'invalid-token',
-            'name' => 'Invalid CSRF Tag',
-        ])->assertRedirect('/master-data/tags/create');
+        $this->http
+            ->post('/master-data/tags', [
+                Session::CSRF_TOKEN_KEY => 'invalid-token',
+                'name' => 'Invalid CSRF Tag',
+            ])
+            ->assertRedirect('/master-data/tags/create');
 
         $this->assertNull(query('tags')->select()->whereField('name', 'Invalid CSRF Tag')->first());
     }
@@ -157,4 +169,3 @@ final class MasterDataManagementTest extends IntegrationTestCase
         return $userId;
     }
 }
-

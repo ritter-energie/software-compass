@@ -20,7 +20,9 @@
                 <div class="page-header compact-header">
                     <h3><?= htmlspecialchars(\App\Shared\Support\Translator::translate($type->titleKey())) ?></h3>
                     <?php if ($canManage): ?>
-                        <a class="button-secondary" href="/master-data/<?= htmlspecialchars($type->value) ?>/create">+ <?= htmlspecialchars(\App\Shared\Support\Translator::translate('master_data.create_entry')) ?></a>
+                        <a class="button-secondary" href="/master-data/<?= htmlspecialchars($type->value) ?>/create">+ <?= htmlspecialchars(\App\Shared\Support\Translator::translate(
+                            'master_data.create_entry',
+                        )) ?></a>
                     <?php endif; ?>
                 </div>
                 <?php if ($entries === []): ?>
@@ -43,15 +45,24 @@
                                 <td>
                                     <?php $details = []; ?>
                                     <?php foreach ($type->fields() as $field): ?>
-                                        <?php if ($field === \App\Domain\ReferenceData\ReferenceDataField::NAME) { continue; } ?>
-                                        <?php $details[] = \App\Shared\Support\Translator::translate($field->labelKey()) . ': ' . \App\Shared\Support\ReferenceDataValueFormatter::format($entry->value($field)); ?>
+                                        <?php if ($field === \App\Domain\ReferenceData\ReferenceDataField::NAME) {
+                                            continue;
+                                        } ?>
+                                        <?php $details[] =
+                                            \App\Shared\Support\Translator::translate($field->labelKey())
+                                            . ': '
+                                            . \App\Shared\Support\ReferenceDataValueFormatter::format($entry->value($field)); ?>
                                     <?php endforeach; ?>
                                     <?= htmlspecialchars($details === [] ? '—' : implode(', ', $details)) ?>
                                 </td>
                                 <?php if ($canManage): ?>
                                     <td>
-                                        <a class="button-secondary" href="/master-data/<?= htmlspecialchars($type->value) ?>/<?= (int) $entry->id ?>/edit"><?= htmlspecialchars(\App\Shared\Support\Translator::translate('common.edit')) ?></a>
-                                        <form method="POST" action="/master-data/<?= htmlspecialchars($type->value) ?>/<?= (int) $entry->id ?>/delete" data-confirm="<?= htmlspecialchars(\App\Shared\Support\Translator::translate('master_data.confirm_delete')) ?>">
+                                        <a class="button-secondary" href="/master-data/<?= htmlspecialchars($type->value) ?>/<?= (int) $entry->id ?>/edit"><?= htmlspecialchars(\App\Shared\Support\Translator::translate(
+                                            'common.edit',
+                                        )) ?></a>
+                                        <form method="POST" action="/master-data/<?= htmlspecialchars($type->value) ?>/<?= (int) $entry->id ?>/delete" data-confirm="<?= htmlspecialchars(\App\Shared\Support\Translator::translate(
+                                            'master_data.confirm_delete',
+                                        )) ?>">
                                             <?= \App\Shared\Support\Csrf::input() ?>
                                             <button class="button-danger" type="submit"><?= htmlspecialchars(\App\Shared\Support\Translator::translate('common.delete')) ?></button>
                                         </form>

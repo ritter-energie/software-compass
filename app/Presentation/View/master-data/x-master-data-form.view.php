@@ -17,7 +17,9 @@
         <?php elseif ($field->type() === \App\Domain\ReferenceData\ReferenceDataFieldType::TEXTAREA): ?>
             <div class="form-field form-field-wide">
                 <label for="<?= htmlspecialchars($field->value) ?>"><?= htmlspecialchars(\App\Shared\Support\Translator::translate($field->labelKey())) ?></label>
-                <textarea id="<?= htmlspecialchars($field->value) ?>" name="<?= htmlspecialchars($field->value) ?>" rows="3" <?= $field->isRequired() ? 'required' : '' ?>><?= htmlspecialchars((string) ($value ?? '')) ?></textarea>
+                <textarea id="<?= htmlspecialchars($field->value) ?>" name="<?= htmlspecialchars($field->value) ?>" rows="3" <?= $field->isRequired() ? 'required' : '' ?>><?= htmlspecialchars((string) (
+                    $value ?? ''
+                )) ?></textarea>
             </div>
         <?php else: ?>
             <div class="form-field">
@@ -33,5 +35,3 @@
         <?php endif; ?>
     <?php endforeach; ?>
 </div>
-
-

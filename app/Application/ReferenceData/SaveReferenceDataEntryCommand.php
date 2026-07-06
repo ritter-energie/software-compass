@@ -18,4 +18,3 @@ final readonly class SaveReferenceDataEntryCommand
         public bool $containsSensitiveData = false,
     ) {}
 }
-

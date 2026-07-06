@@ -11,4 +11,3 @@ enum ReferenceDataFieldType: string
     case NUMBER = 'number';
     case BOOLEAN = 'boolean';
 }
-

@@ -19,4 +19,3 @@ final readonly class ReferenceDataValueFormatter
         return (string) $value;
     }
 }
-
