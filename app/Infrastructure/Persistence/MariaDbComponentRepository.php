@@ -87,6 +87,13 @@ final class MariaDbComponentRepository implements ComponentRepository
                     ->orWhere('technical_owner_id', $criteria->ownerId);
             });
         }
+        if ($criteria->ownerTeamId !== null) {
+            $builder->whereGroup(function ($group) use ($criteria): void {
+                $group
+                    ->where('business_owner_team_id', $criteria->ownerTeamId)
+                    ->orWhere('technical_owner_team_id', $criteria->ownerTeamId);
+            });
+        }
 
         $rows = $builder->orderBy('name')->all();
 
@@ -161,7 +168,9 @@ final class MariaDbComponentRepository implements ComponentRepository
             statusId: (int) $row['status_id'],
             criticalityId: $row['criticality_id'] !== null ? (int) $row['criticality_id'] : null,
             businessOwnerId: $row['business_owner_id'] !== null ? (int) $row['business_owner_id'] : null,
+            businessOwnerTeamId: $row['business_owner_team_id'] !== null ? (int) $row['business_owner_team_id'] : null,
             technicalOwnerId: $row['technical_owner_id'] !== null ? (int) $row['technical_owner_id'] : null,
+            technicalOwnerTeamId: $row['technical_owner_team_id'] !== null ? (int) $row['technical_owner_team_id'] : null,
             deploymentLocationId: $row['deployment_location_id'] !== null ? (int) $row['deployment_location_id'] : null,
             environmentId: $row['environment_id'] !== null ? (int) $row['environment_id'] : null,
             projectName: $row['project_name'],
@@ -286,7 +295,9 @@ final class MariaDbComponentRepository implements ComponentRepository
             'status_id' => $component->statusId(),
             'criticality_id' => $component->criticalityId(),
             'business_owner_id' => $component->businessOwnerId(),
+            'business_owner_team_id' => $component->businessOwnerTeamId(),
             'technical_owner_id' => $component->technicalOwnerId(),
+            'technical_owner_team_id' => $component->technicalOwnerTeamId(),
             'deployment_location_id' => $component->deploymentLocationId(),
             'environment_id' => $component->environmentId(),
             'project_name' => $component->projectName(),

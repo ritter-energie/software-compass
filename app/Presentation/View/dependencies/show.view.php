@@ -42,6 +42,7 @@
                     <dt><?= htmlspecialchars(\App\Shared\Support\Translator::translate('table.status_id')) ?></dt><dd><?= $dependency->statusId() ?></dd>
                     <dt><?= htmlspecialchars(\App\Shared\Support\Translator::translate('dependencies.criticality_id')) ?></dt><dd><?= $dependency->criticalityId() ?? '—' ?></dd>
                     <dt><?= htmlspecialchars(\App\Shared\Support\Translator::translate('table.owner')) ?></dt><dd><?= htmlspecialchars($detail->ownerName) ?></dd>
+                    <dt><?= htmlspecialchars(\App\Shared\Support\Translator::translate('form.owner_team')) ?></dt><dd><?= htmlspecialchars($detail->ownerTeamName) ?></dd>
                 </dl>
             </div>
         </section>

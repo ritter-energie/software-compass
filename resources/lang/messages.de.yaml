@@ -94,9 +94,9 @@ dashboard:
     active_components: Aktive Komponenten
     dependencies_total: Abhängigkeiten gesamt
     critical_dependencies: Kritische Abhängigkeiten
-    components_without_business_owner: Komponenten ohne Business Owner
-    components_without_technical_owner: Komponenten ohne Technical Owner
-    dependencies_without_owner: Abhängigkeiten ohne Owner
+    components_without_business_owner: Komponenten ohne Business Owner oder Team
+    components_without_technical_owner: Komponenten ohne Technical Owner oder Team
+    dependencies_without_owner: Abhängigkeiten ohne Owner-Person oder Team
     dependencies_without_documentation: Abhängigkeiten ohne Dokumentation
     open_reviews: Offene Reviews
     replacement_planned_components: Komponenten mit geplanter Ablösung
@@ -115,6 +115,7 @@ table:
   criticality: Kritikalität
   external: Extern
   owner: Owner
+  owner_team: Owner-Team
   source: Quelle
   target: Ziel
   frequency: Frequenz
@@ -161,6 +162,7 @@ filter:
   all_criticalities: Alle Kritikalitäten
   all_environments: Alle Umgebungen
   all_owners: Alle Owner
+  all_owner_teams: Alle Owner-Teams
   all_sources: Alle Quellen
   all_targets: Alle Ziele
   all_protocols: Alle Protokolle
@@ -252,7 +254,7 @@ dependencies:
   not_found: Abhängigkeit nicht gefunden
   back_to_list: Zurück zu Abhängigkeiten
   overview_diagram: Übersichtsdiagramm
-  incomplete_warning: Diese Abhängigkeit ist unvollständig. Ergänze Owner und Datenbeschreibung, um die Qualität der Schnittstellendokumentation zu verbessern.
+  incomplete_warning: Diese Abhängigkeit ist unvollständig. Ergänze Owner-Person oder Owner-Team und Datenbeschreibung, um die Qualität der Schnittstellendokumentation zu verbessern.
   source_and_target: Quelle und Ziel
   classification: Klassifizierung
   type_id: Typ-ID
@@ -275,6 +277,7 @@ master_data:
   communication_protocols: Kommunikationsprotokolle
   data_objects: Datenobjekte
   tags: Tags
+  teams: Teams
   create_entry: Eintrag erstellen
   edit_entry: Eintrag bearbeiten
   details: Details
@@ -293,7 +296,9 @@ form:
   status_required: Status *
   criticality: Kritikalität
   business_owner: Business Owner
+  business_owner_team: Business-Owner-Team
   technical_owner: Technical Owner
+  technical_owner_team: Technical-Owner-Team
   deployment_location: Deployment-Standort
   environment: Umgebung
   project_name: Projektname
@@ -313,6 +318,7 @@ form:
   target_component_required: Zielkomponente *
   protocol: Protokoll
   owner: Owner
+  owner_team: Owner-Team
   frequency: Frequenz
   direction: Richtung
   direction_source_to_target: Quelle zu Ziel
@@ -323,7 +329,7 @@ form:
   technical_notes: Technische Notizen
   sort_order: Sortierung
   sort_order_required: Sortierung *
-  governance_owner_hint: Für die Governance-Freigabe empfohlen.
+  governance_owner_hint: Für die Governance-Freigabe empfohlen. Eine verantwortliche Person oder ein Team erfüllt die Owner-Prüfung.
   interface_data_hint: Für aktive oder kritische Schnittstellen empfohlen.
 flash:
   error:

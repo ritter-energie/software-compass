@@ -3,6 +3,7 @@
  * @var \App\Domain\Journey\Journey|null $journey
  * @var array<int, array<string, mixed>> $statuses
  * @var \App\Domain\Person\Person[] $people
+ * @var array<int, array<string, mixed>> $teams
  */
 ?>
 <div class="form-grid">
@@ -25,6 +26,15 @@
             <option value=""><?= htmlspecialchars(\App\Shared\Support\Translator::translate('common.none_option')) ?></option>
             <?php foreach ($people as $person): ?>
                 <option value="<?= $person->id() ?>" <?= $journey?->ownerId() === $person->id() ? 'selected' : '' ?>><?= htmlspecialchars($person->name()) ?></option>
+            <?php endforeach; ?>
+        </select>
+    </div>
+    <div class="form-field">
+        <label for="owner_team_id"><?= htmlspecialchars(\App\Shared\Support\Translator::translate('form.owner_team')) ?></label>
+        <select id="owner_team_id" name="owner_team_id">
+            <option value=""><?= htmlspecialchars(\App\Shared\Support\Translator::translate('common.none_option')) ?></option>
+            <?php foreach ($teams as $team): ?>
+                <option value="<?= $team['id'] ?>" <?= $journey?->ownerTeamId() === (int) $team['id'] ? 'selected' : '' ?>><?= htmlspecialchars($team['name']) ?></option>
             <?php endforeach; ?>
         </select>
     </div>

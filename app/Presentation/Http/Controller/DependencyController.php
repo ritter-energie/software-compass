@@ -52,6 +52,7 @@ final readonly class DependencyController
             statusId: $this->intOrNull($request->get('status_id')),
             criticalityId: $this->intOrNull($request->get('criticality_id')),
             ownerId: $this->intOrNull($request->get('owner_id')),
+            ownerTeamId: $this->intOrNull($request->get('owner_team_id')),
             dataObjectId: $this->intOrNull($request->get('data_object_id')),
         );
 
@@ -67,6 +68,7 @@ final readonly class DependencyController
             statuses: $this->lookups->componentStatuses(),
             criticalityLevels: $this->lookups->criticalityLevels(),
             people: $this->people->allActive(),
+            teams: $this->lookups->teams(),
             dataObjects: $this->lookups->dataObjects(),
         ));
     }
@@ -103,6 +105,7 @@ final readonly class DependencyController
                 statusId: (int) $request->get('status_id'),
                 criticalityId: $this->intOrNull($request->get('criticality_id')),
                 ownerId: $this->intOrNull($request->get('owner_id')),
+                ownerTeamId: $this->intOrNull($request->get('owner_team_id')),
                 name: $name,
                 description: $this->stringOrNull($request->get('description')),
                 dataDescription: $this->stringOrNull($request->get('data_description')),
@@ -138,6 +141,7 @@ final readonly class DependencyController
                 sourceComponentName: $this->componentName($components, $dependency->sourceComponentId()),
                 targetComponentName: $this->componentName($components, $dependency->targetComponentId()),
                 ownerName: $this->personName($this->people->all(), $dependency->ownerId()),
+                ownerTeamName: $this->lookupName($this->lookups->teams(), $dependency->ownerTeamId()),
             ),
         ));
     }
@@ -180,6 +184,7 @@ final readonly class DependencyController
                 statusId: (int) $request->get('status_id'),
                 criticalityId: $this->intOrNull($request->get('criticality_id')),
                 ownerId: $this->intOrNull($request->get('owner_id')),
+                ownerTeamId: $this->intOrNull($request->get('owner_team_id')),
                 name: $name,
                 description: $this->stringOrNull($request->get('description')),
                 dataDescription: $this->stringOrNull($request->get('data_description')),
@@ -220,6 +225,7 @@ final readonly class DependencyController
             statuses: $this->lookups->componentStatuses(),
             criticalityLevels: $this->lookups->criticalityLevels(),
             people: $this->people->allActive(),
+            teams: $this->lookups->teams(),
         );
     }
 
@@ -277,6 +283,22 @@ final readonly class DependencyController
         foreach ($people as $person) {
             if ($person->id() === $id) {
                 return $person->name();
+            }
+        }
+
+        return '—';
+    }
+
+    /** @param array<int, array<string, mixed>> $rows */
+    private function lookupName(array $rows, ?int $id): string
+    {
+        if ($id === null) {
+            return '—';
+        }
+
+        foreach ($rows as $row) {
+            if ((int) $row['id'] === $id) {
+                return (string) $row['name'];
             }
         }
 

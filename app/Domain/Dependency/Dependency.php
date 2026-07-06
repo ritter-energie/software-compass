@@ -26,6 +26,7 @@ final class Dependency
         private int $statusId,
         private ?int $criticalityId,
         private ?int $ownerId,
+        private ?int $ownerTeamId,
         private string $name,
         private ?string $description,
         private ?string $dataDescription,
@@ -83,6 +84,11 @@ final class Dependency
     public function ownerId(): ?int
     {
         return $this->ownerId;
+    }
+
+    public function ownerTeamId(): ?int
+    {
+        return $this->ownerTeamId;
     }
 
     public function name(): string
@@ -147,6 +153,6 @@ final class Dependency
      */
     public function isIncomplete(): bool
     {
-        return $this->ownerId === null || $this->dataDescription === null || trim((string) $this->dataDescription) === '';
+        return $this->ownerId === null && $this->ownerTeamId === null || $this->dataDescription === null || trim((string) $this->dataDescription) === '';
     }
 }

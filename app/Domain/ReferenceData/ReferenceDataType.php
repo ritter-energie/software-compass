@@ -17,6 +17,7 @@ enum ReferenceDataType: string
     case COMMUNICATION_PROTOCOL = 'communication-protocols';
     case DATA_OBJECT = 'data-objects';
     case TAG = 'tags';
+    case TEAM = 'teams';
 
     public static function fromRoute(string $value): self
     {
@@ -35,6 +36,7 @@ enum ReferenceDataType: string
             self::COMMUNICATION_PROTOCOL => 'communication_protocols',
             self::DATA_OBJECT => 'data_objects',
             self::TAG => 'tags',
+            self::TEAM => 'teams',
         };
     }
 
@@ -50,6 +52,7 @@ enum ReferenceDataType: string
             self::COMMUNICATION_PROTOCOL => 'master_data.communication_protocols',
             self::DATA_OBJECT => 'master_data.data_objects',
             self::TAG => 'master_data.tags',
+            self::TEAM => 'master_data.teams',
         };
     }
 
@@ -76,6 +79,7 @@ enum ReferenceDataType: string
                 ReferenceDataField::CONTAINS_SENSITIVE_DATA,
             ],
             self::TAG => [ReferenceDataField::NAME],
+            self::TEAM => [ReferenceDataField::NAME, ReferenceDataField::DESCRIPTION],
             default => [ReferenceDataField::NAME, ReferenceDataField::DESCRIPTION],
         };
     }

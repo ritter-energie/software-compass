@@ -15,6 +15,7 @@ final readonly class DependencySearchCriteria
         public ?int $statusId = null,
         public ?int $criticalityId = null,
         public ?int $ownerId = null,
+        public ?int $ownerTeamId = null,
         public ?int $dataObjectId = null,
     ) {}
 }

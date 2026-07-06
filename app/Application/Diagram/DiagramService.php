@@ -34,6 +34,7 @@ final readonly class DiagramService
             statusId: $filter->statusId,
             criticalityId: $filter->criticalityId,
             ownerId: $filter->ownerId,
+            ownerTeamId: $filter->ownerTeamId,
         ));
 
         if ($filter->componentId !== null) {

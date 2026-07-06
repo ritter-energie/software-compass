@@ -13,5 +13,6 @@ final readonly class DependencyDetailViewModel
         public string $sourceComponentName,
         public string $targetComponentName,
         public string $ownerName,
+        public string $ownerTeamName,
     ) {}
 }

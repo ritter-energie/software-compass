@@ -3,7 +3,9 @@
  * @var \App\Domain\Component\Component|null $component
  * @var \App\Application\Component\ComponentDetailViewModel|null $detail
  * @var string $businessOwnerName
+ * @var string $businessOwnerTeamName
  * @var string $technicalOwnerName
+ * @var string $technicalOwnerTeamName
  */
 ?>
 <x-layout>
@@ -51,7 +53,9 @@
                 <h3><?= htmlspecialchars(\App\Shared\Support\Translator::translate('components.responsibilities')) ?></h3>
                 <dl>
                     <dt><?= htmlspecialchars(\App\Shared\Support\Translator::translate('form.business_owner')) ?></dt><dd><?= htmlspecialchars($businessOwnerName) ?></dd>
+                    <dt><?= htmlspecialchars(\App\Shared\Support\Translator::translate('form.business_owner_team')) ?></dt><dd><?= htmlspecialchars($businessOwnerTeamName) ?></dd>
                     <dt><?= htmlspecialchars(\App\Shared\Support\Translator::translate('form.technical_owner')) ?></dt><dd><?= htmlspecialchars($technicalOwnerName) ?></dd>
+                    <dt><?= htmlspecialchars(\App\Shared\Support\Translator::translate('form.technical_owner_team')) ?></dt><dd><?= htmlspecialchars($technicalOwnerTeamName) ?></dd>
                 </dl>
             </div>
         </section>

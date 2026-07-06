@@ -13,6 +13,7 @@ final readonly class ComponentDiagramFilter
         public ?int $criticalityId = null,
         public ?int $componentTypeId = null,
         public ?int $ownerId = null,
+        public ?int $ownerTeamId = null,
         public int $maxNodes = 80,
     ) {}
 }

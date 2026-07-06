@@ -26,7 +26,9 @@ final class Component
         private int $statusId,
         private ?int $criticalityId,
         private ?int $businessOwnerId,
+        private ?int $businessOwnerTeamId,
         private ?int $technicalOwnerId,
+        private ?int $technicalOwnerTeamId,
         private ?int $deploymentLocationId,
         private ?int $environmentId,
         private ?string $projectName,
@@ -88,9 +90,19 @@ final class Component
         return $this->businessOwnerId;
     }
 
+    public function businessOwnerTeamId(): ?int
+    {
+        return $this->businessOwnerTeamId;
+    }
+
     public function technicalOwnerId(): ?int
     {
         return $this->technicalOwnerId;
+    }
+
+    public function technicalOwnerTeamId(): ?int
+    {
+        return $this->technicalOwnerTeamId;
     }
 
     public function deploymentLocationId(): ?int
@@ -181,9 +193,19 @@ final class Component
         $this->businessOwnerId = $personId;
     }
 
+    public function assignBusinessOwnerTeam(?int $teamId): void
+    {
+        $this->businessOwnerTeamId = $teamId;
+    }
+
     public function assignTechnicalOwner(?int $personId): void
     {
         $this->technicalOwnerId = $personId;
+    }
+
+    public function assignTechnicalOwnerTeam(?int $teamId): void
+    {
+        $this->technicalOwnerTeamId = $teamId;
     }
 
     public function markExternal(bool $isExternal): void
@@ -199,7 +221,9 @@ final class Component
     {
         return (
             $this->businessOwnerId === null
+            && $this->businessOwnerTeamId === null
             || $this->technicalOwnerId === null
+            && $this->technicalOwnerTeamId === null
             || $this->purpose === null
             || trim((string) $this->purpose) === ''
             || $this->deploymentLocationId === null
@@ -214,11 +238,11 @@ final class Component
     {
         $reasons = [];
 
-        if ($this->businessOwnerId === null) {
+        if ($this->businessOwnerId === null && $this->businessOwnerTeamId === null) {
             $reasons[] = 'No business owner assigned';
         }
 
-        if ($this->technicalOwnerId === null) {
+        if ($this->technicalOwnerId === null && $this->technicalOwnerTeamId === null) {
             $reasons[] = 'No technical owner assigned';
         }
 

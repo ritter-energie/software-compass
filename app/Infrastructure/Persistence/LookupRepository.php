@@ -72,6 +72,12 @@ final class LookupRepository
     }
 
     /** @return array<int, array<string, mixed>> */
+    public function teams(): array
+    {
+        return $this->all('teams');
+    }
+
+    /** @return array<int, array<string, mixed>> */
     public function allFrom(string $table, string $orderBy = 'name'): array
     {
         return $this->all($table, $orderBy);

@@ -54,12 +54,20 @@ final class DependencyTest extends TestCase
         $this->assertFalse($dependency->isIncomplete());
     }
 
+    public function test_it_is_complete_with_owner_team_and_data_description(): void
+    {
+        $dependency = $this->makeDependency(ownerId: null, ownerTeamId: 7, dataDescription: 'Order Data');
+
+        $this->assertFalse($dependency->isIncomplete());
+    }
+
     private function makeDependency(
         int $sourceComponentId = 1,
         int $targetComponentId = 2,
         string $name = 'Orders',
         ?string $dataDescription = 'Order Data',
         ?int $ownerId = 1,
+        ?int $ownerTeamId = null,
     ): Dependency {
         return new Dependency(
             id: null,
@@ -70,6 +78,7 @@ final class DependencyTest extends TestCase
             statusId: 1,
             criticalityId: null,
             ownerId: $ownerId,
+            ownerTeamId: $ownerTeamId,
             name: $name,
             description: null,
             dataDescription: $dataDescription,
