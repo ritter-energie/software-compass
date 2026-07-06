@@ -53,6 +53,7 @@ final readonly class DiagramController
             criticalityId: $this->intOrNull($request->get('criticality_id')),
             componentTypeId: $this->intOrNull($request->get('component_type_id')),
             ownerId: $this->intOrNull($request->get('owner_id')),
+            ownerTeamId: $this->intOrNull($request->get('owner_team_id')),
             maxNodes: (int) ($request->get('max_nodes') ?? 80),
         );
     }

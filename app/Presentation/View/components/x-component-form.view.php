@@ -9,11 +9,13 @@
  * @var array<int, array<string, mixed>> $environments
  * @var array<int, array<string, mixed>> $deploymentLocations
  * @var \App\Domain\Person\Person[] $people
+ * @var array<int, array<string, mixed>> $teams
  * @var \App\Domain\Component\Component[] $availableComponents
  */
 $selectedParentIds = array_flip($component?->parentComponentIds() ?? []);
 $selectedChildIds = array_flip($component?->childComponentIds() ?? []);
 $personOptions = array_map(static fn (\App\Domain\Person\Person $person): array => ['id' => $person->id(), 'name' => $person->name()], $people);
+$teamOptions = array_map(static fn (array $team): array => ['id' => (int) $team['id'], 'name' => (string) $team['name']], $teams);
 ?>
 <div class="form-grid">
     <div class="form-field">
@@ -68,6 +70,15 @@ $personOptions = array_map(static fn (\App\Domain\Person\Person $person): array 
     </div>
 
     <div class="form-field">
+        <label for="business_owner_team_id"><?= htmlspecialchars(\App\Shared\Support\Translator::translate('form.business_owner_team')) ?></label>
+        <select id="business_owner_team_id" name="business_owner_team_id">
+            <option value=""><?= htmlspecialchars(\App\Shared\Support\Translator::translate('common.none_option')) ?></option>
+            <?php foreach ($teamOptions as $team): ?>
+                <option value="<?= $team['id'] ?>" <?= $component?->businessOwnerTeamId() === $team['id'] ? 'selected' : '' ?>><?= htmlspecialchars($team['name']) ?></option>
+            <?php endforeach; ?>
+        </select>
+    </div>
+    <div class="form-field">
         <label for="technical_owner_id"><?= htmlspecialchars(\App\Shared\Support\Translator::translate('form.technical_owner')) ?></label>
         <select id="technical_owner_id" name="technical_owner_id">
             <option value=""><?= htmlspecialchars(\App\Shared\Support\Translator::translate('common.none_option')) ?></option>
@@ -77,6 +88,15 @@ $personOptions = array_map(static fn (\App\Domain\Person\Person $person): array 
         </select>
     </div>
 
+    <div class="form-field">
+        <label for="technical_owner_team_id"><?= htmlspecialchars(\App\Shared\Support\Translator::translate('form.technical_owner_team')) ?></label>
+        <select id="technical_owner_team_id" name="technical_owner_team_id">
+            <option value=""><?= htmlspecialchars(\App\Shared\Support\Translator::translate('common.none_option')) ?></option>
+            <?php foreach ($teamOptions as $team): ?>
+                <option value="<?= $team['id'] ?>" <?= $component?->technicalOwnerTeamId() === $team['id'] ? 'selected' : '' ?>><?= htmlspecialchars($team['name']) ?></option>
+            <?php endforeach; ?>
+        </select>
+    </div>
     <div class="form-field">
         <label for="deployment_location_id"><?= htmlspecialchars(\App\Shared\Support\Translator::translate('form.deployment_location')) ?></label>
         <select id="deployment_location_id" name="deployment_location_id">

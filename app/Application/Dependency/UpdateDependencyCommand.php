@@ -14,6 +14,7 @@ final readonly class UpdateDependencyCommand
         public int $statusId,
         public ?int $criticalityId,
         public ?int $ownerId,
+        public ?int $ownerTeamId,
         public string $name,
         public ?string $description,
         public ?string $dataDescription,

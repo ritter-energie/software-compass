@@ -7,6 +7,7 @@
  * @var array<int, array<string, mixed>> $criticalityLevels
  * @var array<int, array<string, mixed>> $environments
  * @var \App\Domain\Person\Person[] $people
+ * @var array<int, array<string, mixed>> $teams
  */
 ?>
 <x-layout>
@@ -58,6 +59,12 @@
             <?php endforeach; ?>
         </select>
 
+        <select name="owner_team_id">
+            <option value=""><?= htmlspecialchars(\App\Shared\Support\Translator::translate('filter.all_owner_teams')) ?></option>
+            <?php foreach ($teams as $team): ?>
+                <option value="<?= $team['id'] ?>" <?= $criteria->ownerTeamId === (int) $team['id'] ? 'selected' : '' ?>><?= htmlspecialchars($team['name']) ?></option>
+            <?php endforeach; ?>
+        </select>
         <label class="checkbox-inline">
             <input type="checkbox" name="is_external" value="1" <?= $criteria->isExternal === true ? 'checked' : '' ?>> <?= htmlspecialchars(\App\Shared\Support\Translator::translate(
                 'filter.external_only',

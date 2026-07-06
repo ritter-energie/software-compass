@@ -19,6 +19,7 @@ final class Journey
         private string $slug,
         private ?string $description,
         private ?int $ownerId,
+        private ?int $ownerTeamId,
         private int $statusId,
         private int $sortOrder,
     ) {
@@ -50,6 +51,11 @@ final class Journey
     public function ownerId(): ?int
     {
         return $this->ownerId;
+    }
+
+    public function ownerTeamId(): ?int
+    {
+        return $this->ownerTeamId;
     }
 
     public function statusId(): int

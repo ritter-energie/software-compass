@@ -7,6 +7,7 @@
  * @var array<int, array<string, mixed>> $statuses
  * @var array<int, array<string, mixed>> $criticalityLevels
  * @var \App\Domain\Person\Person[] $people
+ * @var array<int, array<string, mixed>> $teams
  */
 ?>
 <div class="form-grid">
@@ -85,6 +86,15 @@
         </select>
     </div>
 
+    <div class="form-field">
+        <label for="owner_team_id"><?= htmlspecialchars(\App\Shared\Support\Translator::translate('form.owner_team')) ?></label>
+        <select id="owner_team_id" name="owner_team_id">
+            <option value=""><?= htmlspecialchars(\App\Shared\Support\Translator::translate('common.none_option')) ?></option>
+            <?php foreach ($teams as $team): ?>
+                <option value="<?= $team['id'] ?>" <?= $dependency?->ownerTeamId() === (int) $team['id'] ? 'selected' : '' ?>><?= htmlspecialchars($team['name']) ?></option>
+            <?php endforeach; ?>
+        </select>
+    </div>
     <div class="form-field">
         <label for="frequency"><?= htmlspecialchars(\App\Shared\Support\Translator::translate('form.frequency')) ?></label>
         <input type="text" id="frequency" name="frequency" value="<?= htmlspecialchars($dependency?->frequency() ?? '') ?>">

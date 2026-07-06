@@ -71,6 +71,7 @@ final readonly class JourneyController
             name: $name,
             description: $this->stringOrNull($request->get('description')),
             ownerId: $this->intOrNull($request->get('owner_id')),
+            ownerTeamId: $this->intOrNull($request->get('owner_team_id')),
             statusId: (int) $request->get('status_id'),
             sortOrder: (int) ($request->get('sort_order') ?? 0),
         ));
@@ -101,6 +102,7 @@ final readonly class JourneyController
             steps: $steps,
             assignments: $assignments,
             ownerName: $this->personName($this->people->all(), $journey->ownerId()),
+            ownerTeamName: $this->lookupName($this->lookups->teams(), $journey->ownerTeamId()),
             components: $components,
             roles: JourneyStepComponent::validRoles(),
             mermaid: $this->diagrams->journeyDiagram($id),
@@ -134,6 +136,7 @@ final readonly class JourneyController
             name: $name,
             description: $this->stringOrNull($request->get('description')),
             ownerId: $this->intOrNull($request->get('owner_id')),
+            ownerTeamId: $this->intOrNull($request->get('owner_team_id')),
             statusId: (int) $request->get('status_id'),
             sortOrder: (int) ($request->get('sort_order') ?? 0),
         ));
@@ -154,7 +157,7 @@ final readonly class JourneyController
 
     private function formView(string $view, mixed $journey = null): mixed
     {
-        return view($view, journey: $journey, statuses: $this->lookups->componentStatuses(), people: $this->people->allActive());
+        return view($view, journey: $journey, statuses: $this->lookups->componentStatuses(), people: $this->people->allActive(), teams: $this->lookups->teams());
     }
 
     /**
@@ -169,6 +172,7 @@ final readonly class JourneyController
                 id: (int) $journey->id(),
                 name: $journey->name(),
                 ownerName: $this->personName($people, $journey->ownerId()),
+                ownerTeamName: $this->lookupName($this->lookups->teams(), $journey->ownerTeamId()),
                 statusId: $journey->statusId(),
                 sortOrder: $journey->sortOrder(),
             ),
@@ -214,6 +218,22 @@ final readonly class JourneyController
         foreach ($people as $person) {
             if ($person->id() === $id) {
                 return $person->name();
+            }
+        }
+
+        return '—';
+    }
+
+    /** @param array<int, array<string, mixed>> $rows */
+    private function lookupName(array $rows, ?int $id): string
+    {
+        if ($id === null) {
+            return '—';
+        }
+
+        foreach ($rows as $row) {
+            if ((int) $row['id'] === $id) {
+                return (string) $row['name'];
             }
         }
 

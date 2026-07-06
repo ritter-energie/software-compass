@@ -10,16 +10,18 @@
     <table class="data-table">
         <thead><tr><th><?= htmlspecialchars(\App\Shared\Support\Translator::translate('table.name')) ?></th><th><?= htmlspecialchars(\App\Shared\Support\Translator::translate(
             'table.owner',
-        )) ?></th><th><?= htmlspecialchars(\App\Shared\Support\Translator::translate('table.status_id')) ?></th><th><?= htmlspecialchars(\App\Shared\Support\Translator::translate(
+        )) ?></th><th><?= htmlspecialchars(\App\Shared\Support\Translator::translate('table.owner_team')) ?></th><th><?= htmlspecialchars(\App\Shared\Support\Translator::translate(
+            'table.status_id',
+        )) ?></th><th><?= htmlspecialchars(\App\Shared\Support\Translator::translate(
             'table.sort',
         )) ?></th><th><?= htmlspecialchars(\App\Shared\Support\Translator::translate('table.actions')) ?></th></tr></thead>
         <tbody>
         <?php foreach ($journeys as $journey): ?>
-            <tr><td><a href="/journeys/<?= $journey->id ?>"><?= htmlspecialchars($journey->name) ?></a></td><td><?= htmlspecialchars($journey->ownerName) ?></td><td><?= $journey->statusId ?></td><td><?= $journey->sortOrder ?></td><td class="actions"><a href="/journeys/<?= $journey->id ?>"><?= htmlspecialchars(\App\Shared\Support\Translator::translate(
+            <tr><td><a href="/journeys/<?= $journey->id ?>"><?= htmlspecialchars($journey->name) ?></a></td><td><?= htmlspecialchars($journey->ownerName) ?></td><td><?= htmlspecialchars($journey->ownerTeamName) ?></td><td><?= $journey->statusId ?></td><td><?= $journey->sortOrder ?></td><td class="actions"><a href="/journeys/<?= $journey->id ?>"><?= htmlspecialchars(\App\Shared\Support\Translator::translate(
                 'common.view',
             )) ?></a><a href="/journeys/<?= $journey->id ?>/edit"><?= htmlspecialchars(\App\Shared\Support\Translator::translate('common.edit')) ?></a></td></tr>
         <?php endforeach; ?>
-        <?php if ($journeys === []): ?><tr><td colspan="5"><?= htmlspecialchars(\App\Shared\Support\Translator::translate('common.no_journeys_yet')) ?></td></tr><?php endif; ?>
+        <?php if ($journeys === []): ?><tr><td colspan="6"><?= htmlspecialchars(\App\Shared\Support\Translator::translate('common.no_journeys_yet')) ?></td></tr><?php endif; ?>
         </tbody>
     </table>
 </x-layout>

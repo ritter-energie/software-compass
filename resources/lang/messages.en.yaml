@@ -94,9 +94,9 @@ dashboard:
     active_components: Active components
     dependencies_total: Dependencies total
     critical_dependencies: Critical dependencies
-    components_without_business_owner: Components without business owner
-    components_without_technical_owner: Components without technical owner
-    dependencies_without_owner: Dependencies without owner
+    components_without_business_owner: Components without business owner or team
+    components_without_technical_owner: Components without technical owner or team
+    dependencies_without_owner: Dependencies without owner person or team
     dependencies_without_documentation: Dependencies without documentation
     open_reviews: Open reviews
     replacement_planned_components: Replacement planned components
@@ -115,6 +115,7 @@ table:
   criticality: Criticality
   external: External
   owner: Owner
+  owner_team: Owner team
   source: Source
   target: Target
   frequency: Frequency
@@ -161,6 +162,7 @@ filter:
   all_criticalities: All criticalities
   all_environments: All environments
   all_owners: All owners
+  all_owner_teams: All owner teams
   all_sources: All sources
   all_targets: All targets
   all_protocols: All protocols
@@ -252,7 +254,7 @@ dependencies:
   not_found: Dependency not found
   back_to_list: Back to dependencies
   overview_diagram: Overview diagram
-  incomplete_warning: This dependency is incomplete. Add an owner and data description to improve interface documentation quality.
+  incomplete_warning: This dependency is incomplete. Add an owner person or team and data description to improve interface documentation quality.
   source_and_target: Source and target
   classification: Classification
   type_id: Type ID
@@ -275,6 +277,7 @@ master_data:
   communication_protocols: Communication protocols
   data_objects: Data objects
   tags: Tags
+  teams: Teams
   create_entry: Create entry
   edit_entry: Edit entry
   details: Details
@@ -293,7 +296,9 @@ form:
   status_required: Status *
   criticality: Criticality
   business_owner: Business owner
+  business_owner_team: Business owner team
   technical_owner: Technical owner
+  technical_owner_team: Technical owner team
   deployment_location: Deployment location
   environment: Environment
   project_name: Project name
@@ -313,6 +318,7 @@ form:
   target_component_required: Target Component *
   protocol: Protocol
   owner: Owner
+  owner_team: Owner team
   frequency: Frequency
   direction: Direction
   direction_source_to_target: Source to target
@@ -323,7 +329,7 @@ form:
   technical_notes: Technical notes
   sort_order: Sort order
   sort_order_required: Sort order *
-  governance_owner_hint: Recommended for governance approval.
+  governance_owner_hint: Recommended for governance approval. A responsible person or team satisfies ownership checks.
   interface_data_hint: Recommended for active or critical interfaces.
 flash:
   error:

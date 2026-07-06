@@ -8,6 +8,7 @@
  * @var array<int, array<string, mixed>> $statuses
  * @var array<int, array<string, mixed>> $criticalityLevels
  * @var \App\Domain\Person\Person[] $people
+ * @var array<int, array<string, mixed>> $teams
  * @var array<int, array<string, mixed>> $dataObjects
  */
 ?>
@@ -50,6 +51,10 @@
         <select name="owner_id"><option value=""><?= htmlspecialchars(\App\Shared\Support\Translator::translate('filter.all_owners')) ?></option><?php foreach ($people as $person): ?><option value="<?= $person->id() ?>" <?= $criteria->ownerId === $person->id()
             ? 'selected'
             : '' ?>><?= htmlspecialchars($person->name()) ?></option><?php endforeach; ?></select>
+        <select name="owner_team_id"><option value=""><?= htmlspecialchars(\App\Shared\Support\Translator::translate('filter.all_owner_teams')) ?></option><?php foreach ($teams as $team): ?><option value="<?= $team['id'] ?>" <?= $criteria->ownerTeamId
+        === (int) $team['id']
+            ? 'selected'
+            : '' ?>><?= htmlspecialchars($team['name']) ?></option><?php endforeach; ?></select>
         <select name="data_object_id"><option value=""><?= htmlspecialchars(\App\Shared\Support\Translator::translate('filter.all_data_objects')) ?></option><?php foreach ($dataObjects as $object): ?><option value="<?= $object['id'] ?>" <?= $criteria->dataObjectId
         === (int) $object['id']
             ? 'selected'

@@ -53,6 +53,7 @@ final readonly class ComponentController
             statusId: $this->intOrNull($request->get('status_id')),
             criticalityId: $this->intOrNull($request->get('criticality_id')),
             ownerId: $this->intOrNull($request->get('owner_id')),
+            ownerTeamId: $this->intOrNull($request->get('owner_team_id')),
             environmentId: $this->intOrNull($request->get('environment_id')),
             isExternal: $this->boolOrNull($request->get('is_external')),
         );
@@ -66,6 +67,7 @@ final readonly class ComponentController
             criticalityLevels: $this->lookups->criticalityLevels(),
             environments: $this->lookups->environments(),
             people: $this->people->allActive(),
+            teams: $this->lookups->teams(),
         ));
     }
 
@@ -80,6 +82,7 @@ final readonly class ComponentController
             environments: $this->lookups->environments(),
             deploymentLocations: $this->lookups->deploymentLocations(),
             people: $this->people->allActive(),
+            teams: $this->lookups->teams(),
             availableComponents: $this->components->all(),
         ));
     }
@@ -111,7 +114,9 @@ final readonly class ComponentController
             statusId: (int) $request->get('status_id'),
             criticalityId: $this->intOrNull($request->get('criticality_id')),
             businessOwnerId: $this->intOrNull($request->get('business_owner_id')),
+            businessOwnerTeamId: $this->intOrNull($request->get('business_owner_team_id')),
             technicalOwnerId: $this->intOrNull($request->get('technical_owner_id')),
+            technicalOwnerTeamId: $this->intOrNull($request->get('technical_owner_team_id')),
             deploymentLocationId: $this->intOrNull($request->get('deployment_location_id')),
             environmentId: $this->intOrNull($request->get('environment_id')),
             projectName: $this->stringOrNull($request->get('project_name')),
@@ -147,7 +152,9 @@ final readonly class ComponentController
             component: $detail->component,
             detail: $detail,
             businessOwnerName: $this->personName($people, $detail->component->businessOwnerId()),
+            businessOwnerTeamName: $this->lookupName($this->lookups->teams(), $detail->component->businessOwnerTeamId()),
             technicalOwnerName: $this->personName($people, $detail->component->technicalOwnerId()),
+            technicalOwnerTeamName: $this->lookupName($this->lookups->teams(), $detail->component->technicalOwnerTeamId()),
         ));
     }
 
@@ -169,6 +176,7 @@ final readonly class ComponentController
             environments: $this->lookups->environments(),
             deploymentLocations: $this->lookups->deploymentLocations(),
             people: $this->people->allActive(),
+            teams: $this->lookups->teams(),
             availableComponents: $this->components->all(),
         ));
     }
@@ -201,7 +209,9 @@ final readonly class ComponentController
             statusId: (int) $request->get('status_id'),
             criticalityId: $this->intOrNull($request->get('criticality_id')),
             businessOwnerId: $this->intOrNull($request->get('business_owner_id')),
+            businessOwnerTeamId: $this->intOrNull($request->get('business_owner_team_id')),
             technicalOwnerId: $this->intOrNull($request->get('technical_owner_id')),
+            technicalOwnerTeamId: $this->intOrNull($request->get('technical_owner_team_id')),
             deploymentLocationId: $this->intOrNull($request->get('deployment_location_id')),
             environmentId: $this->intOrNull($request->get('environment_id')),
             projectName: $this->stringOrNull($request->get('project_name')),
@@ -278,6 +288,22 @@ final readonly class ComponentController
         foreach ($people as $person) {
             if ($person->id() === $id) {
                 return $person->name();
+            }
+        }
+
+        return '—';
+    }
+
+    /** @param array<int, array<string, mixed>> $rows */
+    private function lookupName(array $rows, ?int $id): string
+    {
+        if ($id === null) {
+            return '—';
+        }
+
+        foreach ($rows as $row) {
+            if ((int) $row['id'] === $id) {
+                return (string) $row['name'];
             }
         }
 

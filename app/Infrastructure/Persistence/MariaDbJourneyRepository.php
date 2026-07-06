@@ -177,6 +177,7 @@ final class MariaDbJourneyRepository implements JourneyRepository
             slug: $row['slug'],
             description: $row['description'],
             ownerId: $row['owner_id'] !== null ? (int) $row['owner_id'] : null,
+            ownerTeamId: $row['owner_team_id'] !== null ? (int) $row['owner_team_id'] : null,
             statusId: (int) $row['status_id'],
             sortOrder: (int) $row['sort_order'],
         );
@@ -191,6 +192,7 @@ final class MariaDbJourneyRepository implements JourneyRepository
             'slug' => $journey->slug(),
             'description' => $journey->description(),
             'owner_id' => $journey->ownerId(),
+            'owner_team_id' => $journey->ownerTeamId(),
             'status_id' => $journey->statusId(),
             'sort_order' => $journey->sortOrder(),
             'updated_at' => $now,

@@ -9,6 +9,7 @@ final readonly class CreateJourneyCommand
         public string $name,
         public ?string $description,
         public ?int $ownerId,
+        public ?int $ownerTeamId,
         public int $statusId,
         public int $sortOrder = 0,
     ) {}

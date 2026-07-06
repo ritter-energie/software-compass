@@ -89,6 +89,7 @@ final class MariaDbDependencyRepository implements DependencyRepository
             'status_id' => $criteria->statusId,
             'criticality_id' => $criteria->criticalityId,
             'owner_id' => $criteria->ownerId,
+            'owner_team_id' => $criteria->ownerTeamId,
         ] as $field => $value) {
             if ($value !== null) {
                 $builder->whereField($field, $value);
@@ -148,6 +149,7 @@ final class MariaDbDependencyRepository implements DependencyRepository
             statusId: (int) $row['status_id'],
             criticalityId: $row['criticality_id'] !== null ? (int) $row['criticality_id'] : null,
             ownerId: $row['owner_id'] !== null ? (int) $row['owner_id'] : null,
+            ownerTeamId: $row['owner_team_id'] !== null ? (int) $row['owner_team_id'] : null,
             name: $row['name'],
             description: $row['description'],
             dataDescription: $row['data_description'],
@@ -173,6 +175,7 @@ final class MariaDbDependencyRepository implements DependencyRepository
             'status_id' => $dependency->statusId(),
             'criticality_id' => $dependency->criticalityId(),
             'owner_id' => $dependency->ownerId(),
+            'owner_team_id' => $dependency->ownerTeamId(),
             'name' => $dependency->name(),
             'description' => $dependency->description(),
             'data_description' => $dependency->dataDescription(),

@@ -22,6 +22,7 @@ final class ComponentTest extends TestCase
     {
         $component = $this->makeComponent(
             businessOwnerId: null,
+            businessOwnerTeamId: null,
             technicalOwnerId: null,
             purpose: null,
             deploymentLocationId: null,
@@ -40,6 +41,19 @@ final class ComponentTest extends TestCase
             purpose: 'Manages customers.',
             deploymentLocationId: 1,
             environmentId: 1,
+        );
+
+        $this->assertFalse($component->isIncomplete());
+        $this->assertSame([], $component->incompletenessReasons());
+    }
+
+    public function test_team_owners_satisfy_governance_ownership(): void
+    {
+        $component = $this->makeComponent(
+            businessOwnerId: null,
+            businessOwnerTeamId: 10,
+            technicalOwnerId: null,
+            technicalOwnerTeamId: 11,
         );
 
         $this->assertFalse($component->isIncomplete());
@@ -94,7 +108,9 @@ final class ComponentTest extends TestCase
         ?int $id = null,
         string $name = 'CRM',
         ?int $businessOwnerId = 1,
+        ?int $businessOwnerTeamId = null,
         ?int $technicalOwnerId = 1,
+        ?int $technicalOwnerTeamId = null,
         ?string $purpose = 'Manages customers.',
         ?int $deploymentLocationId = 1,
         ?int $environmentId = 1,
@@ -110,7 +126,9 @@ final class ComponentTest extends TestCase
             statusId: 1,
             criticalityId: null,
             businessOwnerId: $businessOwnerId,
+            businessOwnerTeamId: $businessOwnerTeamId,
             technicalOwnerId: $technicalOwnerId,
+            technicalOwnerTeamId: $technicalOwnerTeamId,
             deploymentLocationId: $deploymentLocationId,
             environmentId: $environmentId,
             projectName: null,

@@ -23,9 +23,9 @@ final readonly class DashboardService
             'active_components' => $activeStatusId ? $this->countWhere('components', 'status_id', $activeStatusId) : 0,
             'dependencies_total' => $this->count('dependencies'),
             'critical_dependencies' => $this->countCriticalDependencies($businessCriticalId, $highCriticalityId),
-            'components_without_business_owner' => $this->countWhereNull('components', 'business_owner_id'),
-            'components_without_technical_owner' => $this->countWhereNull('components', 'technical_owner_id'),
-            'dependencies_without_owner' => $this->countWhereNull('dependencies', 'owner_id'),
+            'components_without_business_owner' => $this->countMissingOwner('components', 'business_owner_id', 'business_owner_team_id'),
+            'components_without_technical_owner' => $this->countMissingOwner('components', 'technical_owner_id', 'technical_owner_team_id'),
+            'dependencies_without_owner' => $this->countMissingOwner('dependencies', 'owner_id', 'owner_team_id'),
             'dependencies_without_documentation' => $this->countWhereNull('dependencies', 'documentation_url'),
             'open_reviews' => count($this->openReviewRows()),
             'replacement_planned_components' => $replacementPlannedStatusId ? $this->countWhere('components', 'status_id', $replacementPlannedStatusId) : 0,
@@ -53,6 +53,15 @@ final readonly class DashboardService
     private function countWhereNull(string $table, string $field): int
     {
         return query($table)->count()->whereNull($field)->execute();
+    }
+
+    private function countMissingOwner(string $table, string $personField, string $teamField): int
+    {
+        return query($table)
+            ->count()
+            ->whereNull($personField)
+            ->whereNull($teamField)
+            ->execute();
     }
 
     private function idByName(string $table, string $name): ?int
@@ -90,19 +99,25 @@ final readonly class DashboardService
     /** @return array<int, array<string, mixed>> */
     private function incompleteComponentRows(): array
     {
-        return query('components')
-            ->select()
-            ->whereGroup(static function ($group): void {
-                $group
-                    ->whereNull('business_owner_id')
-                    ->orWhereNull('technical_owner_id')
-                    ->orWhereNull('purpose')
-                    ->orWhereNull('deployment_location_id')
-                    ->orWhereNull('environment_id');
-            })
-            ->orderBy('updated_at')
-            ->limit(10)
-            ->all();
+        $rows = query('components')->select()->orderBy('updated_at')->all();
+
+        return array_slice(
+            array_values(array_filter(
+                $rows,
+                static fn (array $row): bool => (
+                    $row['business_owner_id'] === null
+                    && $row['business_owner_team_id'] === null
+                    || $row['technical_owner_id'] === null
+                    && $row['technical_owner_team_id'] === null
+                    || $row['purpose'] === null
+                    || trim((string) $row['purpose']) === ''
+                    || $row['deployment_location_id'] === null
+                    || $row['environment_id'] === null
+                ),
+            )),
+            0,
+            10,
+        );
     }
 
     /** @return array<int, array<string, mixed>> */

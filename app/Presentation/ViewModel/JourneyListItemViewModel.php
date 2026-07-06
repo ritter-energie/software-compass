@@ -10,6 +10,7 @@ final readonly class JourneyListItemViewModel
         public int $id,
         public string $name,
         public string $ownerName,
+        public string $ownerTeamName,
         public int $statusId,
         public int $sortOrder,
     ) {}

@@ -15,6 +15,7 @@ final readonly class ComponentSearchCriteria
         public ?int $statusId = null,
         public ?int $criticalityId = null,
         public ?int $ownerId = null,
+        public ?int $ownerTeamId = null,
         public ?int $environmentId = null,
         public ?bool $isExternal = null,
         public ?int $tagId = null,

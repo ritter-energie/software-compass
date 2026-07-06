@@ -4,6 +4,7 @@
  * @var \App\Domain\Journey\JourneyStep[] $steps
  * @var array<int, \App\Presentation\ViewModel\JourneyStepAssignmentViewModel[]> $assignments
  * @var string $ownerName
+ * @var string $ownerTeamName
  * @var \App\Domain\Component\Component[] $components
  * @var string[] $roles
  * @var string $mermaid
@@ -15,7 +16,9 @@
     )) ?></a><a class="button-secondary" href="/diagrams/journeys/<?= $journey->id() ?>"><?= htmlspecialchars(\App\Shared\Support\Translator::translate('nav.diagrams')) ?></a></div></div>
     <section class="panel"><h3><?= htmlspecialchars(\App\Shared\Support\Translator::translate('journeys.master_data')) ?></h3><dl><dt><?= htmlspecialchars(\App\Shared\Support\Translator::translate(
         'table.owner',
-    )) ?></dt><dd><?= htmlspecialchars($ownerName) ?></dd><dt><?= htmlspecialchars(\App\Shared\Support\Translator::translate('table.status_id')) ?></dt><dd><?= $journey->statusId() ?></dd><dt><?= htmlspecialchars(\App\Shared\Support\Translator::translate(
+    )) ?></dt><dd><?= htmlspecialchars($ownerName) ?></dd><dt><?= htmlspecialchars(\App\Shared\Support\Translator::translate(
+        'table.owner_team',
+    )) ?></dt><dd><?= htmlspecialchars($ownerTeamName) ?></dd><dt><?= htmlspecialchars(\App\Shared\Support\Translator::translate('table.status_id')) ?></dt><dd><?= $journey->statusId() ?></dd><dt><?= htmlspecialchars(\App\Shared\Support\Translator::translate(
         'table.description',
     )) ?></dt><dd><?= nl2br(htmlspecialchars((string) $journey->description())) ?: '—' ?></dd></dl></section>
 

@@ -26,6 +26,7 @@ final readonly class JourneyService
             slug: $this->uniqueSlug($command->name),
             description: $command->description,
             ownerId: $command->ownerId,
+            ownerTeamId: $command->ownerTeamId,
             statusId: $command->statusId,
             sortOrder: $command->sortOrder,
         ));
@@ -44,6 +45,7 @@ final readonly class JourneyService
             slug: $existing->slug(),
             description: $command->description,
             ownerId: $command->ownerId,
+            ownerTeamId: $command->ownerTeamId,
             statusId: $command->statusId,
             sortOrder: $command->sortOrder,
         ));
@@ -160,6 +162,7 @@ final readonly class JourneyService
             'slug' => $journey->slug(),
             'description' => $journey->description(),
             'owner_id' => $journey->ownerId(),
+            'owner_team_id' => $journey->ownerTeamId(),
             'status_id' => $journey->statusId(),
             'sort_order' => $journey->sortOrder(),
         ];
