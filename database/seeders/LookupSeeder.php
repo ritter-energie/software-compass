@@ -16,29 +16,24 @@ final class LookupSeeder implements DatabaseSeeder
     public function run(null|string|UnitEnum $database): void
     {
         $this->seedLookup('component_types', [
-            'Application', 'API', 'Database', 'Middleware', 'SaaS', 'File Share',
-            'Message Queue', 'Manual Process', 'Reporting', 'Data Warehouse',
-            'Integration Platform', 'Website', 'Mobile App', 'Legacy System', 'Other',
+            'Application', 'API', 'Database', 'Website', 'Other',
         ]);
 
         $this->seedLookup('component_statuses', [
-            'Idea', 'In Review', 'Planned', 'In Implementation', 'Active', 'Deprecated',
-            'Replacement Planned', 'Retired', 'Rejected',
+            'Idea', 'In Review', 'Active', 'Replacement Planned', 'Retired',
         ], withSortOrder: true);
 
         $this->seedLookup('criticality_levels', ['Low', 'Medium', 'High', 'Business Critical'], withSortOrder: true);
-        $this->seedLookup('environments', ['Development', 'Test', 'Staging', 'Production', 'Sandbox', 'Unknown']);
+        $this->seedLookup('environments', ['Development', 'Test', 'Staging', 'Production', 'Unknown']);
         $this->seedLookup('dependency_types', [
-            'REST API', 'SOAP API', 'Webhook', 'Database Access', 'File Transfer', 'SFTP',
-            'CSV Import', 'CSV Export', 'Message Queue', 'Manual Transfer', 'Email', 'ETL',
-            'Replication', 'Shared Library', 'Other',
+            'REST API', 'Database Access', 'CSV Export', 'ETL', 'Other',
         ]);
         $this->seedLookup('communication_protocols', [
-            'HTTP', 'HTTPS', 'REST', 'SOAP', 'SFTP', 'FTP', 'SQL', 'JDBC', 'ODBC',
-            'SMTP', 'IMAP', 'AMQP', 'MQTT', 'Kafka', 'File System', 'Manual', 'Other',
+            'HTTPS', 'REST', 'SQL', 'SFTP', 'Other',
         ]);
         $this->seedDataObjects();
         $this->seedDeploymentLocations();
+        $this->seedLookup('tags', ['Core', 'Customer Facing', 'Internal']);
     }
 
     /** @param string[] $names */
@@ -51,10 +46,10 @@ final class LookupSeeder implements DatabaseSeeder
 
     private function seedDataObjects(): void
     {
-        foreach (['Customer Data', 'Order Data', 'Invoice Data', 'Product Data', 'Price Data', 'Contract Data', 'Delivery Data', 'Payment Data', 'Support Ticket Data', 'User Account Data', 'Analytics Data'] as $name) {
+        foreach (['Customer Data', 'Order Data', 'Invoice Data', 'Product Data', 'Analytics Data'] as $name) {
             $this->upsertByName('data_objects', $name, [
-                'contains_personal_data' => in_array($name, ['Customer Data', 'Payment Data', 'User Account Data'], true),
-                'contains_sensitive_data' => in_array($name, ['Payment Data', 'User Account Data'], true),
+                'contains_personal_data' => in_array($name, ['Customer Data'], true),
+                'contains_sensitive_data' => false,
             ]);
         }
     }

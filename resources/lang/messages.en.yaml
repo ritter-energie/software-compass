@@ -275,6 +275,11 @@ master_data:
   communication_protocols: Communication protocols
   data_objects: Data objects
   tags: Tags
+  create_entry: Create entry
+  edit_entry: Edit entry
+  details: Details
+  location_type: Location type
+  confirm_delete: Delete this master data entry? This cannot be undone.
 diagrams:
   components_title: Component Overview Diagram
   journey_title: Customer Journey Diagram
@@ -323,6 +328,7 @@ form:
 flash:
   error:
     invalid_security_token: Invalid security token. Please try again.
+    required_fields: Please fill in all required fields.
     name_required: Name is required.
     step_name_required: Step name is required.
     valid_urls_required: Please enter valid URLs.
@@ -335,6 +341,9 @@ flash:
     user_not_linked_to_person: The current user is not linked to a person.
     no_authenticated_user: No authenticated user found.
     user_not_found: User not found.
+    master_data_group_not_found: Master data group not found.
+    master_data_entry_not_found: Master data entry not found.
+    master_data_in_use: This master data entry is still in use and cannot be deleted.
   success:
     component_created: Component created.
     component_updated: Component updated.
@@ -353,4 +362,7 @@ flash:
     review_checklist_updated: Review checklist updated.
     review_approved: Review approved.
     review_rejected: Review rejected.
+    master_data_created: Master data entry created.
+    master_data_updated: Master data entry updated.
+    master_data_deleted: Master data entry deleted.
 

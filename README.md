@@ -28,9 +28,14 @@ docker compose exec app php tempest migrate:up --force
 docker compose exec app php tempest database:seed --all --force
 ```
 
-The app is then available at <http://localhost:8080>. Adminer (a simple DB
-UI) is available at <http://localhost:8081> (server: `mariadb`, user/password
-as in `.env`).
+The lookup/reference-data seeder creates 2–5 neutral sample entries for each
+reference data type, such as component types, statuses, criticality levels,
+environments, deployment locations, dependency types, communication protocols,
+data objects and tags. The demo seeder additionally creates neutral demo
+components, dependencies, journeys and an administrator login.
+
+The app is then available at <http://localhost:8080>. Adminer is available at
+<http://localhost:8081> (server: `mariadb`, credentials from `.env`).
 
 ## Guided first-run setup
 
@@ -62,18 +67,12 @@ Useful commands:
 
 ```bash
 docker compose exec app php tempest migrate:fresh --force   # drop & rebuild schema
+docker compose exec app php tempest database:seed --all --force # seed lookup + demo data
+docker compose exec app php ./vendor/bin/tempest discovery:generate --no-interaction # refresh Tempest discovery/cache after adding/removing classes/views
 docker compose exec app composer test                       # run PHPUnit
-docker compose exec app composer qa                         # format, test and lint inside Docker
 docker compose logs -f app                                  # tail app logs
 docker compose down                                          # stop everything
 docker compose down -v                                       # stop and wipe DB data
-```
-
-One-time for existing Docker DB volumes: create the isolated test database
-used by PHPUnit (`software_compass_test`):
-
-```bash
-docker compose exec mariadb mariadb -uroot -p"${DB_ROOT_PASSWORD:-root-secret}" -e "CREATE DATABASE IF NOT EXISTS software_compass_test CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; GRANT ALL PRIVILEGES ON software_compass_test.* TO '${DB_USERNAME:-software_compass}'@'%'; FLUSH PRIVILEGES;"
 ```
 
 Run unit and feature tests that touch the database through Docker. The Docker
@@ -82,7 +81,7 @@ host PHP installations often miss the required PDO driver.
 
 PHPUnit is configured to force `DB_DATABASE=software_compass_test`, so test
 setup/migrate/fresh operations do not modify your main `software_compass`
-database.
+database. Docker initializes that test database automatically for new volumes.
 
 > If port `3306` (MariaDB) or `8080`/`8081` (app/Adminer) are already taken
 > on your host, override them in `.env`, e.g. `DB_PORT=3307`, `APP_PORT=8090`.
@@ -143,18 +142,16 @@ For database-backed tests prefer Docker:
 docker compose exec app composer test
 ```
 
-Install the local pre-commit hook once to enforce a full Docker test run before
+Install the local pre-commit hook once to enforce the full Docker QA run before
 every commit:
 
 ```bash
 composer hooks:install
 ```
 
-The hook runs the complete PHPUnit suite (`composer test`) and blocks commits
-on failures.
-
-On GitHub, the same full test suite runs automatically for every pull request
-and push via `.github/workflows/tests.yml`.
+The hook runs `docker compose exec app composer qa` and blocks commits on
+failures. Internally it disables TTY allocation so the command also works from
+Git clients and IDE commit workflows.
 
 ## Architecture overview
 
@@ -190,6 +187,9 @@ is persisted exclusively in MariaDB:
   normalize stable master data.
 * `components` stores applications, tools, APIs, databases and other systems,
   including ownership, deployment, purpose, lifecycle and documentation fields.
+* `component_inheritance` stores optional many-to-many parent/child
+  relationships between components. A component may have multiple parents and
+  multiple children, and neither relationship is required.
 * `dependencies` stores interfaces and communication paths between components;
   `dependency_data_objects` links interfaces to the data they exchange.
 * `journeys`, `journey_steps` and `journey_step_components` model customer
@@ -222,6 +222,44 @@ Users with the `admin` role can open `/admin/users` to manage accounts:
 * activate/deactivate existing users.
 
 Non-admin users receive `403 Forbidden` on admin user routes.
+
+## Reference data management
+
+Users with the `admin` role can open `/master-data` to manage shared reference
+data used by forms, filters and diagrams: component types/statuses,
+criticality levels, environments, deployment locations, dependency types,
+communication protocols, data objects and tags.
+
+Reference data is modeled with typed enums/DTOs (`ReferenceDataType`,
+`ReferenceDataField`, `ReferenceDataFieldType`, `ReferenceDataEntry`) instead
+of free-form table or field names. All write actions use CSRF protection;
+deletes are POST-only and still referenced entries are protected by foreign-key
+constraints.
+
+## Component inheritance
+
+Components can optionally be related through inheritance-style parent/child
+links. Both sides are many-to-many and optional. Component forms let users
+assign parents and children, detail pages list both directions, and component
+diagrams render parents as Mermaid containers for their children. Additional
+parents are shown as dashed inheritance links when Mermaid cannot place one
+node in multiple containers.
+
+## Tempest cache notes
+
+After adding, renaming or deleting discovered classes or view components,
+refresh discovery:
+
+```bash
+docker compose exec app php ./vendor/bin/tempest discovery:generate --no-interaction
+```
+
+If a stale view-compilation error remains after changing a view, clear compiled
+views as well:
+
+```bash
+docker compose exec app sh -lc 'rm -rf .tempest/cache/views/* && php ./vendor/bin/tempest discovery:generate --no-interaction'
+```
 
 ## Governance process
 

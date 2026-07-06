@@ -1,6 +1,6 @@
 <?php
 /**
- * @var \App\Domain\Dependency\Dependency[] $dependencies
+ * @var \App\Presentation\ViewModel\DependencyListItemViewModel[] $dependencies
  * @var \App\Domain\Dependency\DependencySearchCriteria $criteria
  * @var \App\Domain\Component\Component[] $components
  * @var array<int, array<string, mixed>> $dependencyTypes
@@ -10,15 +10,6 @@
  * @var \App\Domain\Person\Person[] $people
  * @var array<int, array<string, mixed>> $dataObjects
  */
-$componentName = static function (int $id) use ($components): string {
-    foreach ($components as $component) {
-        if ($component->id() === $id) {
-            return $component->name();
-        }
-    }
-
-    return 'C' . $id;
-};
 ?>
 <x-layout>
     <div class="page-header">
@@ -80,15 +71,15 @@ $componentName = static function (int $id) use ($components): string {
             <tbody>
             <?php foreach ($dependencies as $dependency): ?>
                 <tr>
-                    <td><a href="/dependencies/<?= $dependency->id() ?>"><?= htmlspecialchars($dependency->name()) ?></a></td>
-                    <td><?= htmlspecialchars($componentName($dependency->sourceComponentId())) ?></td>
-                    <td><?= htmlspecialchars($componentName($dependency->targetComponentId())) ?></td>
-                    <td><?= htmlspecialchars((string) $dependency->dataDescription()) ?: '—' ?></td>
-                    <td><?= htmlspecialchars((string) $dependency->frequency()) ?: '—' ?></td>
-                    <td><?= $dependency->isIncomplete()
+                    <td><a href="/dependencies/<?= $dependency->id ?>"><?= htmlspecialchars($dependency->name) ?></a></td>
+                    <td><?= htmlspecialchars($dependency->sourceComponentName) ?></td>
+                    <td><?= htmlspecialchars($dependency->targetComponentName) ?></td>
+                    <td><?= htmlspecialchars((string) $dependency->dataDescription) ?: '—' ?></td>
+                    <td><?= htmlspecialchars((string) $dependency->frequency) ?: '—' ?></td>
+                    <td><?= $dependency->isIncomplete
                         ? '<span class="badge badge-warning">' . htmlspecialchars(\App\Shared\Support\Translator::translate('common.incomplete')) . '</span>'
                         : '<span class="badge badge-success">' . htmlspecialchars(\App\Shared\Support\Translator::translate('common.complete')) . '</span>' ?></td>
-                    <td class="actions"><a href="/dependencies/<?= $dependency->id() ?>"><?= htmlspecialchars(\App\Shared\Support\Translator::translate('common.view')) ?></a><a href="/dependencies/<?= $dependency->id() ?>/edit"><?= htmlspecialchars(\App\Shared\Support\Translator::translate(
+                    <td class="actions"><a href="/dependencies/<?= $dependency->id ?>"><?= htmlspecialchars(\App\Shared\Support\Translator::translate('common.view')) ?></a><a href="/dependencies/<?= $dependency->id ?>/edit"><?= htmlspecialchars(\App\Shared\Support\Translator::translate(
                         'common.edit',
                     )) ?></a></td>
                 </tr>

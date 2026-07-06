@@ -140,11 +140,14 @@ final readonly class ComponentController
                 ->setStatus(Status::NOT_FOUND);
         }
 
+        $people = $this->people->all();
+
         return new Ok(view(
             '../../View/components/show.view.php',
             component: $detail->component,
             detail: $detail,
-            people: $this->people->all(),
+            businessOwnerName: $this->personName($people, $detail->component->businessOwnerId()),
+            technicalOwnerName: $this->personName($people, $detail->component->technicalOwnerId()),
         ));
     }
 
@@ -263,6 +266,22 @@ final readonly class ComponentController
         $trimmed = trim((string) $value);
 
         return $trimmed === '' ? null : $trimmed;
+    }
+
+    /** @param \App\Domain\Person\Person[] $people */
+    private function personName(array $people, ?int $id): string
+    {
+        if ($id === null) {
+            return '—';
+        }
+
+        foreach ($people as $person) {
+            if ($person->id() === $id) {
+                return $person->name();
+            }
+        }
+
+        return '—';
     }
 
     private function intOrNull(mixed $value): ?int

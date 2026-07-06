@@ -14,6 +14,8 @@ use App\Domain\Journey\JourneyStepComponent;
 use App\Domain\Person\PersonRepository;
 use App\Infrastructure\Persistence\LookupRepository;
 use App\Infrastructure\Security\BasicAuthMiddleware;
+use App\Presentation\ViewModel\JourneyListItemViewModel;
+use App\Presentation\ViewModel\JourneyStepAssignmentViewModel;
 use App\Shared\Support\Csrf;
 use App\Shared\Support\Translator;
 use RuntimeException;
@@ -42,7 +44,10 @@ final readonly class JourneyController
     #[Get('/journeys')]
     public function index(): Response
     {
-        return new Ok(view('../../View/journeys/index.view.php', journeys: $this->journeyService->all(), people: $this->people->all()));
+        return new Ok(view(
+            '../../View/journeys/index.view.php',
+            journeys: $this->journeyListItems($this->journeyService->all(), $this->people->all()),
+        ));
     }
 
     #[Get('/journeys/create')]
@@ -83,9 +88,11 @@ final readonly class JourneyController
         }
 
         $steps = $this->journeyService->stepsForJourney($id);
+        $components = $this->components->all();
         $assignments = [];
         foreach ($steps as $step) {
-            $assignments[(int) $step->id()] = $this->journeyService->componentsForStep((int) $step->id());
+            $stepId = (int) $step->id();
+            $assignments[$stepId] = $this->assignmentListItems($this->journeyService->componentsForStep($stepId), $components);
         }
 
         return new Ok(view(
@@ -93,8 +100,8 @@ final readonly class JourneyController
             journey: $journey,
             steps: $steps,
             assignments: $assignments,
-            people: $this->people->all(),
-            components: $this->components->all(),
+            ownerName: $this->personName($this->people->all(), $journey->ownerId()),
+            components: $components,
             roles: JourneyStepComponent::validRoles(),
             mermaid: $this->diagrams->journeyDiagram($id),
         ));
@@ -148,6 +155,69 @@ final readonly class JourneyController
     private function formView(string $view, mixed $journey = null): mixed
     {
         return view($view, journey: $journey, statuses: $this->lookups->componentStatuses(), people: $this->people->allActive());
+    }
+
+    /**
+     * @param \App\Domain\Journey\Journey[] $journeys
+     * @param \App\Domain\Person\Person[] $people
+     * @return JourneyListItemViewModel[]
+     */
+    private function journeyListItems(array $journeys, array $people): array
+    {
+        return array_map(
+            fn ($journey): JourneyListItemViewModel => new JourneyListItemViewModel(
+                id: (int) $journey->id(),
+                name: $journey->name(),
+                ownerName: $this->personName($people, $journey->ownerId()),
+                statusId: $journey->statusId(),
+                sortOrder: $journey->sortOrder(),
+            ),
+            $journeys,
+        );
+    }
+
+    /**
+     * @param \App\Domain\Journey\JourneyStepComponent[] $assignments
+     * @param \App\Domain\Component\Component[] $components
+     * @return JourneyStepAssignmentViewModel[]
+     */
+    private function assignmentListItems(array $assignments, array $components): array
+    {
+        return array_map(
+            fn ($assignment): JourneyStepAssignmentViewModel => new JourneyStepAssignmentViewModel(
+                assignment: $assignment,
+                componentName: $this->componentName($components, $assignment->componentId()),
+            ),
+            $assignments,
+        );
+    }
+
+    /** @param \App\Domain\Component\Component[] $components */
+    private function componentName(array $components, int $id): string
+    {
+        foreach ($components as $component) {
+            if ($component->id() === $id) {
+                return $component->name();
+            }
+        }
+
+        return 'C' . $id;
+    }
+
+    /** @param \App\Domain\Person\Person[] $people */
+    private function personName(array $people, ?int $id): string
+    {
+        if ($id === null) {
+            return '—';
+        }
+
+        foreach ($people as $person) {
+            if ($person->id() === $id) {
+                return $person->name();
+            }
+        }
+
+        return '—';
     }
 
     private function stringOrNull(mixed $value): ?string

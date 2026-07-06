@@ -41,6 +41,7 @@ services:
       - "${DB_PORT:-3306}:3306"
     volumes:
       - db-data:/var/lib/mysql
+      - ./docker/mariadb/init-test-database.sh:/docker-entrypoint-initdb.d/10-test-database.sh:ro
     healthcheck:
       test: ["CMD-SHELL", "mariadb-admin ping --protocol=tcp -h 127.0.0.1 -uroot -p\"$${MARIADB_ROOT_PASSWORD}\" --silent"]
       interval: 5s
