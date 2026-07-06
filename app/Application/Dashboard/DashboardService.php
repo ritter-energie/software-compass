@@ -57,10 +57,11 @@ final readonly class DashboardService
 
     private function countMissingOwner(string $table, string $personField, string $teamField): int
     {
-        return count(array_filter(
-            query($table)->select()->all(),
-            static fn (array $row): bool => $row[$personField] === null && $row[$teamField] === null,
-        ));
+        return query($table)
+            ->count()
+            ->whereNull($personField)
+            ->whereNull($teamField)
+            ->execute();
     }
 
     private function idByName(string $table, string $name): ?int
