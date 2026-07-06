@@ -66,7 +66,7 @@ final class DemoDataSeeder implements DatabaseSeeder
         $this->dependency($components['ERP'], $components['Data Warehouse'], 'Revenue Data / ETL', $etl, null, $statusActive, $criticalityHigh, $technicalOwner, 'Analytics Data');
         $this->dependency($components['CRM'], $components['Data Warehouse'], 'Customer Data / ETL', $etl, null, $statusActive, $criticalityHigh, $technicalOwner, 'Customer Data');
         $this->dependency($components['ERP'], $components['Finance System'], 'Invoice Data / Database Export', $dbExport, $protocolSql, $statusActive, $criticalityBusiness, $technicalOwner, 'Invoice Data');
-        $this->dependency($components['WMS'], $components['ERP'], 'Delivery Status / API', $restApi, $protocolRest, $statusActive, $criticalityHigh, $technicalOwner, 'Delivery Data');
+        $this->dependency($components['WMS'], $components['ERP'], 'Delivery Status / API', $restApi, $protocolRest, $statusActive, $criticalityHigh, $technicalOwner, 'Order Data');
 
         $journeyId = $this->journey('Order to Delivery', 'order-to-delivery', $businessOwner, $statusActive);
         foreach ([
@@ -218,7 +218,7 @@ final class DemoDataSeeder implements DatabaseSeeder
         $existing = $builder->first();
 
         if ($existing !== null) {
-            query($table)->update([...$values, 'updated_at' => $now])->whereField('id', $existing['id'])->execute();
+            query($table)->update(...[...$values, 'updated_at' => $now])->whereField('id', $existing['id'])->execute();
             return (int) $existing['id'];
         }
 

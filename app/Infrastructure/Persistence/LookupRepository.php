@@ -71,6 +71,18 @@ final class LookupRepository
         return $this->all('tags');
     }
 
+    /** @return array<int, array<string, mixed>> */
+    public function allFrom(string $table, string $orderBy = 'name'): array
+    {
+        return $this->all($table, $orderBy);
+    }
+
+    /** @return array<string, mixed>|null */
+    public function findIn(string $table, int $id): ?array
+    {
+        return query($table)->select()->whereField('id', $id)->first();
+    }
+
     public function idByName(string $table, string $name): ?int
     {
         $row = query($table)->select()->whereField('name', $name)->first();
@@ -98,6 +110,36 @@ final class LookupRepository
         ])->execute();
 
         return $id?->value !== null ? (int) $id->value : $this->lastInsertId();
+    }
+
+    /** @param array<string, mixed> $values */
+    public function insertInto(string $table, array $values): int
+    {
+        $now = new DateTimeImmutable()->format('Y-m-d H:i:s');
+        $id = query($table)->insert([
+            ...$values,
+            'created_at' => $now,
+            'updated_at' => $now,
+        ])->execute();
+
+        return $id?->value !== null ? (int) $id->value : $this->lastInsertId();
+    }
+
+    /** @param array<string, mixed> $values */
+    public function updateIn(string $table, int $id, array $values): void
+    {
+        query($table)
+            ->update(...[
+                ...$values,
+                'updated_at' => new DateTimeImmutable()->format('Y-m-d H:i:s'),
+            ])
+            ->whereField('id', $id)
+            ->execute();
+    }
+
+    public function deleteFrom(string $table, int $id): void
+    {
+        query($table)->delete()->whereField('id', $id)->execute();
     }
 
     /** @return array<int, array<string, mixed>> */
