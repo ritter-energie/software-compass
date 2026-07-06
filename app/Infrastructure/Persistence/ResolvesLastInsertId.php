@@ -28,4 +28,3 @@ trait ResolvesLastInsertId
         return $id instanceof PrimaryKey ? (int) $id->value : (int) $id;
     }
 }
-

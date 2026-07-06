@@ -63,5 +63,3 @@ $error = $session->consume('error');
 </main>
 </body>
 </html>
-
-

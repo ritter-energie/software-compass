@@ -33,4 +33,3 @@ final class MermaidSanitizerTest extends TestCase
         $this->assertStringEndsWith('…', $label);
     }
 }
-

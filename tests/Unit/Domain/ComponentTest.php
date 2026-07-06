@@ -63,16 +63,46 @@ final class ComponentTest extends TestCase
         $component->rename('   ');
     }
 
+    public function test_it_can_have_multiple_parent_and_child_components(): void
+    {
+        $component = $this->makeComponent(
+            parentComponentIds: [2, 3, 2],
+            childComponentIds: [4, 5, 4],
+        );
+
+        $this->assertSame([2, 3], $component->parentComponentIds());
+        $this->assertSame([4, 5], $component->childComponentIds());
+    }
+
+    public function test_it_rejects_self_references(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('A component cannot inherit from itself.');
+
+        $this->makeComponent(id: 1, parentComponentIds: [1]);
+    }
+
+    public function test_it_rejects_the_same_component_as_parent_and_child(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('A component cannot inherit from and be parent of the same component.');
+
+        $this->makeComponent(parentComponentIds: [2], childComponentIds: [2]);
+    }
+
     private function makeComponent(
+        ?int $id = null,
         string $name = 'CRM',
         ?int $businessOwnerId = 1,
         ?int $technicalOwnerId = 1,
         ?string $purpose = 'Manages customers.',
         ?int $deploymentLocationId = 1,
         ?int $environmentId = 1,
+        array $parentComponentIds = [],
+        array $childComponentIds = [],
     ): Component {
         return new Component(
-            id: null,
+            id: $id,
             name: $name,
             shortName: null,
             slug: 'crm',
@@ -92,7 +122,8 @@ final class ComponentTest extends TestCase
             vendor: null,
             lifecycleNotes: null,
             isExternal: false,
+            parentComponentIds: $parentComponentIds,
+            childComponentIds: $childComponentIds,
         );
     }
 }
-

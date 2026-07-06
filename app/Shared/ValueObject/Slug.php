@@ -59,4 +59,3 @@ final readonly class Slug implements Stringable
         return trim($value, '-');
     }
 }
-

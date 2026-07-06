@@ -37,4 +37,3 @@ final class SlugTest extends TestCase
         $this->assertSame('crm-2', (string) $slug);
     }
 }
-

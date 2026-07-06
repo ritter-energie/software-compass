@@ -117,4 +117,3 @@ final readonly class GovernanceController
         return $trimmed === '' ? null : $trimmed;
     }
 }
-

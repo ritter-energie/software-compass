@@ -6,11 +6,10 @@ namespace Tests\Feature;
 
 use Tempest\Http\Session\Session;
 use Tempest\Http\Status;
-
-use function Tempest\get;
-use function Tempest\Database\query;
-
 use Tests\IntegrationTestCase;
+
+use function Tempest\Database\query;
+use function Tempest\get;
 
 /**
  * Verifies session-based login: unauthenticated requests are redirected to the
@@ -50,7 +49,8 @@ final class BasicAuthTest extends IntegrationTestCase
 
     public function test_it_redirects_unauthenticated_requests_to_login(): void
     {
-        $this->http->get('/dashboard')
+        $this->http
+            ->get('/dashboard')
             ->assertStatus(Status::FOUND)
             ->assertHeaderContains('Location', '/login');
     }
@@ -59,7 +59,8 @@ final class BasicAuthTest extends IntegrationTestCase
     {
         get(Session::class)->set('auth_user_id', 999999);
 
-        $this->http->get('/dashboard')
+        $this->http
+            ->get('/dashboard')
             ->assertStatus(Status::FOUND)
             ->assertHeaderContains('Location', '/login');
     }
@@ -79,6 +80,3 @@ final class BasicAuthTest extends IntegrationTestCase
         $this->http->get('/dashboard')->assertOk();
     }
 }
-
-
-

@@ -20,4 +20,3 @@ final readonly class ComponentSearchCriteria
         public ?int $tagId = null,
     ) {}
 }
-

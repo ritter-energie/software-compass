@@ -27,6 +27,16 @@ interface ComponentRepository
      */
     public function all(): array;
 
+    /**
+     * @return Component[]
+     */
+    public function parentsOf(int $componentId): array;
+
+    /**
+     * @return Component[]
+     */
+    public function childrenOf(int $componentId): array;
+
     public function save(Component $component): Component;
 
     public function delete(int $id): void;
@@ -36,4 +46,3 @@ interface ComponentRepository
      */
     public function slugExists(string $slug, ?int $excludingId = null): bool;
 }
-

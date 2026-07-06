@@ -26,7 +26,7 @@ $personName = static function (?int $id) use ($people): string {
     return '—';
 };
 
-$t = static fn (string $key, mixed ...$arguments): string => \App\Shared\Support\Translator::translate($key, ...$arguments);
+$t = \App\Shared\Support\Translator::translate(...);
 ?>
 <x-layout>
     <?php if ($dependency === null): ?>
@@ -35,7 +35,9 @@ $t = static fn (string $key, mixed ...$arguments): string => \App\Shared\Support
     <?php else: ?>
         <div class="page-header">
             <h2><?= htmlspecialchars($dependency->name()) ?></h2>
-            <div class="actions"><a class="button-secondary" href="/dependencies/<?= $dependency->id() ?>/edit"><?= htmlspecialchars($t('common.edit')) ?></a><a class="button-secondary" href="/diagrams/components"><?= htmlspecialchars($t('dependencies.overview_diagram')) ?></a></div>
+            <div class="actions"><a class="button-secondary" href="/dependencies/<?= $dependency->id() ?>/edit"><?= htmlspecialchars($t('common.edit')) ?></a><a class="button-secondary" href="/diagrams/components"><?= htmlspecialchars($t(
+                'dependencies.overview_diagram',
+            )) ?></a></div>
         </div>
 
         <?php if ($dependency->isIncomplete()): ?>
@@ -49,7 +51,9 @@ $t = static fn (string $key, mixed ...$arguments): string => \App\Shared\Support
                     <dt><?= htmlspecialchars($t('table.source')) ?></dt><dd><?= htmlspecialchars($componentName($dependency->sourceComponentId())) ?></dd>
                     <dt><?= htmlspecialchars($t('table.target')) ?></dt><dd><?= htmlspecialchars($componentName($dependency->targetComponentId())) ?></dd>
                     <dt><?= htmlspecialchars($t('form.direction')) ?></dt><dd><?= htmlspecialchars($dependency->direction()) ?></dd>
-                    <dt><?= htmlspecialchars($t('form.bidirectional')) ?></dt><dd><?= $dependency->isBidirectional() ? htmlspecialchars($t('common.yes')) : htmlspecialchars($t('common.no')) ?></dd>
+                    <dt><?= htmlspecialchars($t('form.bidirectional')) ?></dt><dd><?= $dependency->isBidirectional()
+                        ? htmlspecialchars($t('common.yes'))
+                        : htmlspecialchars($t('common.no')) ?></dd>
                 </dl>
             </div>
             <div class="panel">
@@ -70,10 +74,11 @@ $t = static fn (string $key, mixed ...$arguments): string => \App\Shared\Support
                 <dt><?= htmlspecialchars($t('form.data_description')) ?></dt><dd><?= nl2br(htmlspecialchars((string) $dependency->dataDescription())) ?: '—' ?></dd>
                 <dt><?= htmlspecialchars($t('table.frequency')) ?></dt><dd><?= htmlspecialchars((string) $dependency->frequency()) ?: '—' ?></dd>
                 <dt><?= htmlspecialchars($t('dependencies.authentication')) ?></dt><dd><?= htmlspecialchars((string) $dependency->authenticationMethod()) ?: '—' ?></dd>
-                <dt><?= htmlspecialchars($t('form.documentation_url')) ?></dt><dd><?= $dependency->documentationUrl() ? '<a href="' . htmlspecialchars($dependency->documentationUrl()) . '">' . htmlspecialchars($dependency->documentationUrl()) . '</a>' : '—' ?></dd>
+                <dt><?= htmlspecialchars($t('form.documentation_url')) ?></dt><dd><?= $dependency->documentationUrl()
+                    ? '<a href="' . htmlspecialchars($dependency->documentationUrl()) . '">' . htmlspecialchars($dependency->documentationUrl()) . '</a>'
+                    : '—' ?></dd>
                 <dt><?= htmlspecialchars($t('form.technical_notes')) ?></dt><dd><?= nl2br(htmlspecialchars((string) $dependency->technicalNotes())) ?: '—' ?></dd>
             </dl>
         </section>
     <?php endif; ?>
 </x-layout>
-

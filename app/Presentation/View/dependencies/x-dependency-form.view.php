@@ -93,13 +93,19 @@
     <div class="form-field">
         <label for="direction"><?= htmlspecialchars(\App\Shared\Support\Translator::translate('form.direction')) ?></label>
         <select id="direction" name="direction">
-            <option value="source_to_target" <?= $dependency?->direction() === 'source_to_target' ? 'selected' : '' ?>><?= htmlspecialchars(\App\Shared\Support\Translator::translate('form.direction_source_to_target')) ?></option>
-            <option value="target_to_source" <?= $dependency?->direction() === 'target_to_source' ? 'selected' : '' ?>><?= htmlspecialchars(\App\Shared\Support\Translator::translate('form.direction_target_to_source')) ?></option>
+            <option value="source_to_target" <?= $dependency?->direction() === 'source_to_target' ? 'selected' : '' ?>><?= htmlspecialchars(\App\Shared\Support\Translator::translate(
+                'form.direction_source_to_target',
+            )) ?></option>
+            <option value="target_to_source" <?= $dependency?->direction() === 'target_to_source' ? 'selected' : '' ?>><?= htmlspecialchars(\App\Shared\Support\Translator::translate(
+                'form.direction_target_to_source',
+            )) ?></option>
         </select>
     </div>
 
     <div class="form-field form-field-checkbox">
-        <label><input type="checkbox" name="is_bidirectional" value="1" <?= $dependency?->isBidirectional() ? 'checked' : '' ?>> <?= htmlspecialchars(\App\Shared\Support\Translator::translate('form.bidirectional')) ?></label>
+        <label><input type="checkbox" name="is_bidirectional" value="1" <?= $dependency?->isBidirectional() ? 'checked' : '' ?>> <?= htmlspecialchars(\App\Shared\Support\Translator::translate(
+            'form.bidirectional',
+        )) ?></label>
     </div>
 
     <div class="form-field form-field-wide">
@@ -128,4 +134,3 @@
         <textarea id="technical_notes" name="technical_notes" rows="3"><?= htmlspecialchars($dependency?->technicalNotes() ?? '') ?></textarea>
     </div>
 </div>
-

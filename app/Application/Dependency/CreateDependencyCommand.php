@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
+
 namespace App\Application\Dependency;
+
 final readonly class CreateDependencyCommand
 {
     public function __construct(

@@ -161,4 +161,3 @@ final readonly class JourneyController
         return $value === null || $value === '' ? null : (int) $value;
     }
 }
-

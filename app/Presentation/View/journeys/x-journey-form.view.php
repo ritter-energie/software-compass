@@ -37,4 +37,3 @@
         <textarea id="description" name="description" rows="3"><?= htmlspecialchars($journey?->description() ?? '') ?></textarea>
     </div>
 </div>
-

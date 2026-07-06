@@ -43,4 +43,3 @@ interface JourneyRepository
 
     public function slugExists(string $slug, ?int $excludingId = null): bool;
 }
-

@@ -6,11 +6,10 @@ namespace Tests\Feature;
 
 use Tempest\Http\Session\Session;
 use Tempest\Http\Status;
+use Tests\IntegrationTestCase;
 
 use function Tempest\Database\query;
 use function Tempest\get;
-
-use Tests\IntegrationTestCase;
 
 final class AccountPageTest extends IntegrationTestCase
 {
@@ -37,7 +36,8 @@ final class AccountPageTest extends IntegrationTestCase
     {
         $this->seedUser('existing-user', 'secret');
 
-        $this->http->get('/account')
+        $this->http
+            ->get('/account')
             ->assertStatus(Status::FOUND)
             ->assertHeaderContains('Location', '/login');
     }
@@ -47,7 +47,10 @@ final class AccountPageTest extends IntegrationTestCase
         $userId = $this->seedUser('account-user', 'secret');
         get(Session::class)->set('auth_user_id', $userId);
 
-        $this->http->get('/account')->assertOk()->assertSee('account-user');
+        $this->http
+            ->get('/account')
+            ->assertOk()
+            ->assertSee('account-user');
     }
 
     public function test_authenticated_header_shows_initials_account_menu(): void
@@ -55,7 +58,8 @@ final class AccountPageTest extends IntegrationTestCase
         $userId = $this->seedUser('account-menu-user', 'secret');
         get(Session::class)->set('auth_user_id', $userId);
 
-        $this->http->get('/account')
+        $this->http
+            ->get('/account')
             ->assertOk()
             ->assertSee('data-user-menu')
             ->assertSee('AU')
@@ -98,4 +102,3 @@ final class AccountPageTest extends IntegrationTestCase
         return $userId;
     }
 }
-

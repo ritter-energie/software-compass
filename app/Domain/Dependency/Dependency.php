@@ -147,9 +147,6 @@ final class Dependency
      */
     public function isIncomplete(): bool
     {
-        return $this->ownerId === null
-            || $this->dataDescription === null
-            || trim((string) $this->dataDescription) === '';
+        return $this->ownerId === null || $this->dataDescription === null || trim((string) $this->dataDescription) === '';
     }
 }
-

@@ -44,7 +44,9 @@
             )) ?></label>
             <div class="form-field"><label for="notes"><?= htmlspecialchars(\App\Shared\Support\Translator::translate('governance.notes')) ?></label><textarea id="notes" name="notes" rows="4"><?= htmlspecialchars((string) $review->notes()) ?></textarea></div>
         </div>
-        <div class="form-actions actions"><button class="button-secondary" type="submit"><?= htmlspecialchars(\App\Shared\Support\Translator::translate('governance.save_checklist')) ?></button><button class="button-primary" type="submit" formaction="/governance/reviews/<?= $review->id() ?>/approve"><?= htmlspecialchars(\App\Shared\Support\Translator::translate(
+        <div class="form-actions actions"><button class="button-secondary" type="submit"><?= htmlspecialchars(\App\Shared\Support\Translator::translate(
+            'governance.save_checklist',
+        )) ?></button><button class="button-primary" type="submit" formaction="/governance/reviews/<?= $review->id() ?>/approve"><?= htmlspecialchars(\App\Shared\Support\Translator::translate(
             'governance.approve',
         )) ?></button><button class="button-danger" type="submit" formaction="/governance/reviews/<?= $review->id() ?>/reject"><?= htmlspecialchars(\App\Shared\Support\Translator::translate(
             'governance.reject',

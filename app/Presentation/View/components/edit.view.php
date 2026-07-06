@@ -16,6 +16,7 @@
             :environments="$environments"
             :deployment-locations="$deploymentLocations"
             :people="$people"
+            :available-components="$availableComponents"
         />
 
         <div class="form-actions">
@@ -24,9 +25,10 @@
         </div>
     </x-form>
 
-    <form class="delete-form" method="POST" action="/components/<?= $component->id() ?>/delete" data-confirm="<?= htmlspecialchars(\App\Shared\Support\Translator::translate('components.confirm_delete')) ?>">
+    <form class="delete-form" method="POST" action="/components/<?= $component->id() ?>/delete" data-confirm="<?= htmlspecialchars(\App\Shared\Support\Translator::translate(
+        'components.confirm_delete',
+    )) ?>">
         <?= \App\Shared\Support\Csrf::input() ?>
         <button type="submit" class="button-danger"><?= htmlspecialchars(\App\Shared\Support\Translator::translate('components.delete')) ?></button>
     </form>
 </x-layout>
-

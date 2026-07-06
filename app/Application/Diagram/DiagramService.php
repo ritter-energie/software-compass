@@ -54,8 +54,7 @@ final readonly class DiagramService
 
     public function componentNeighborhood(int $componentId, int $depth = 1): string
     {
-        $center = $this->components->findById($componentId)
-            ?? throw new RuntimeException('Component not found.');
+        $center = $this->components->findById($componentId) ?? throw new RuntimeException('Component not found.');
 
         $dependencies = $this->dependencies->findByComponentId($componentId);
         $components = [$center->id() => $center];
@@ -65,6 +64,12 @@ final readonly class DiagramService
                 if (! isset($components[$id]) && ($component = $this->components->findById($id)) !== null) {
                     $components[$id] = $component;
                 }
+            }
+        }
+
+        foreach ([...$this->components->parentsOf($componentId), ...$this->components->childrenOf($componentId)] as $relatedComponent) {
+            if ($relatedComponent->id() !== null) {
+                $components[$relatedComponent->id()] = $relatedComponent;
             }
         }
 
@@ -78,6 +83,12 @@ final readonly class DiagramService
                         }
                     }
                 }
+
+                foreach ([...$this->components->parentsOf((int) $neighborId), ...$this->components->childrenOf((int) $neighborId)] as $relatedComponent) {
+                    if ($relatedComponent->id() !== null) {
+                        $components[$relatedComponent->id()] = $relatedComponent;
+                    }
+                }
             }
         }
 
@@ -86,8 +97,7 @@ final readonly class DiagramService
 
     public function journeyDiagram(int $journeyId): string
     {
-        $journey = $this->journeys->findById($journeyId)
-            ?? throw new RuntimeException('Journey not found.');
+        $journey = $this->journeys->findById($journeyId) ?? throw new RuntimeException('Journey not found.');
 
         $lines = [
             'flowchart LR',
@@ -136,12 +146,60 @@ final readonly class DiagramService
     {
         $lines = ['flowchart LR'];
         $defined = [];
+        $componentsById = [];
+        $childrenByParent = [];
+        $primaryParentByChild = [];
 
         foreach ($components as $component) {
             if ($component->id() === null) {
                 continue;
             }
+
+            $componentsById[(int) $component->id()] = $component;
+        }
+
+        foreach ($componentsById as $componentId => $component) {
+            foreach ($component->parentComponentIds() as $parentComponentId) {
+                if (! isset($componentsById[$parentComponentId])) {
+                    continue;
+                }
+
+                $childrenByParent[$parentComponentId][] = $componentId;
+                $primaryParentByChild[$componentId] ??= $parentComponentId;
+            }
+        }
+
+        foreach ($childrenByParent as $parentComponentId => $childComponentIds) {
+            $parentComponent = $componentsById[$parentComponentId];
+            $lines[] = sprintf('    subgraph %s["%s"]', MermaidSanitizer::nodeId('SGC', $parentComponentId), MermaidSanitizer::label($parentComponent->name()));
+
+            if (! isset($primaryParentByChild[$parentComponentId])) {
+                $parentNodeId = MermaidSanitizer::nodeId('C', $parentComponentId);
+                $defined[$parentNodeId] = true;
+                $lines[] = sprintf('        %s["%s"]', $parentNodeId, MermaidSanitizer::label($parentComponent->name()));
+            }
+
+            foreach ($childComponentIds as $childComponentId) {
+                if (($primaryParentByChild[$childComponentId] ?? null) !== $parentComponentId) {
+                    continue;
+                }
+
+                $childComponent = $componentsById[$childComponentId];
+                $childNodeId = MermaidSanitizer::nodeId('C', $childComponentId);
+                $defined[$childNodeId] = true;
+                $lines[] = sprintf('        %s["%s"]', $childNodeId, MermaidSanitizer::label($childComponent->name()));
+            }
+
+            $lines[] = '    end';
+        }
+
+        foreach ($componentsById as $componentId => $component) {
             $nodeId = MermaidSanitizer::nodeId('C', (int) $component->id());
+
+            if (isset($defined[$nodeId])) {
+                continue;
+            }
+
             $defined[$nodeId] = true;
             $lines[] = sprintf('    %s["%s"]', $nodeId, MermaidSanitizer::label($component->name()));
         }
@@ -162,7 +220,30 @@ final readonly class DiagramService
             }
         }
 
+        $inheritanceEdges = [];
+        foreach ($components as $component) {
+            if ($component->id() === null) {
+                continue;
+            }
+
+            $child = MermaidSanitizer::nodeId('C', (int) $component->id());
+            foreach ($component->parentComponentIds() as $parentComponentId) {
+                $parent = MermaidSanitizer::nodeId('C', $parentComponentId);
+
+                if (! isset($defined[$child], $defined[$parent])) {
+                    continue;
+                }
+
+                $edgeKey = $child . '->' . $parent;
+                if (isset($inheritanceEdges[$edgeKey])) {
+                    continue;
+                }
+
+                $inheritanceEdges[$edgeKey] = true;
+                $lines[] = sprintf('    %s -. "%s" .-> %s', $child, MermaidSanitizer::label('inherits'), $parent);
+            }
+        }
+
         return implode(PHP_EOL, $lines) . PHP_EOL;
     }
 }
-

@@ -7,7 +7,6 @@ namespace App\Presentation\Http\Controller;
 use App\Application\Journey\AddJourneyStepCommand;
 use App\Application\Journey\JourneyService;
 use App\Application\Journey\UpdateJourneyStepCommand;
-use App\Domain\Component\ComponentRepository;
 use App\Domain\Journey\JourneyStepComponent;
 use App\Infrastructure\Security\BasicAuthMiddleware;
 use App\Shared\Support\Csrf;
@@ -28,7 +27,6 @@ final readonly class JourneyStepController
 {
     public function __construct(
         private JourneyService $journeys,
-        private ComponentRepository $components,
     ) {}
 
     #[Get('/journeys/{id}/steps/create')]
@@ -144,4 +142,3 @@ final readonly class JourneyStepController
         return $trimmed === '' ? null : $trimmed;
     }
 }
-

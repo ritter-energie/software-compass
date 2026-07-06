@@ -70,4 +70,3 @@ final class JourneyStepComponent
         return $this->notes;
     }
 }
-

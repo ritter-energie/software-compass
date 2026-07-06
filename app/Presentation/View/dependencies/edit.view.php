@@ -20,9 +20,10 @@
         </div>
     </form>
 
-    <form class="delete-form" method="POST" action="/dependencies/<?= $dependency->id() ?>/delete" data-confirm="<?= htmlspecialchars(\App\Shared\Support\Translator::translate('dependencies.confirm_delete')) ?>">
+    <form class="delete-form" method="POST" action="/dependencies/<?= $dependency->id() ?>/delete" data-confirm="<?= htmlspecialchars(\App\Shared\Support\Translator::translate(
+        'dependencies.confirm_delete',
+    )) ?>">
         <?= \App\Shared\Support\Csrf::input() ?>
         <button type="submit" class="button-danger"><?= htmlspecialchars(\App\Shared\Support\Translator::translate('dependencies.delete')) ?></button>
     </form>
 </x-layout>
-

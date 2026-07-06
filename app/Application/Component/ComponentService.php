@@ -54,6 +54,8 @@ final readonly class ComponentService
             vendor: $command->vendor,
             lifecycleNotes: $command->lifecycleNotes,
             isExternal: $command->isExternal,
+            parentComponentIds: $command->parentComponentIds,
+            childComponentIds: $command->childComponentIds,
         );
 
         $component = $this->components->save($component);
@@ -83,8 +85,7 @@ final readonly class ComponentService
 
     public function update(UpdateComponentCommand $command): Component
     {
-        $existing = $this->components->findById($command->id)
-            ?? throw new RuntimeException('Component not found.');
+        $existing = $this->components->findById($command->id) ?? throw new RuntimeException('Component not found.');
 
         $component = new Component(
             id: $existing->id(),
@@ -107,6 +108,8 @@ final readonly class ComponentService
             vendor: $command->vendor,
             lifecycleNotes: $command->lifecycleNotes,
             isExternal: $command->isExternal,
+            parentComponentIds: $command->parentComponentIds,
+            childComponentIds: $command->childComponentIds,
         );
 
         $updated = $this->components->save($component);
@@ -127,8 +130,7 @@ final readonly class ComponentService
 
     public function detail(int $id): ComponentDetailViewModel
     {
-        $component = $this->components->findById($id)
-            ?? throw new RuntimeException('Component not found.');
+        $component = $this->components->findById($id) ?? throw new RuntimeException('Component not found.');
 
         $incoming = $this->dependencies->findIncomingForComponent($id);
         $outgoing = $this->dependencies->findOutgoingForComponent($id);
@@ -144,6 +146,8 @@ final readonly class ComponentService
             component: $component,
             incomingDependencies: $incoming,
             outgoingDependencies: $outgoing,
+            parentComponents: $this->components->parentsOf($id),
+            childComponents: $this->components->childrenOf($id),
             governanceReview: $this->governanceReviews->findByComponentId($id),
             warnings: $warnings,
             mermaidDiagram: $this->diagramService->componentNeighborhood($id),
@@ -208,7 +212,8 @@ final readonly class ComponentService
             'environment_id' => $component->environmentId(),
             'purpose' => $component->purpose(),
             'documentation_url' => $component->documentationUrl(),
+            'parent_component_ids' => $component->parentComponentIds(),
+            'child_component_ids' => $component->childComponentIds(),
         ];
     }
 }
-

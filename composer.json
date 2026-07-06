@@ -10,7 +10,8 @@
     "require-dev": {
         "phpunit/phpunit": "^12.3.10",
         "symfony/var-dumper": "^7.3.3",
-        "carthage-software/mago": "1.0.0-beta.13"
+        "carthage-software/mago": "1.0.0-beta.13",
+        "phpstan/phpstan": "^2.1"
     },
     "autoload": {
         "psr-4": {
@@ -20,7 +21,8 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\": "tests/"
+            "Tests\\": "tests/",
+            "App\\PHPStan\\": "phpstan/"
         }
     },
     "scripts": {
@@ -40,10 +42,12 @@
         "qa:docker": "docker compose exec app composer qa",
         "fmt": "vendor/bin/mago fmt",
         "lint": "vendor/bin/mago lint --fix --format-after-fix",
+        "analyse": "vendor/bin/phpstan analyse --memory-limit=1G",
         "qa": [
             "composer fmt",
             "composer phpunit",
-            "composer lint"
+            "composer lint",
+            "composer analyse"
         ]
     },
     "minimum-stability": "dev",

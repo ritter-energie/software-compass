@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
+
 namespace App\Presentation\Http\Controller;
+
 use App\Application\Dependency\CreateDependencyCommand;
 use App\Application\Dependency\DependencyService;
 use App\Application\Dependency\UpdateDependencyCommand;
@@ -22,7 +24,9 @@ use Tempest\Http\Status;
 use Tempest\Router\Get;
 use Tempest\Router\Post;
 use Tempest\Router\WithMiddleware;
+
 use function Tempest\view;
+
 #[WithMiddleware(BasicAuthMiddleware::class)]
 final readonly class DependencyController
 {

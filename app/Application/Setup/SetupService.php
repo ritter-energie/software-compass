@@ -17,7 +17,9 @@ final readonly class SetupService
 {
     private const string NETWORK_NAME_KEY = 'network_name';
 
-    public function __construct(private AppSettingsRepository $settings) {}
+    public function __construct(
+        private AppSettingsRepository $settings,
+    ) {}
 
     public function needsSetup(): bool
     {
@@ -112,5 +114,3 @@ final readonly class SetupService
         }
     }
 }
-
-

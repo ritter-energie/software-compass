@@ -59,4 +59,3 @@ final class AppSettingsRepository
         $this->set(self::DEFAULT_LOCALE_KEY, LocaleSupport::normalize($locale));
     }
 }
-

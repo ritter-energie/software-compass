@@ -75,4 +75,3 @@ final class CurrentUser
         return in_array(strtolower(trim($role)), self::$roles, true);
     }
 }
-

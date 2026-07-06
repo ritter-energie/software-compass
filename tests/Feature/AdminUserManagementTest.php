@@ -6,11 +6,10 @@ namespace Tests\Feature;
 
 use Tempest\Http\Session\Session;
 use Tempest\Http\Status;
-
-use function Tempest\get;
-use function Tempest\Database\query;
-
 use Tests\IntegrationTestCase;
+
+use function Tempest\Database\query;
+use function Tempest\get;
 
 final class AdminUserManagementTest extends IntegrationTestCase
 {
@@ -115,4 +114,3 @@ final class AdminUserManagementTest extends IntegrationTestCase
         return $userId;
     }
 }
-

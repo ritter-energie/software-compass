@@ -9,6 +9,7 @@ use App\Domain\Journey\JourneyRepository;
 use App\Domain\Journey\JourneyStep;
 use App\Domain\Journey\JourneyStepComponent;
 use DateTimeImmutable;
+use Tempest\Database\Builder\WhereOperator;
 
 use function Tempest\Database\query;
 
@@ -145,7 +146,7 @@ final class MariaDbJourneyRepository implements JourneyRepository
         $builder = query('journeys')->select()->whereField('slug', $slug);
 
         if ($excludingId !== null) {
-            $builder->andWhere('id', $excludingId, '!=');
+            $builder->andWhere('id', $excludingId, WhereOperator::NOT_EQUALS);
         }
 
         return $builder->first() !== null;
@@ -153,12 +154,18 @@ final class MariaDbJourneyRepository implements JourneyRepository
 
     private function stepById(int $id): JourneyStep
     {
-        return $this->stepFromRow(query('journey_steps')->select()->whereField('id', $id)->first());
+        $row = query('journey_steps')->select()->whereField('id', $id)->first();
+        assert($row !== null);
+
+        return $this->stepFromRow($row);
     }
 
     private function stepComponentById(int $id): JourneyStepComponent
     {
-        return $this->stepComponentFromRow(query('journey_step_components')->select()->whereField('id', $id)->first());
+        $row = query('journey_step_components')->select()->whereField('id', $id)->first();
+        assert($row !== null);
+
+        return $this->stepComponentFromRow($row);
     }
 
     /** @param array<string, mixed> $row */
@@ -258,4 +265,3 @@ final class MariaDbJourneyRepository implements JourneyRepository
         return $row;
     }
 }
-

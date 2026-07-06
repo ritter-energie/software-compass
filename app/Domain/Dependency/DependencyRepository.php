@@ -37,4 +37,3 @@ interface DependencyRepository
 
     public function delete(int $id): void;
 }
-

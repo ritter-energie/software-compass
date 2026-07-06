@@ -108,4 +108,3 @@ final class MariaDbGovernanceReviewRepository implements GovernanceReviewReposit
         return $row;
     }
 }
-

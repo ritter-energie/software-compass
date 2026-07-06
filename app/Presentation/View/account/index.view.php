@@ -33,7 +33,9 @@
                     <label for="locale"><?= htmlspecialchars(\App\Shared\Support\Translator::translate('language.label')) ?></label>
                     <select id="locale" name="locale">
                         <?php foreach (\App\Shared\Support\Translator::supportedLocales() as $code => $label): ?>
-                            <option value="<?= htmlspecialchars($code) ?>" <?= $code === (string) ($user['preferred_locale'] ?? 'en') ? 'selected' : '' ?>><?= htmlspecialchars($label) ?></option>
+                            <option value="<?= htmlspecialchars($code) ?>" <?= $code === (string) ($user['preferred_locale'] ?? 'en') ? 'selected' : '' ?>><?= htmlspecialchars(
+                                $label,
+                            ) ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
@@ -44,4 +46,3 @@
         </form>
     </section>
 </x-layout>
-
