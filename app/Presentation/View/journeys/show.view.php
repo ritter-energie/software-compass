@@ -17,7 +17,7 @@
     <section class="panel"><h3><?= htmlspecialchars(\App\Shared\Support\Translator::translate('journeys.master_data')) ?></h3><dl><dt><?= htmlspecialchars(\App\Shared\Support\Translator::translate(
         'table.owner',
     )) ?></dt><dd><?= htmlspecialchars($ownerName) ?></dd><dt><?= htmlspecialchars(\App\Shared\Support\Translator::translate(
-        'form.owner_team',
+        'table.owner_team',
     )) ?></dt><dd><?= htmlspecialchars($ownerTeamName) ?></dd><dt><?= htmlspecialchars(\App\Shared\Support\Translator::translate('table.status_id')) ?></dt><dd><?= $journey->statusId() ?></dd><dt><?= htmlspecialchars(\App\Shared\Support\Translator::translate(
         'table.description',
     )) ?></dt><dd><?= nl2br(htmlspecialchars((string) $journey->description())) ?: '—' ?></dd></dl></section>
