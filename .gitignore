@@ -5,6 +5,7 @@ vendor/
 /.php-cs-fixer.cache
 .env
 .idea
+software-compass.iml
 .phpunit.result.cache
 log/
 *.local.config.php
