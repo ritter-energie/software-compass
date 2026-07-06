@@ -142,14 +142,16 @@ For database-backed tests prefer Docker:
 docker compose exec app composer test
 ```
 
-Install the local pre-commit hook once to enforce a full Docker test run before
+Install the local pre-commit hook once to enforce the full Docker QA run before
 every commit:
 
 ```bash
 composer hooks:install
 ```
 
-The hook runs the complete PHPUnit suite and blocks commits on failures.
+The hook runs `docker compose exec app composer qa` and blocks commits on
+failures. Internally it disables TTY allocation so the command also works from
+Git clients and IDE commit workflows.
 
 ## Architecture overview
 
