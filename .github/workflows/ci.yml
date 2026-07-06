@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Prepare .env
+        run: cp .env.example .env
+
+      - name: Build and start containers
+        run: docker compose up -d --build
+
+      - name: Wait for app container
+        run: docker compose exec -T app php -v
+
+      - name: Install PHP dependencies
+        run: docker compose exec -T app composer install --no-interaction --prefer-dist
+
+      - name: Run migrations
+        run: docker compose exec -T app php tempest migrate:up --force
+
+      - name: Run quality checks (format, tests, lint)
+        run: docker compose exec -T app composer qa
+
+      - name: Tear down
+        if: always()
+        run: docker compose down -v
+
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type-check
+        run: npm run typecheck
+
+      - name: Build assets
+        run: npm run build
+

@@ -1,0 +1,30 @@
+@use 'variables' as *;
+
+.badge {
+  border-radius: 999px;
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 750;
+  padding: 0.18rem 0.55rem;
+}
+
+.badge-success {
+  background: #dcfae6;
+  color: $color-success;
+}
+
+.badge-warning {
+  background: #fef0c7;
+  color: $color-warning;
+}
+
+.badge-danger {
+  background: #fee4e2;
+  color: $color-danger;
+}
+
+.badge-neutral {
+  background: #eef2f6;
+  color: $color-muted;
+}
+

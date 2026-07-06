@@ -1,0 +1,25 @@
+@use 'variables' as *;
+
+.diagram-container {
+  background: $color-surface;
+  border: 1px solid $color-border;
+  border-radius: $radius;
+  box-shadow: $shadow-card;
+  margin-bottom: 1rem;
+  overflow-x: auto;
+  padding: 1rem;
+}
+
+pre.mermaid,
+.mermaid-source {
+  background: #0b1220;
+  border-radius: $radius;
+  color: #e6edf7;
+  overflow-x: auto;
+  padding: 1rem;
+}
+
+details {
+  margin-top: 1rem;
+}
+

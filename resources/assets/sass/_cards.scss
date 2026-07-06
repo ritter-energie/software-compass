@@ -1,0 +1,32 @@
+@use 'variables' as *;
+
+.cards {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  margin-bottom: 1.5rem;
+}
+
+.card,
+.panel {
+  background: $color-surface;
+  border: 1px solid $color-border;
+  border-radius: $radius;
+  box-shadow: $shadow-card;
+  padding: 1rem;
+}
+
+.card strong {
+  color: $color-muted;
+  display: block;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+}
+
+.card span {
+  display: block;
+  font-size: 2rem;
+  font-weight: 800;
+  margin-top: 0.3rem;
+}
+

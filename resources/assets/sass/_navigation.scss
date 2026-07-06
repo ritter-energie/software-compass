@@ -1,0 +1,124 @@
+@use 'variables' as *;
+
+.topbar {
+  align-items: center;
+  background: $color-surface;
+  border-bottom: 1px solid $color-border;
+  box-shadow: $shadow-card;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+}
+
+.topbar h1 {
+  font-size: 1.15rem;
+  margin: 0;
+}
+
+.topbar nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+}
+
+.topbar nav a {
+  color: $color-text;
+  font-weight: 600;
+}
+
+.user-menu {
+  margin-left: auto;
+  position: relative;
+}
+
+.user-menu__trigger {
+  align-items: center;
+  background: $color-primary;
+  border: 0;
+  border-radius: 999px;
+  box-shadow: 0 8px 18px rgba(36, 84, 214, 0.24);
+  color: #fff;
+  cursor: pointer;
+  display: inline-flex;
+  font-weight: 800;
+  height: 2.75rem;
+  justify-content: center;
+  letter-spacing: 0.04em;
+  padding: 0;
+  width: 2.75rem;
+}
+
+.user-menu__trigger:hover,
+.user-menu__trigger:focus-visible {
+  background: $color-primary-dark;
+  outline: none;
+  text-decoration: none;
+}
+
+.user-menu__trigger:focus-visible {
+  box-shadow: 0 0 0 3px rgba(36, 84, 214, 0.2), 0 8px 18px rgba(36, 84, 214, 0.24);
+}
+
+.user-menu__dropdown {
+  background: $color-surface;
+  border: 1px solid $color-border;
+  border-radius: $radius;
+  box-shadow: $shadow-card;
+  display: grid;
+  gap: 0.15rem;
+  min-width: 11rem;
+  padding: 0.35rem;
+  position: absolute;
+  right: 0;
+  top: calc(100% + 0.5rem);
+  z-index: 20;
+}
+
+.user-menu__dropdown[hidden] {
+  display: none;
+}
+
+.user-menu__item {
+  background: transparent;
+  border: 0;
+  border-radius: 0.45rem;
+  color: $color-text;
+  display: block;
+  font: inherit;
+  font-weight: 650;
+  padding: 0.55rem 0.7rem;
+  text-align: left;
+  width: 100%;
+}
+
+.user-menu__item:hover,
+.user-menu__item:focus-visible {
+  background: #edf2ff;
+  color: $color-primary-dark;
+  outline: none;
+  text-decoration: none;
+}
+
+.user-menu__item-button {
+  cursor: pointer;
+}
+
+.language-switcher {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.language-switcher label {
+  color: $color-muted;
+  font-size: 0.85rem;
+}
+
+.language-switcher select {
+  min-width: 8rem;
+  width: auto;
+}
+

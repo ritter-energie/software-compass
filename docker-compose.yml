@@ -1,0 +1,86 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: software-compass-app
+    ports:
+      - "${APP_PORT:-8080}:80"
+    environment:
+      ENVIRONMENT: local
+      BASE_URI: "http://localhost:${APP_PORT:-8080}"
+      DB_HOST: mariadb
+      DB_PORT: 3306
+      DB_DATABASE: "${DB_DATABASE:-software_compass}"
+      DB_USERNAME: "${DB_USERNAME:-software_compass}"
+      DB_PASSWORD: "${DB_PASSWORD:-secret}"
+    volumes:
+      # Mount the source for live-reload during development. The vendor/
+      # directory is kept in a named volume so container-built dependencies
+      # (with the right PHP version/extensions) are not shadowed by the
+      # host's (possibly different) vendor folder.
+      - .:/var/www/html
+      - vendor:/var/www/html/vendor
+      - tempest-cache:/var/www/html/.tempest
+    command: ["sh", "-lc", "mkdir -p /var/www/html/.tempest/cache && chown -R www-data:www-data /var/www/html/.tempest && apache2-foreground"]
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    networks:
+      - software-compass
+
+  mariadb:
+    image: mariadb:11
+    container_name: software-compass-db
+    environment:
+      MARIADB_DATABASE: "${DB_DATABASE:-software_compass}"
+      MARIADB_USER: "${DB_USERNAME:-software_compass}"
+      MARIADB_PASSWORD: "${DB_PASSWORD:-secret}"
+      MARIADB_ROOT_PASSWORD: "${DB_ROOT_PASSWORD:-root-secret}"
+    ports:
+      - "${DB_PORT:-3306}:3306"
+    volumes:
+      - db-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    networks:
+      - software-compass
+
+  # Optional lightweight DB admin UI, handy for contributors inspecting data.
+  adminer:
+    image: adminer:4
+    container_name: software-compass-adminer
+    restart: unless-stopped
+    ports:
+      - "${ADMINER_PORT:-8081}:8080"
+    depends_on:
+      - mariadb
+    networks:
+      - software-compass
+
+  # Node-based asset build for TypeScript/SASS (see resources/assets).
+  # Run `docker compose run --rm vite npm run build` for a one-off build,
+  # or use the `dev` service below during active frontend development.
+  vite:
+    image: node:22-alpine
+    working_dir: /app
+    volumes:
+      - .:/app
+    entrypoint: ["npm"]
+    command: ["install"]
+    profiles: ["tools"]
+    networks:
+      - software-compass
+
+networks:
+  software-compass:
+    driver: bridge
+
+volumes:
+  db-data:
+  vendor:
+  tempest-cache:
+

@@ -1,0 +1,347 @@
+app:
+  title: Software Compass
+nav:
+  dashboard: Dashboard
+  components: Components
+  interfaces: Interfaces
+  journeys: Customer Journeys
+  governance: Governance
+  diagrams: Diagrams
+  master_data: Master Data
+  users: Users
+  account: Account
+  account_menu: Account menu
+language:
+  label: Language
+  english: English
+  german: German
+  save: Apply
+  updated: Language preference updated.
+  unsupported: Unsupported language.
+auth:
+  login_title: Sign in
+  login_description: Keep your architecture knowledge, governance reviews and diagrams in one focused workspace.
+  login_hero_label: Product overview
+  login_form_title: Welcome back
+  login_form_description: Sign in with your Software Compass account.
+  secure_access: Secure access
+  highlight_components: Maintain components and interfaces with clear ownership.
+  highlight_governance: Track governance reviews and missing documentation.
+  highlight_diagrams: Explore software landscapes with live Mermaid diagrams.
+  username: Username
+  password: Password
+  login_submit: Sign in
+  logout: Sign out
+  error:
+    required_fields: Please enter username and password.
+    invalid_credentials: Invalid username or password.
+  success:
+    logged_in: Signed in successfully.
+    logged_out: Signed out successfully.
+account:
+  title: Account
+  description: View your user information and update your language preference.
+  profile: Profile
+  language_settings: Language Settings
+setup:
+  title: Initial Setup
+  description: Configure your network name and create the first administrator account.
+  network_name: Network Name
+  admin_name: Administrator Name
+  admin_email: Administrator Email (optional)
+  username: Admin Username
+  default_locale: Default Language
+  preferred_locale: Preferred Language
+  password: Password
+  password_confirmation: Confirm Password
+  submit: Complete Setup
+  success:
+    completed: Setup completed. Sign in with your new administrator account.
+  error:
+    required_fields: Please fill in all required fields.
+    password_mismatch: Password confirmation does not match.
+    password_too_short: Password must be at least 8 characters.
+users:
+  title: User Management
+  description: Manage application users and activate or deactivate access.
+  create: Create User
+  edit: Edit User
+  back_to_list: Back to users
+  none: No users found.
+  person: Person
+  email: Email
+  username: Username
+  roles: Roles
+  locale: Language
+  password_optional: New Password (optional)
+  active: Active
+  inactive: Inactive
+  activate: Activate
+  deactivate: Deactivate
+  success:
+    created: User created.
+    updated: User updated.
+    status_updated: User status updated.
+  error:
+    required_fields: Please fill in all required fields.
+footer:
+  tagline: Self-hosted Enterprise Architecture repository
+dashboard:
+  title: Dashboard
+  description: See the current state of your software landscape at a glance, including recent changes, open reviews, incomplete documentation and critical dependencies.
+  metrics:
+    components_total: Components total
+    active_components: Active components
+    dependencies_total: Dependencies total
+    critical_dependencies: Critical dependencies
+    components_without_business_owner: Components without business owner
+    components_without_technical_owner: Components without technical owner
+    dependencies_without_owner: Dependencies without owner
+    dependencies_without_documentation: Dependencies without documentation
+    open_reviews: Open reviews
+    replacement_planned_components: Replacement planned components
+  recent_components: Recent components
+  open_reviews: Open governance reviews
+  incomplete_components: Incomplete components
+  critical_dependencies: Critical dependencies
+table:
+  name: Name
+  description: Description
+  purpose: Purpose
+  component: Component
+  type: Type
+  status: Status
+  status_id: Status ID
+  criticality: Criticality
+  external: External
+  owner: Owner
+  source: Source
+  target: Target
+  frequency: Frequency
+  quality: Quality
+  sort: Sort
+  checklist: Checklist
+  actions: Actions
+  data: Data
+  role: Role
+  missing_information: Missing information
+common:
+  'yes': Yes
+  'no': No
+  no_open_reviews: No open reviews.
+  no_open_governance_reviews: No open governance reviews.
+  no_incomplete_components: No incomplete components.
+  no_critical_dependencies: No critical dependencies.
+  needs_documentation: Needs documentation
+  save_changes: Save changes
+  cancel: Cancel
+  delete: Delete
+  edit: Edit
+  view: View
+  filter: Filter
+  reset: Reset
+  back_to_reviews: Back to reviews
+  view_component: View component
+  no_purpose_documented: No purpose documented.
+  no_components_assigned: No components assigned.
+  no_steps_yet: No steps yet.
+  no_components_match: No components match this filter.
+  no_dependencies_match: No dependencies match this filter.
+  no_journeys_yet: No journeys yet.
+  complete: Complete
+  incomplete: Incomplete
+  select: -- select --
+  none: None.
+  none_option: -- none --
+filter:
+  search_components: Search name, purpose, vendor…
+  search_dependencies: Search name, data, notes…
+  all_types: All types
+  all_statuses: All statuses
+  all_criticalities: All criticalities
+  all_environments: All environments
+  all_owners: All owners
+  all_sources: All sources
+  all_targets: All targets
+  all_protocols: All protocols
+  all_data_objects: All data objects
+  external_only: External only
+governance:
+  reviews: Governance Reviews
+  description: Review and approve components before they become part of the documented architecture. Use the checklist to verify duplicates, interfaces, ownership, data aspects and deployment information.
+  review: Governance Review
+  create_component: Create component
+  checks_done: '{count}/5 checks done'
+  open_review: Open review
+  potential_duplicates: 'Potential duplicate solutions:'
+  duplicate_check_done: Duplicate check done
+  interface_check_done: Interface check done
+  owner_check_done: Owner check done
+  data_check_done: Data check done
+  deployment_check_done: Deployment check done
+  notes: Notes
+  save_checklist: Save checklist
+  approve: Approve
+  reject: Reject
+  status:
+    open: Open
+    in_progress: In progress
+    approved: Approved
+    rejected: Rejected
+    needs_changes: Needs changes
+journeys:
+  title: Customer Journeys
+  description: Document business processes from a customer or user perspective. Add journey steps and connect them to the components that support the process.
+  new: New Customer Journey
+  edit: Edit Journey
+  create: Create journey
+  delete: Delete journey
+  confirm_delete: Delete this journey? This cannot be undone.
+  new_step: New Journey Step
+  add_step: Add step
+  edit_step: Edit Journey Step
+  save_step: Save step
+  master_data: Journey master data
+  steps: Steps
+  assigned_components: Assigned components
+  assign_component: Assign component
+  remove_assignment: Remove
+  confirm_delete_step: Delete this step?
+  confirm_remove_assignment: Remove this assignment?
+  diagram: Journey diagram
+  back_to_journey: Back to journey
+components:
+  title: Components
+  description: Maintain the inventory of applications, systems, services, databases and other architecture building blocks, including purpose, ownership, status and criticality.
+  new: New Component
+  edit: Edit Component
+  create: Create component
+  delete: Delete component
+  confirm_delete: Delete this component? This cannot be undone.
+  not_found: Component not found
+  back_to_list: Back to components
+  incomplete_information: 'Incomplete information:'
+  overview: Overview
+  responsibilities: Responsibilities
+  purpose_and_description: Purpose & description
+  documentation: Documentation
+  incoming_dependencies: Incoming dependencies
+  outgoing_dependencies: Outgoing dependencies
+  from: From
+  to: To
+  add_dependency_from_component: Add dependency from this component
+  governance_status: Governance status
+  no_governance_review_yet: No governance review yet.
+  view_governance_details: View governance details
+  local_diagram: Local diagram
+  neighborhood_diagram: Neighborhood diagram
+  back_to_component: Back to component
+dependencies:
+  title: Interfaces / Dependencies
+  description: Document how components communicate with each other, which data is exchanged, which protocols are used and how critical each connection is.
+  new: New Interface / Dependency
+  edit: Edit Dependency
+  create: Create dependency
+  delete: Delete dependency
+  confirm_delete: Delete this dependency? This cannot be undone.
+  not_found: Dependency not found
+  back_to_list: Back to dependencies
+  overview_diagram: Overview diagram
+  incomplete_warning: This dependency is incomplete. Add an owner and data description to improve interface documentation quality.
+  source_and_target: Source and target
+  classification: Classification
+  type_id: Type ID
+  protocol_id: Protocol ID
+  criticality_id: Criticality ID
+  documentation: Documentation
+  authentication: Authentication
+master_data:
+  title: Master Data
+  description: View the shared reference values used by forms and filters, such as component types, statuses, criticality levels, protocols and data objects.
+  no_entries: No entries.
+  personal_data: Personal data
+  sensitive_data: Sensitive data
+  component_types: Component types
+  component_statuses: Component statuses
+  criticality_levels: Criticality levels
+  environments: Environments
+  deployment_locations: Deployment locations
+  dependency_types: Dependency types
+  communication_protocols: Communication protocols
+  data_objects: Data objects
+  tags: Tags
+diagrams:
+  components_title: Component Overview Diagram
+  journey_title: Customer Journey Diagram
+  description: Explore the documented architecture visually as Mermaid diagrams. Use this page to understand component relationships and copy the generated source for documentation.
+  mermaid_source: Mermaid source
+  copy_mermaid_source: Copy Mermaid source
+form:
+  name_required: Name *
+  short_name: Short name
+  type_required: Type *
+  status_required: Status *
+  criticality: Criticality
+  business_owner: Business owner
+  technical_owner: Technical owner
+  deployment_location: Deployment location
+  environment: Environment
+  project_name: Project name
+  started_on: Started on
+  vendor: Vendor
+  external_component: External component / vendor solution
+  purpose: Purpose
+  description: Description
+  documentation_url: Documentation URL
+  repository_url: Repository URL
+  lifecycle_notes: Lifecycle notes
+  source_component_required: Source Component *
+  target_component_required: Target Component *
+  protocol: Protocol
+  owner: Owner
+  frequency: Frequency
+  direction: Direction
+  direction_source_to_target: Source to target
+  direction_target_to_source: Target to source
+  bidirectional: Bidirectional
+  data_description: Data description
+  authentication_method: Authentication method
+  technical_notes: Technical notes
+  sort_order: Sort order
+  sort_order_required: Sort order *
+  governance_owner_hint: Recommended for governance approval.
+  interface_data_hint: Recommended for active or critical interfaces.
+flash:
+  error:
+    invalid_security_token: Invalid security token. Please try again.
+    name_required: Name is required.
+    step_name_required: Step name is required.
+    valid_urls_required: Please enter valid URLs.
+    valid_documentation_url_required: Please enter a valid documentation URL.
+    component_not_found: Component not found.
+    dependency_not_found: Dependency not found.
+    journey_not_found: Journey not found.
+    journey_step_not_found: Journey step not found.
+    governance_review_not_found: Governance review not found.
+    user_not_linked_to_person: The current user is not linked to a person.
+    no_authenticated_user: No authenticated user found.
+    user_not_found: User not found.
+  success:
+    component_created: Component created.
+    component_updated: Component updated.
+    component_deleted: Component deleted.
+    dependency_created: Dependency created.
+    dependency_updated: Dependency updated.
+    dependency_deleted: Dependency deleted.
+    journey_created: Journey created.
+    journey_updated: Journey updated.
+    journey_deleted: Journey deleted.
+    journey_step_added: Journey step added.
+    journey_step_updated: Journey step updated.
+    journey_step_deleted: Journey step deleted.
+    component_assigned_to_step: Component assigned to step.
+    component_assignment_removed: Component assignment removed.
+    review_checklist_updated: Review checklist updated.
+    review_approved: Review approved.
+    review_rejected: Review rejected.
+

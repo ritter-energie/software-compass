@@ -1,0 +1,119 @@
+@use 'variables' as *;
+
+form {
+  margin: 0;
+}
+
+.form-grid,
+.filter-bar {
+  display: grid;
+  gap: 1rem;
+}
+
+.form-grid {
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+.filter-bar {
+  align-items: end;
+  background: $color-surface;
+  border: 1px solid $color-border;
+  border-radius: $radius;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  margin-bottom: 1rem;
+  padding: 1rem;
+}
+
+.form-field {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.form-field-wide {
+  grid-column: 1 / -1;
+}
+
+label {
+  color: $color-text;
+  font-weight: 650;
+}
+
+input,
+select,
+textarea {
+  border: 1px solid $color-border;
+  border-radius: 0.45rem;
+  color: $color-text;
+  font: inherit;
+  padding: 0.55rem 0.7rem;
+  width: 100%;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: $color-primary;
+  outline: 3px solid rgba($color-primary, 0.15);
+}
+
+.checkbox-inline,
+.form-field-checkbox label {
+  align-items: center;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.checkbox-inline input,
+.form-field-checkbox input {
+  width: auto;
+}
+
+.hint {
+  color: $color-muted;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.button-primary,
+.button-secondary,
+.button-danger,
+button {
+  border: 0;
+  border-radius: 0.45rem;
+  cursor: pointer;
+  display: inline-block;
+  font: inherit;
+  font-weight: 700;
+  padding: 0.55rem 0.85rem;
+}
+
+.button-primary {
+  background: $color-primary;
+  color: white;
+}
+
+.button-primary:hover {
+  background: $color-primary-dark;
+  text-decoration: none;
+}
+
+.button-secondary,
+button {
+  background: #edf2ff;
+  color: $color-primary-dark;
+}
+
+.button-danger {
+  background: #fee4e2;
+  color: $color-danger;
+}
+
+.form-field-highlight input,
+.form-field-required textarea {
+  border-color: $color-warning;
+}
+
+.form-field-muted {
+  opacity: 0.75;
+}
+

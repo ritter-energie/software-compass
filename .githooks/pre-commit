@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+printf '%s\n' "[pre-commit] Running full test suite in Docker..."
+
+if ! docker compose ps app >/dev/null 2>&1; then
+  printf '%s\n' "[pre-commit] Docker compose app service is not available. Start the stack first: docker compose up -d --build"
+  exit 1
+fi
+
+# Ensure the isolated test database exists before running PHPUnit.
+docker compose exec -T mariadb sh -lc 'mariadb -uroot -p"$MARIADB_ROOT_PASSWORD" -e "CREATE DATABASE IF NOT EXISTS software_compass_test CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; GRANT ALL PRIVILEGES ON software_compass_test.* TO \"$MARIADB_USER\"@\"%\"; FLUSH PRIVILEGES;"'
+
+docker compose exec -T app composer test
+
+printf '%s\n' "[pre-commit] All tests passed."
+

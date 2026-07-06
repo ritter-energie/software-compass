@@ -1,0 +1,31 @@
+name: Tests
+
+on:
+  pull_request:
+  push:
+
+jobs:
+  phpunit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Start Docker services
+        run: |
+          cp .env.example .env
+          docker compose up -d --build
+
+      - name: Ensure isolated test database exists
+        run: |
+          docker compose exec -T mariadb sh -lc 'mariadb -uroot -p"$MARIADB_ROOT_PASSWORD" -e "CREATE DATABASE IF NOT EXISTS software_compass_test CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; GRANT ALL PRIVILEGES ON software_compass_test.* TO \"$MARIADB_USER\"@\"%\"; FLUSH PRIVILEGES;"'
+
+      - name: Run full test suite
+        run: |
+          docker compose exec -T app composer test
+
+      - name: Tear down
+        if: always()
+        run: docker compose down -v
+

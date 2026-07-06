@@ -1,0 +1,29 @@
+@use 'variables' as *;
+
+.alert {
+  border-radius: $radius;
+  margin-bottom: 1rem;
+  padding: 0.85rem 1rem;
+}
+
+.alert-success {
+  background: #dcfae6;
+  color: $color-success;
+}
+
+.alert-error,
+.alert-danger {
+  background: #fee4e2;
+  color: $color-danger;
+}
+
+.alert-warning {
+  background: #fef0c7;
+  color: $color-warning;
+}
+
+.warning-list {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+

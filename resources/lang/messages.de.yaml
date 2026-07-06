@@ -1,0 +1,347 @@
+app:
+  title: Software Compass
+nav:
+  dashboard: Übersicht
+  components: Komponenten
+  interfaces: Schnittstellen
+  journeys: Customer Journeys
+  governance: Governance
+  diagrams: Diagramme
+  master_data: Stammdaten
+  users: Benutzer
+  account: Konto
+  account_menu: Kontomenü
+language:
+  label: Sprache
+  english: Englisch
+  german: Deutsch
+  save: Übernehmen
+  updated: Spracheinstellung aktualisiert.
+  unsupported: Nicht unterstützte Sprache.
+auth:
+  login_title: Anmelden
+  login_description: Behalte Architekturwissen, Governance Reviews und Diagramme in einem fokussierten Arbeitsbereich im Blick.
+  login_hero_label: Produktüberblick
+  login_form_title: Willkommen zurück
+  login_form_description: Melde dich mit deinem Software-Compass-Konto an.
+  secure_access: Sicherer Zugang
+  highlight_components: Pflege Komponenten und Schnittstellen mit klaren Verantwortlichkeiten.
+  highlight_governance: Verfolge Governance Reviews und fehlende Dokumentation.
+  highlight_diagrams: Erkunde Software-Landschaften mit Live-Mermaid-Diagrammen.
+  username: Benutzername
+  password: Passwort
+  login_submit: Anmelden
+  logout: Abmelden
+  error:
+    required_fields: Bitte Benutzername und Passwort eingeben.
+    invalid_credentials: Ungültiger Benutzername oder Passwort.
+  success:
+    logged_in: Erfolgreich angemeldet.
+    logged_out: Erfolgreich abgemeldet.
+account:
+  title: Konto
+  description: Zeige deine Benutzerdaten an und ändere deine Spracheinstellung.
+  profile: Profil
+  language_settings: Spracheinstellungen
+setup:
+  title: Ersteinrichtung
+  description: Konfiguriere den Netzwerknamen und lege das erste Administratorkonto an.
+  network_name: Netzwerkname
+  admin_name: Administratorname
+  admin_email: Administrator-E-Mail (optional)
+  username: Admin-Benutzername
+  default_locale: Standardsprache
+  preferred_locale: Bevorzugte Sprache
+  password: Passwort
+  password_confirmation: Passwort bestätigen
+  submit: Einrichtung abschließen
+  success:
+    completed: Einrichtung abgeschlossen. Melde dich mit dem neuen Administratorkonto an.
+  error:
+    required_fields: Bitte alle Pflichtfelder ausfüllen.
+    password_mismatch: Die Passwortbestätigung stimmt nicht überein.
+    password_too_short: Das Passwort muss mindestens 8 Zeichen lang sein.
+users:
+  title: Benutzerverwaltung
+  description: Verwalte Benutzerkonten und aktiviere oder deaktiviere den Zugriff.
+  create: Benutzer anlegen
+  edit: Benutzer bearbeiten
+  back_to_list: Zurück zu Benutzern
+  none: Keine Benutzer gefunden.
+  person: Person
+  email: E-Mail
+  username: Benutzername
+  roles: Rollen
+  locale: Sprache
+  password_optional: Neues Passwort (optional)
+  active: Aktiv
+  inactive: Inaktiv
+  activate: Aktivieren
+  deactivate: Deaktivieren
+  success:
+    created: Benutzer angelegt.
+    updated: Benutzer aktualisiert.
+    status_updated: Benutzerstatus aktualisiert.
+  error:
+    required_fields: Bitte alle Pflichtfelder ausfüllen.
+footer:
+  tagline: Selbst gehostetes Enterprise-Architecture-Repository
+dashboard:
+  title: Übersicht
+  description: Sieh den aktuellen Zustand der Software-Landschaft auf einen Blick, inklusive letzter Änderungen, offener Reviews, unvollständiger Dokumentation und kritischer Abhängigkeiten.
+  metrics:
+    components_total: Komponenten gesamt
+    active_components: Aktive Komponenten
+    dependencies_total: Abhängigkeiten gesamt
+    critical_dependencies: Kritische Abhängigkeiten
+    components_without_business_owner: Komponenten ohne Business Owner
+    components_without_technical_owner: Komponenten ohne Technical Owner
+    dependencies_without_owner: Abhängigkeiten ohne Owner
+    dependencies_without_documentation: Abhängigkeiten ohne Dokumentation
+    open_reviews: Offene Reviews
+    replacement_planned_components: Komponenten mit geplanter Ablösung
+  recent_components: Zuletzt geänderte Komponenten
+  open_reviews: Offene Governance Reviews
+  incomplete_components: Unvollständige Komponenten
+  critical_dependencies: Kritische Abhängigkeiten
+table:
+  name: Name
+  description: Beschreibung
+  purpose: Zweck
+  component: Komponente
+  type: Typ
+  status: Status
+  status_id: Status-ID
+  criticality: Kritikalität
+  external: Extern
+  owner: Owner
+  source: Quelle
+  target: Ziel
+  frequency: Frequenz
+  quality: Qualität
+  sort: Sortierung
+  checklist: Checkliste
+  actions: Aktionen
+  data: Daten
+  role: Rolle
+  missing_information: Fehlende Informationen
+common:
+  'yes': Ja
+  'no': Nein
+  no_open_reviews: Keine offenen Reviews.
+  no_open_governance_reviews: Keine offenen Governance Reviews.
+  no_incomplete_components: Keine unvollständigen Komponenten.
+  no_critical_dependencies: Keine kritischen Abhängigkeiten.
+  needs_documentation: Dokumentation erforderlich
+  save_changes: Änderungen speichern
+  cancel: Abbrechen
+  delete: Löschen
+  edit: Bearbeiten
+  view: Anzeigen
+  filter: Filtern
+  reset: Zurücksetzen
+  back_to_reviews: Zurück zu Reviews
+  view_component: Komponente anzeigen
+  no_purpose_documented: Kein Zweck dokumentiert.
+  no_components_assigned: Keine Komponenten zugeordnet.
+  no_steps_yet: Noch keine Schritte vorhanden.
+  no_components_match: Keine Komponenten entsprechen diesem Filter.
+  no_dependencies_match: Keine Abhängigkeiten entsprechen diesem Filter.
+  no_journeys_yet: Noch keine Journeys vorhanden.
+  complete: Vollständig
+  incomplete: Unvollständig
+  select: -- auswählen --
+  none: Keine.
+  none_option: -- keine --
+filter:
+  search_components: Name, Zweck, Anbieter suchen…
+  search_dependencies: Name, Daten, Notizen suchen…
+  all_types: Alle Typen
+  all_statuses: Alle Statuswerte
+  all_criticalities: Alle Kritikalitäten
+  all_environments: Alle Umgebungen
+  all_owners: Alle Owner
+  all_sources: Alle Quellen
+  all_targets: Alle Ziele
+  all_protocols: Alle Protokolle
+  all_data_objects: Alle Datenobjekte
+  external_only: Nur externe
+governance:
+  reviews: Governance Reviews
+  description: Prüfe und gib Komponenten frei, bevor sie Teil der dokumentierten Architektur werden. Die Checkliste hilft bei Doppellösungen, Schnittstellen, Verantwortlichkeiten, Datenaspekten und Deployment-Informationen.
+  review: Governance Review
+  create_component: Komponente erstellen
+  checks_done: '{count}/5 Prüfungen erledigt'
+  open_review: Review öffnen
+  potential_duplicates: 'Potenzielle Doppellösungen:'
+  duplicate_check_done: Doppellösungsprüfung erledigt
+  interface_check_done: Schnittstellenprüfung erledigt
+  owner_check_done: Owner-Prüfung erledigt
+  data_check_done: Datenprüfung erledigt
+  deployment_check_done: Deployment-Prüfung erledigt
+  notes: Notizen
+  save_checklist: Checkliste speichern
+  approve: Freigeben
+  reject: Ablehnen
+  status:
+    open: Offen
+    in_progress: In Bearbeitung
+    approved: Freigegeben
+    rejected: Abgelehnt
+    needs_changes: Änderungen erforderlich
+journeys:
+  title: Customer Journeys
+  description: Dokumentiere Geschäftsprozesse aus Kunden- oder Nutzersicht. Ergänze Journey-Schritte und verknüpfe sie mit den Komponenten, die den Prozess unterstützen.
+  new: Neue Customer Journey
+  edit: Journey bearbeiten
+  create: Journey erstellen
+  delete: Journey löschen
+  confirm_delete: Diese Journey löschen? Das kann nicht rückgängig gemacht werden.
+  new_step: Neuer Journey-Schritt
+  add_step: Schritt hinzufügen
+  edit_step: Journey-Schritt bearbeiten
+  save_step: Schritt speichern
+  master_data: Journey-Stammdaten
+  steps: Schritte
+  assigned_components: Zugeordnete Komponenten
+  assign_component: Komponente zuordnen
+  remove_assignment: Entfernen
+  confirm_delete_step: Diesen Schritt löschen?
+  confirm_remove_assignment: Diese Zuordnung entfernen?
+  diagram: Journey-Diagramm
+  back_to_journey: Zurück zur Journey
+components:
+  title: Komponenten
+  description: Pflege das Inventar von Anwendungen, Systemen, Services, Datenbanken und anderen Architekturbausteinen inklusive Zweck, Verantwortung, Status und Kritikalität.
+  new: Neue Komponente
+  edit: Komponente bearbeiten
+  create: Komponente erstellen
+  delete: Komponente löschen
+  confirm_delete: Diese Komponente löschen? Das kann nicht rückgängig gemacht werden.
+  not_found: Komponente nicht gefunden
+  back_to_list: Zurück zu Komponenten
+  incomplete_information: 'Unvollständige Informationen:'
+  overview: Übersicht
+  responsibilities: Verantwortlichkeiten
+  purpose_and_description: Zweck & Beschreibung
+  documentation: Dokumentation
+  incoming_dependencies: Eingehende Abhängigkeiten
+  outgoing_dependencies: Ausgehende Abhängigkeiten
+  from: Von
+  to: Nach
+  add_dependency_from_component: Abhängigkeit von dieser Komponente hinzufügen
+  governance_status: Governance-Status
+  no_governance_review_yet: Noch kein Governance-Review vorhanden.
+  view_governance_details: Governance-Details ansehen
+  local_diagram: Lokales Diagramm
+  neighborhood_diagram: Nachbarschaftsdiagramm
+  back_to_component: Zurück zur Komponente
+dependencies:
+  title: Schnittstellen / Abhängigkeiten
+  description: Dokumentiere, wie Komponenten miteinander kommunizieren, welche Daten ausgetauscht werden, welche Protokolle genutzt werden und wie kritisch die Verbindung ist.
+  new: Neue Schnittstelle / Abhängigkeit
+  edit: Abhängigkeit bearbeiten
+  create: Abhängigkeit erstellen
+  delete: Abhängigkeit löschen
+  confirm_delete: Diese Abhängigkeit löschen? Das kann nicht rückgängig gemacht werden.
+  not_found: Abhängigkeit nicht gefunden
+  back_to_list: Zurück zu Abhängigkeiten
+  overview_diagram: Übersichtsdiagramm
+  incomplete_warning: Diese Abhängigkeit ist unvollständig. Ergänze Owner und Datenbeschreibung, um die Qualität der Schnittstellendokumentation zu verbessern.
+  source_and_target: Quelle und Ziel
+  classification: Klassifizierung
+  type_id: Typ-ID
+  protocol_id: Protokoll-ID
+  criticality_id: Kritikalitäts-ID
+  documentation: Dokumentation
+  authentication: Authentifizierung
+master_data:
+  title: Stammdaten
+  description: Sieh die gemeinsamen Referenzwerte für Formulare und Filter, zum Beispiel Komponententypen, Statuswerte, Kritikalitätsstufen, Protokolle und Datenobjekte.
+  no_entries: Keine Einträge.
+  personal_data: Personenbezogene Daten
+  sensitive_data: Sensible Daten
+  component_types: Komponententypen
+  component_statuses: Komponentenstatus
+  criticality_levels: Kritikalitätsstufen
+  environments: Umgebungen
+  deployment_locations: Deployment-Standorte
+  dependency_types: Abhängigkeitstypen
+  communication_protocols: Kommunikationsprotokolle
+  data_objects: Datenobjekte
+  tags: Tags
+diagrams:
+  components_title: Komponenten-Übersichtsdiagramm
+  journey_title: Customer-Journey-Diagramm
+  description: Erkunde die dokumentierte Architektur visuell als Mermaid-Diagramm. Diese Seite hilft, Komponentenbeziehungen schneller zu verstehen und die generierte Quelle in Dokumentation zu übernehmen.
+  mermaid_source: Mermaid-Quelle
+  copy_mermaid_source: Mermaid-Quelle kopieren
+form:
+  name_required: Name *
+  short_name: Kurzname
+  type_required: Typ *
+  status_required: Status *
+  criticality: Kritikalität
+  business_owner: Business Owner
+  technical_owner: Technical Owner
+  deployment_location: Deployment-Standort
+  environment: Umgebung
+  project_name: Projektname
+  started_on: Gestartet am
+  vendor: Anbieter
+  external_component: Externe Komponente / Herstellerlösung
+  purpose: Zweck
+  description: Beschreibung
+  documentation_url: Dokumentations-URL
+  repository_url: Repository-URL
+  lifecycle_notes: Lebenszyklusnotizen
+  source_component_required: Quellkomponente *
+  target_component_required: Zielkomponente *
+  protocol: Protokoll
+  owner: Owner
+  frequency: Frequenz
+  direction: Richtung
+  direction_source_to_target: Quelle zu Ziel
+  direction_target_to_source: Ziel zu Quelle
+  bidirectional: Bidirektional
+  data_description: Datenbeschreibung
+  authentication_method: Authentifizierungsmethode
+  technical_notes: Technische Notizen
+  sort_order: Sortierung
+  sort_order_required: Sortierung *
+  governance_owner_hint: Für die Governance-Freigabe empfohlen.
+  interface_data_hint: Für aktive oder kritische Schnittstellen empfohlen.
+flash:
+  error:
+    invalid_security_token: Ungültiges Sicherheitstoken. Bitte erneut versuchen.
+    name_required: Name ist erforderlich.
+    step_name_required: Ein Schrittname ist erforderlich.
+    valid_urls_required: Bitte gültige URLs eingeben.
+    valid_documentation_url_required: Bitte eine gültige Dokumentations-URL eingeben.
+    component_not_found: Komponente nicht gefunden.
+    dependency_not_found: Abhängigkeit nicht gefunden.
+    journey_not_found: Journey nicht gefunden.
+    journey_step_not_found: Journey-Schritt nicht gefunden.
+    governance_review_not_found: Governance-Review nicht gefunden.
+    user_not_linked_to_person: Der aktuelle Benutzer ist keiner Person zugeordnet.
+    no_authenticated_user: Kein authentifizierter Benutzer gefunden.
+    user_not_found: Benutzer nicht gefunden.
+  success:
+    component_created: Komponente erstellt.
+    component_updated: Komponente aktualisiert.
+    component_deleted: Komponente gelöscht.
+    dependency_created: Abhängigkeit erstellt.
+    dependency_updated: Abhängigkeit aktualisiert.
+    dependency_deleted: Abhängigkeit gelöscht.
+    journey_created: Journey erstellt.
+    journey_updated: Journey aktualisiert.
+    journey_deleted: Journey gelöscht.
+    journey_step_added: Journey-Schritt hinzugefügt.
+    journey_step_updated: Journey-Schritt aktualisiert.
+    journey_step_deleted: Journey-Schritt gelöscht.
+    component_assigned_to_step: Komponente dem Schritt zugeordnet.
+    component_assignment_removed: Komponenten-Zuordnung entfernt.
+    review_checklist_updated: Review-Checkliste aktualisiert.
+    review_approved: Review freigegeben.
+    review_rejected: Review abgelehnt.
+
