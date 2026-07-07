@@ -22,15 +22,13 @@ use Tempest\Router\WithMiddleware;
 use function Tempest\view;
 
 #[WithMiddleware(BasicAuthMiddleware::class)]
-final readonly class AdminUserController
-{
+final readonly class AdminUserController {
     public function __construct(
         private AdminUserService $users,
     ) {}
 
     #[Get('/admin/users')]
-    public function index(): Response
-    {
+    public function index(): Response {
         if (! CurrentUser::hasRole('admin')) {
             return new Ok('Admin role required.')->setStatus(Status::FORBIDDEN);
         }
@@ -39,8 +37,7 @@ final readonly class AdminUserController
     }
 
     #[Get('/admin/users/create')]
-    public function create(): Response
-    {
+    public function create(): Response {
         if (! CurrentUser::hasRole('admin')) {
             return new Ok('Admin role required.')->setStatus(Status::FORBIDDEN);
         }
@@ -53,8 +50,7 @@ final readonly class AdminUserController
     }
 
     #[Post('/admin/users')]
-    public function store(Request $request): Response
-    {
+    public function store(Request $request): Response {
         if (! CurrentUser::hasRole('admin')) {
             return new Ok('Admin role required.')->setStatus(Status::FORBIDDEN);
         }
@@ -98,8 +94,7 @@ final readonly class AdminUserController
     }
 
     #[Get('/admin/users/{id}/edit')]
-    public function edit(int $id): Response
-    {
+    public function edit(int $id): Response {
         if (! CurrentUser::hasRole('admin')) {
             return new Ok('Admin role required.')->setStatus(Status::FORBIDDEN);
         }
@@ -117,8 +112,7 @@ final readonly class AdminUserController
     }
 
     #[Post('/admin/users/{id}')]
-    public function update(int $id, Request $request): Response
-    {
+    public function update(int $id, Request $request): Response {
         if (! CurrentUser::hasRole('admin')) {
             return new Ok('Admin role required.')->setStatus(Status::FORBIDDEN);
         }
@@ -163,8 +157,7 @@ final readonly class AdminUserController
     }
 
     #[Post('/admin/users/{id}/toggle-active')]
-    public function toggleActive(int $id, Request $request): Response
-    {
+    public function toggleActive(int $id, Request $request): Response {
         if (! CurrentUser::hasRole('admin')) {
             return new Ok('Admin role required.')->setStatus(Status::FORBIDDEN);
         }
@@ -178,8 +171,7 @@ final readonly class AdminUserController
         return new Redirect('/admin/users')->flash('success', Translator::translate('users.success.status_updated'));
     }
 
-    private function stringOrNull(mixed $value): ?string
-    {
+    private function stringOrNull(mixed $value): ?string {
         $trimmed = trim((string) ($value ?? ''));
 
         return $trimmed === '' ? null : $trimmed;

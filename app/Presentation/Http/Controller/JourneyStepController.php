@@ -23,21 +23,18 @@ use Tempest\Router\WithMiddleware;
 use function Tempest\view;
 
 #[WithMiddleware(BasicAuthMiddleware::class)]
-final readonly class JourneyStepController
-{
+final readonly class JourneyStepController {
     public function __construct(
         private JourneyService $journeys,
     ) {}
 
     #[Get('/journeys/{id}/steps/create')]
-    public function create(int $id): Response
-    {
+    public function create(int $id): Response {
         return new Ok(view('../../View/journeys/step-create.view.php', journeyId: $id));
     }
 
     #[Post('/journeys/{id}/steps')]
-    public function store(int $id, Request $request): Response
-    {
+    public function store(int $id, Request $request): Response {
         if (! Csrf::isValid($request)) {
             return new Redirect("/journeys/{$id}")->flash('error', Translator::translate('flash.error.invalid_security_token'));
         }
@@ -56,8 +53,7 @@ final readonly class JourneyStepController
     }
 
     #[Get('/journey-steps/{id}/edit')]
-    public function edit(int $id): Response
-    {
+    public function edit(int $id): Response {
         try {
             $step = $this->journeys->step($id);
         } catch (RuntimeException) {
@@ -68,8 +64,7 @@ final readonly class JourneyStepController
     }
 
     #[Post('/journey-steps/{id}')]
-    public function update(int $id, Request $request): Response
-    {
+    public function update(int $id, Request $request): Response {
         if (! Csrf::isValid($request)) {
             return new Redirect("/journey-steps/{$id}/edit")->flash('error', Translator::translate('flash.error.invalid_security_token'));
         }
@@ -91,8 +86,7 @@ final readonly class JourneyStepController
     }
 
     #[Post('/journey-steps/{id}/delete')]
-    public function delete(int $id, Request $request): Response
-    {
+    public function delete(int $id, Request $request): Response {
         $step = $this->journeys->step($id);
         if (! Csrf::isValid($request)) {
             return new Redirect('/journeys/' . $step->journeyId())->flash('error', Translator::translate('flash.error.invalid_security_token'));
@@ -103,8 +97,7 @@ final readonly class JourneyStepController
     }
 
     #[Post('/journey-steps/{id}/components')]
-    public function attachComponent(int $id, Request $request): Response
-    {
+    public function attachComponent(int $id, Request $request): Response {
         $step = $this->journeys->step($id);
         if (! Csrf::isValid($request)) {
             return new Redirect('/journeys/' . $step->journeyId())->flash('error', Translator::translate('flash.error.invalid_security_token'));
@@ -125,8 +118,7 @@ final readonly class JourneyStepController
     }
 
     #[Post('/journey-step-components/{id}/delete')]
-    public function deleteStepComponent(int $id, Request $request): Response
-    {
+    public function deleteStepComponent(int $id, Request $request): Response {
         if (! Csrf::isValid($request)) {
             return new Redirect('/journeys')->flash('error', Translator::translate('flash.error.invalid_security_token'));
         }
@@ -136,8 +128,7 @@ final readonly class JourneyStepController
         return new Redirect($redirect > 0 ? '/journeys/' . $redirect : '/journeys')->flash('success', Translator::translate('flash.success.component_assignment_removed'));
     }
 
-    private function stringOrNull(mixed $value): ?string
-    {
+    private function stringOrNull(mixed $value): ?string {
         $trimmed = trim((string) ($value ?? ''));
         return $trimmed === '' ? null : $trimmed;
     }

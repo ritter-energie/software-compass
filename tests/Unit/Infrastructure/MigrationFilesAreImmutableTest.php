@@ -7,10 +7,8 @@ namespace Tests\Unit\Infrastructure;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-final class MigrationFilesAreImmutableTest extends TestCase
-{
-    public function test_migration_files_match_the_tracked_hash_manifest(): void
-    {
+final class MigrationFilesAreImmutableTest extends TestCase {
+    public function test_migration_files_match_the_tracked_hash_manifest(): void {
         $root = dirname(__DIR__, 3);
         $manifestPath = $root . '/database/migrations/.migration-hashes.json';
 
@@ -50,8 +48,7 @@ final class MigrationFilesAreImmutableTest extends TestCase
     }
 
     /** @return array<string, string> */
-    private function migrationHashes(string $migrationDirectory): array
-    {
+    private function migrationHashes(string $migrationDirectory): array {
         $files = glob($migrationDirectory . '/*.php');
 
         if ($files === false) {

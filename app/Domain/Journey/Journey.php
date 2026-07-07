@@ -11,8 +11,7 @@ use InvalidArgumentException;
  * together describe an end-to-end business process (e.g. "Order to
  * Delivery"), and the components that support each step.
  */
-final class Journey
-{
+final class Journey {
     public function __construct(
         private ?int $id,
         private string $name,
@@ -28,48 +27,39 @@ final class Journey
         }
     }
 
-    public function id(): ?int
-    {
+    public function id(): ?int {
         return $this->id;
     }
 
-    public function name(): string
-    {
+    public function name(): string {
         return $this->name;
     }
 
-    public function slug(): string
-    {
+    public function slug(): string {
         return $this->slug;
     }
 
-    public function description(): ?string
-    {
+    public function description(): ?string {
         return $this->description;
     }
 
-    public function ownerId(): ?int
-    {
+    public function ownerId(): ?int {
         return $this->ownerId;
     }
 
-    public function ownerTeamId(): ?int
-    {
+    public function ownerTeamId(): ?int {
         return $this->ownerTeamId;
     }
 
-    public function statusId(): int
-    {
+    public function statusId(): int {
         return $this->statusId;
     }
 
-    public function sortOrder(): int
-    {
+    public function sortOrder(): int {
         return $this->sortOrder;
     }
 
-    public function rename(string $name): void
-    {
+    public function rename(string $name): void {
         if (trim($name) === '') {
             throw new InvalidArgumentException('A journey name must not be blank.');
         }

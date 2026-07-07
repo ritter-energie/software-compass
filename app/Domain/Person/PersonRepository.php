@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Person;
 
-interface PersonRepository
-{
+interface PersonRepository {
     public function findById(int $id): ?Person;
 
     /**

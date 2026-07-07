@@ -5,8 +5,7 @@ namespace App\Application\Dependency;
 
 use App\Domain\Dependency\Dependency;
 
-final readonly class ComponentDependenciesViewModel
-{
+final readonly class ComponentDependenciesViewModel {
     /** @param Dependency[] $incoming @param Dependency[] $outgoing */
     public function __construct(
         public int $componentId,

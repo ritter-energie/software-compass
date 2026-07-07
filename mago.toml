@@ -9,16 +9,19 @@ excludes = [
 ]
 
 [formatter]
-print-width = 180
-tab-width = 4
-use-tabs = false
-null-type-hint = "question"
-space-before-arrow-function-parameter-list-parenthesis = true
-space-after-logical-not-unary-prefix-operator = true
 always-break-named-arguments-list = false
-preserve-breaking-member-access-chain = true
+classlike-brace-style = "SameLine"
+function-brace-style = "SameLine"
+method-brace-style = "SameLine"
+null-type-hint = "question"
 preserve-breaking-argument-list = true
 preserve-breaking-array-like = true
-preserve-breaking-parameter-list = true
 preserve-breaking-attribute-list = true
 preserve-breaking-conditional-expression = true
+preserve-breaking-member-access-chain = true
+preserve-breaking-parameter-list = true
+print-width = 180
+space-after-logical-not-unary-prefix-operator = true
+space-before-arrow-function-parameter-list-parenthesis = true
+tab-width = 4
+use-tabs = false

@@ -11,11 +11,9 @@ use JsonException;
 use function Tempest\Database\query;
 
 /** Writes audit trail entries for mutable architecture repository entities. */
-final readonly class AuditLogger
-{
+final readonly class AuditLogger {
     /** @param array<string, mixed>|null $oldValues @param array<string, mixed>|null $newValues */
-    public function log(string $entityType, int $entityId, string $action, ?array $oldValues = null, ?array $newValues = null): void
-    {
+    public function log(string $entityType, int $entityId, string $action, ?array $oldValues = null, ?array $newValues = null): void {
         query('audit_logs')->insert([
             'entity_type' => $entityType,
             'entity_id' => $entityId,
@@ -28,8 +26,7 @@ final readonly class AuditLogger
     }
 
     /** @param array<string, mixed>|null $values */
-    private function jsonOrNull(?array $values): ?string
-    {
+    private function jsonOrNull(?array $values): ?string {
         if ($values === null) {
             return null;
         }

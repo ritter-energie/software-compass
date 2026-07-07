@@ -14,16 +14,14 @@ namespace App\Shared\Support;
  * dependency description could break the diagram syntax or inject
  * unintended Mermaid directives.
  */
-final class MermaidSanitizer
-{
+final class MermaidSanitizer {
     private const int MAX_LABEL_LENGTH = 60;
 
     /**
      * Builds a stable, Mermaid-safe node identifier for a given entity type
      * and numeric id (e.g. `C42`, `S7`).
      */
-    public static function nodeId(string $prefix, int $id): string
-    {
+    public static function nodeId(string $prefix, int $id): string {
         return $prefix . $id;
     }
 
@@ -31,8 +29,7 @@ final class MermaidSanitizer
      * Escapes and truncates a label so it can be safely placed inside
      * Mermaid node/edge syntax, e.g. `C1["label"]`.
      */
-    public static function label(string $label): string
-    {
+    public static function label(string $label): string {
         // Mermaid labels are single-line; collapse any whitespace/newlines.
         $flattened = preg_replace('/\s+/', ' ', trim($label)) ?? '';
 

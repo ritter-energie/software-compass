@@ -11,15 +11,13 @@ use App\Domain\Journey\JourneyStepComponent;
 use App\Shared\ValueObject\Slug;
 use RuntimeException;
 
-final readonly class JourneyService
-{
+final readonly class JourneyService {
     public function __construct(
         private JourneyRepository $journeys,
         private AuditLogger $audit,
     ) {}
 
-    public function create(CreateJourneyCommand $command): Journey
-    {
+    public function create(CreateJourneyCommand $command): Journey {
         $journey = $this->journeys->save(new Journey(
             id: null,
             name: $command->name,
@@ -35,8 +33,7 @@ final readonly class JourneyService
         return $journey;
     }
 
-    public function update(UpdateJourneyCommand $command): Journey
-    {
+    public function update(UpdateJourneyCommand $command): Journey {
         $existing = $this->journeys->findById($command->id) ?? throw new RuntimeException('Journey not found.');
 
         $updated = $this->journeys->save(new Journey(
@@ -54,8 +51,7 @@ final readonly class JourneyService
         return $updated;
     }
 
-    public function delete(int $id): void
-    {
+    public function delete(int $id): void {
         $existing = $this->journeys->findById($id);
         $this->journeys->delete($id);
         if ($existing !== null) {
@@ -64,35 +60,29 @@ final readonly class JourneyService
     }
 
     /** @return Journey[] */
-    public function all(): array
-    {
+    public function all(): array {
         return $this->journeys->all();
     }
 
-    public function detail(int $id): Journey
-    {
+    public function detail(int $id): Journey {
         return $this->journeys->findById($id) ?? throw new RuntimeException('Journey not found.');
     }
 
     /** @return JourneyStep[] */
-    public function stepsForJourney(int $journeyId): array
-    {
+    public function stepsForJourney(int $journeyId): array {
         return $this->journeys->stepsForJourney($journeyId);
     }
 
     /** @return JourneyStepComponent[] */
-    public function componentsForStep(int $stepId): array
-    {
+    public function componentsForStep(int $stepId): array {
         return $this->journeys->componentsForStep($stepId);
     }
 
-    public function step(int $stepId): JourneyStep
-    {
+    public function step(int $stepId): JourneyStep {
         return $this->journeys->findStepById($stepId) ?? throw new RuntimeException('Journey step not found.');
     }
 
-    public function addStep(AddJourneyStepCommand $command): JourneyStep
-    {
+    public function addStep(AddJourneyStepCommand $command): JourneyStep {
         return $this->journeys->saveStep(new JourneyStep(
             id: null,
             journeyId: $command->journeyId,
@@ -102,8 +92,7 @@ final readonly class JourneyService
         ));
     }
 
-    public function updateStep(UpdateJourneyStepCommand $command): JourneyStep
-    {
+    public function updateStep(UpdateJourneyStepCommand $command): JourneyStep {
         if ($this->journeys->findStepById($command->id) === null) {
             throw new RuntimeException('Journey step not found.');
         }
@@ -117,13 +106,11 @@ final readonly class JourneyService
         ));
     }
 
-    public function deleteStep(int $stepId): void
-    {
+    public function deleteStep(int $stepId): void {
         $this->journeys->deleteStep($stepId);
     }
 
-    public function attachComponent(int $stepId, int $componentId, string $roleInStep, ?string $notes): JourneyStepComponent
-    {
+    public function attachComponent(int $stepId, int $componentId, string $roleInStep, ?string $notes): JourneyStepComponent {
         if (! in_array($roleInStep, JourneyStepComponent::validRoles(), true)) {
             throw new RuntimeException('Invalid role in step.');
         }
@@ -137,13 +124,11 @@ final readonly class JourneyService
         ));
     }
 
-    public function deleteStepComponent(int $stepComponentId): void
-    {
+    public function deleteStepComponent(int $stepComponentId): void {
         $this->journeys->deleteStepComponent($stepComponentId);
     }
 
-    private function uniqueSlug(string $name): string
-    {
+    private function uniqueSlug(string $name): string {
         $slug = Slug::fromText($name);
         $candidate = (string) $slug;
         $suffix = 2;
@@ -154,8 +139,7 @@ final readonly class JourneyService
     }
 
     /** @return array<string, mixed> */
-    private function snapshot(Journey $journey): array
-    {
+    private function snapshot(Journey $journey): array {
         return [
             'id' => $journey->id(),
             'name' => $journey->name(),

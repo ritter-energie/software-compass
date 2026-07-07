@@ -8,15 +8,13 @@ use App\Domain\Governance\GovernanceReview;
 use App\Domain\Governance\GovernanceReviewRepository;
 use RuntimeException;
 
-final readonly class GovernanceService
-{
+final readonly class GovernanceService {
     public function __construct(
         private GovernanceReviewRepository $reviews,
         private AuditLogger $audit,
     ) {}
 
-    public function createReviewForComponent(int $componentId): GovernanceReview
-    {
+    public function createReviewForComponent(int $componentId): GovernanceReview {
         if ($existing = $this->reviews->findByComponentId($componentId)) {
             return $existing;
         }
@@ -38,8 +36,7 @@ final readonly class GovernanceService
         return $review;
     }
 
-    public function updateReview(UpdateGovernanceReviewCommand $command): GovernanceReview
-    {
+    public function updateReview(UpdateGovernanceReviewCommand $command): GovernanceReview {
         $review = $this->reviews->findById($command->reviewId) ?? throw new RuntimeException('Review not found.');
         $old = $this->snapshot($review);
         $review->updateChecklist(
@@ -56,8 +53,7 @@ final readonly class GovernanceService
         return $updated;
     }
 
-    public function approve(int $reviewId, int $reviewerId, ?string $notes): void
-    {
+    public function approve(int $reviewId, int $reviewerId, ?string $notes): void {
         $review = $this->reviews->findById($reviewId) ?? throw new RuntimeException('Review not found.');
         $old = $this->snapshot($review);
         $review->approve($reviewerId, $notes);
@@ -65,8 +61,7 @@ final readonly class GovernanceService
         $this->audit->log('governance_review', (int) $updated->id(), 'approved', $old, $this->snapshot($updated));
     }
 
-    public function reject(int $reviewId, int $reviewerId, ?string $notes): void
-    {
+    public function reject(int $reviewId, int $reviewerId, ?string $notes): void {
         $review = $this->reviews->findById($reviewId) ?? throw new RuntimeException('Review not found.');
         $old = $this->snapshot($review);
         $review->reject($reviewerId, $notes);
@@ -75,14 +70,12 @@ final readonly class GovernanceService
     }
 
     /** @return GovernanceReview[] */
-    public function openReviews(): array
-    {
+    public function openReviews(): array {
         return $this->reviews->openReviews();
     }
 
     /** @return array<string, mixed> */
-    private function snapshot(GovernanceReview $review): array
-    {
+    private function snapshot(GovernanceReview $review): array {
         return [
             'id' => $review->id(),
             'component_id' => $review->componentId(),

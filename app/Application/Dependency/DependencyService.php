@@ -11,23 +11,20 @@ use App\Domain\Dependency\DependencySearchCriteria;
 use RuntimeException;
 
 /** Application service for dependency/interface use cases. */
-final readonly class DependencyService
-{
+final readonly class DependencyService {
     public function __construct(
         private DependencyRepository $dependencies,
         private AuditLogger $audit,
     ) {}
 
-    public function create(CreateDependencyCommand $command): Dependency
-    {
+    public function create(CreateDependencyCommand $command): Dependency {
         $dependency = $this->dependencies->save($this->fromCreate($command));
         $this->audit->log('dependency', (int) $dependency->id(), 'created', null, $this->snapshot($dependency));
 
         return $dependency;
     }
 
-    public function update(UpdateDependencyCommand $command): Dependency
-    {
+    public function update(UpdateDependencyCommand $command): Dependency {
         $existing = $this->dependencies->findById($command->id);
         if ($existing === null) {
             throw new RuntimeException('Dependency not found.');
@@ -39,8 +36,7 @@ final readonly class DependencyService
         return $updated;
     }
 
-    public function delete(int $id): void
-    {
+    public function delete(int $id): void {
         $existing = $this->dependencies->findById($id);
         $this->dependencies->delete($id);
 
@@ -49,8 +45,7 @@ final readonly class DependencyService
         }
     }
 
-    public function forComponent(int $componentId): ComponentDependenciesViewModel
-    {
+    public function forComponent(int $componentId): ComponentDependenciesViewModel {
         return new ComponentDependenciesViewModel(
             componentId: $componentId,
             incoming: $this->dependencies->findIncomingForComponent($componentId),
@@ -59,13 +54,11 @@ final readonly class DependencyService
     }
 
     /** @return Dependency[] */
-    public function search(DependencySearchCriteria $criteria): array
-    {
+    public function search(DependencySearchCriteria $criteria): array {
         return $this->dependencies->search($criteria);
     }
 
-    private function fromCreate(CreateDependencyCommand $command): Dependency
-    {
+    private function fromCreate(CreateDependencyCommand $command): Dependency {
         return new Dependency(
             id: null,
             sourceComponentId: $command->sourceComponentId,
@@ -88,8 +81,7 @@ final readonly class DependencyService
         );
     }
 
-    private function fromUpdate(UpdateDependencyCommand $command): Dependency
-    {
+    private function fromUpdate(UpdateDependencyCommand $command): Dependency {
         return new Dependency(
             id: $command->id,
             sourceComponentId: $command->sourceComponentId,
@@ -113,8 +105,7 @@ final readonly class DependencyService
     }
 
     /** @return array<string, mixed> */
-    private function snapshot(Dependency $dependency): array
-    {
+    private function snapshot(Dependency $dependency): array {
         return [
             'id' => $dependency->id(),
             'source_component_id' => $dependency->sourceComponentId(),

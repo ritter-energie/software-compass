@@ -20,12 +20,10 @@ use function Tempest\get;
  * the application so audit logs can later resolve the authenticated user to a
  * person via `users.person_id`.
  */
-final readonly class BasicAuthMiddleware implements HttpMiddleware
-{
+final readonly class BasicAuthMiddleware implements HttpMiddleware {
     private const string SESSION_USER_ID = 'auth_user_id';
 
-    public function __invoke(Request $request, HttpMiddlewareCallable $next): Response
-    {
+    public function __invoke(Request $request, HttpMiddlewareCallable $next): Response {
         CurrentUser::clear();
 
         if (str_starts_with($request->path, '/login') || str_starts_with($request->path, '/setup')) {

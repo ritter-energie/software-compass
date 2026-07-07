@@ -11,8 +11,7 @@ namespace App\Domain\Component;
  * The domain layer only depends on this interface, never on the concrete
  * database implementation (dependency inversion).
  */
-interface ComponentRepository
-{
+interface ComponentRepository {
     public function findById(int $id): ?Component;
 
     public function findBySlug(string $slug): ?Component;

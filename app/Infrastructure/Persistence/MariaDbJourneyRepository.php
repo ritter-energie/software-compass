@@ -17,33 +17,28 @@ use function Tempest\Database\query;
  * Query-builder-backed repository for Customer Journeys, their ordered steps
  * and component assignments.
  */
-final class MariaDbJourneyRepository implements JourneyRepository
-{
+final class MariaDbJourneyRepository implements JourneyRepository {
     use ResolvesLastInsertId;
 
-    public function findById(int $id): ?Journey
-    {
+    public function findById(int $id): ?Journey {
         $row = query('journeys')->select()->whereField('id', $id)->first();
 
         return $row ? $this->journeyFromRow($row) : null;
     }
 
-    public function findBySlug(string $slug): ?Journey
-    {
+    public function findBySlug(string $slug): ?Journey {
         $row = query('journeys')->select()->whereField('slug', $slug)->first();
 
         return $row ? $this->journeyFromRow($row) : null;
     }
 
-    public function all(): array
-    {
+    public function all(): array {
         $rows = query('journeys')->select()->orderBy('sort_order')->all();
 
         return array_map($this->journeyFromRow(...), $rows);
     }
 
-    public function save(Journey $journey): Journey
-    {
+    public function save(Journey $journey): Journey {
         $data = $this->journeyToRow($journey);
 
         if ($journey->id() === null) {
@@ -57,13 +52,11 @@ final class MariaDbJourneyRepository implements JourneyRepository
         return $this->findById($journey->id());
     }
 
-    public function delete(int $id): void
-    {
+    public function delete(int $id): void {
         query('journeys')->delete()->whereField('id', $id)->execute();
     }
 
-    public function stepsForJourney(int $journeyId): array
-    {
+    public function stepsForJourney(int $journeyId): array {
         $rows = query('journey_steps')
             ->select()
             ->whereField('journey_id', $journeyId)
@@ -73,15 +66,13 @@ final class MariaDbJourneyRepository implements JourneyRepository
         return array_map($this->stepFromRow(...), $rows);
     }
 
-    public function findStepById(int $stepId): ?JourneyStep
-    {
+    public function findStepById(int $stepId): ?JourneyStep {
         $row = query('journey_steps')->select()->whereField('id', $stepId)->first();
 
         return $row ? $this->stepFromRow($row) : null;
     }
 
-    public function saveStep(JourneyStep $step): JourneyStep
-    {
+    public function saveStep(JourneyStep $step): JourneyStep {
         $data = $this->stepToRow($step);
 
         if ($step->id() === null) {
@@ -95,13 +86,11 @@ final class MariaDbJourneyRepository implements JourneyRepository
         return $this->stepById($step->id());
     }
 
-    public function deleteStep(int $stepId): void
-    {
+    public function deleteStep(int $stepId): void {
         query('journey_steps')->delete()->whereField('id', $stepId)->execute();
     }
 
-    public function componentsForStep(int $stepId): array
-    {
+    public function componentsForStep(int $stepId): array {
         $rows = query('journey_step_components')
             ->select()
             ->whereField('journey_step_id', $stepId)
@@ -111,15 +100,13 @@ final class MariaDbJourneyRepository implements JourneyRepository
         return array_map($this->stepComponentFromRow(...), $rows);
     }
 
-    public function findStepComponentById(int $stepComponentId): ?JourneyStepComponent
-    {
+    public function findStepComponentById(int $stepComponentId): ?JourneyStepComponent {
         $row = query('journey_step_components')->select()->whereField('id', $stepComponentId)->first();
 
         return $row ? $this->stepComponentFromRow($row) : null;
     }
 
-    public function saveStepComponent(JourneyStepComponent $stepComponent): JourneyStepComponent
-    {
+    public function saveStepComponent(JourneyStepComponent $stepComponent): JourneyStepComponent {
         $data = $this->stepComponentToRow($stepComponent);
 
         if ($stepComponent->id() === null) {
@@ -136,13 +123,11 @@ final class MariaDbJourneyRepository implements JourneyRepository
         return $this->stepComponentById($stepComponent->id());
     }
 
-    public function deleteStepComponent(int $stepComponentId): void
-    {
+    public function deleteStepComponent(int $stepComponentId): void {
         query('journey_step_components')->delete()->whereField('id', $stepComponentId)->execute();
     }
 
-    public function slugExists(string $slug, ?int $excludingId = null): bool
-    {
+    public function slugExists(string $slug, ?int $excludingId = null): bool {
         $builder = query('journeys')->select()->whereField('slug', $slug);
 
         if ($excludingId !== null) {
@@ -152,16 +137,14 @@ final class MariaDbJourneyRepository implements JourneyRepository
         return $builder->first() !== null;
     }
 
-    private function stepById(int $id): JourneyStep
-    {
+    private function stepById(int $id): JourneyStep {
         $row = query('journey_steps')->select()->whereField('id', $id)->first();
         assert($row !== null);
 
         return $this->stepFromRow($row);
     }
 
-    private function stepComponentById(int $id): JourneyStepComponent
-    {
+    private function stepComponentById(int $id): JourneyStepComponent {
         $row = query('journey_step_components')->select()->whereField('id', $id)->first();
         assert($row !== null);
 
@@ -169,8 +152,7 @@ final class MariaDbJourneyRepository implements JourneyRepository
     }
 
     /** @param array<string, mixed> $row */
-    private function journeyFromRow(array $row): Journey
-    {
+    private function journeyFromRow(array $row): Journey {
         return new Journey(
             id: (int) $row['id'],
             name: $row['name'],
@@ -184,8 +166,7 @@ final class MariaDbJourneyRepository implements JourneyRepository
     }
 
     /** @return array<string, mixed> */
-    private function journeyToRow(Journey $journey): array
-    {
+    private function journeyToRow(Journey $journey): array {
         $now = new DateTimeImmutable()->format('Y-m-d H:i:s');
         $row = [
             'name' => $journey->name(),
@@ -206,8 +187,7 @@ final class MariaDbJourneyRepository implements JourneyRepository
     }
 
     /** @param array<string, mixed> $row */
-    private function stepFromRow(array $row): JourneyStep
-    {
+    private function stepFromRow(array $row): JourneyStep {
         return new JourneyStep(
             id: (int) $row['id'],
             journeyId: (int) $row['journey_id'],
@@ -218,8 +198,7 @@ final class MariaDbJourneyRepository implements JourneyRepository
     }
 
     /** @return array<string, mixed> */
-    private function stepToRow(JourneyStep $step): array
-    {
+    private function stepToRow(JourneyStep $step): array {
         $now = new DateTimeImmutable()->format('Y-m-d H:i:s');
         $row = [
             'journey_id' => $step->journeyId(),
@@ -237,8 +216,7 @@ final class MariaDbJourneyRepository implements JourneyRepository
     }
 
     /** @param array<string, mixed> $row */
-    private function stepComponentFromRow(array $row): JourneyStepComponent
-    {
+    private function stepComponentFromRow(array $row): JourneyStepComponent {
         return new JourneyStepComponent(
             id: (int) $row['id'],
             journeyStepId: (int) $row['journey_step_id'],
@@ -249,8 +227,7 @@ final class MariaDbJourneyRepository implements JourneyRepository
     }
 
     /** @return array<string, mixed> */
-    private function stepComponentToRow(JourneyStepComponent $stepComponent): array
-    {
+    private function stepComponentToRow(JourneyStepComponent $stepComponent): array {
         $now = new DateTimeImmutable()->format('Y-m-d H:i:s');
         $row = [
             'journey_step_id' => $stepComponent->journeyStepId(),

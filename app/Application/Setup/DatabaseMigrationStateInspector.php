@@ -14,8 +14,7 @@ use Tempest\Database\Query;
 use Tempest\Database\QueryStatement;
 
 /** Inspects Tempest migration state without registering EventBus listeners. */
-final readonly class DatabaseMigrationStateInspector
-{
+final readonly class DatabaseMigrationStateInspector {
     private const string VALIDATION_ERROR_FORMAT = '%s: %s';
     private const string MIGRATION_FILE_MISSING = 'migration file missing';
     private const string HASH_MISMATCH = 'hash mismatch';
@@ -29,19 +28,16 @@ final readonly class DatabaseMigrationStateInspector
         private Database $database,
     ) {}
 
-    public function status(): DatabaseUpdateStatus
-    {
+    public function status(): DatabaseUpdateStatus {
         return $this->statusWithValidationErrors([]);
     }
 
-    public function validatedStatus(): DatabaseUpdateStatus
-    {
+    public function validatedStatus(): DatabaseUpdateStatus {
         return $this->statusWithValidationErrors($this->validationErrors());
     }
 
     /** @param string[] $validationErrors */
-    private function statusWithValidationErrors(array $validationErrors): DatabaseUpdateStatus
-    {
+    private function statusWithValidationErrors(array $validationErrors): DatabaseUpdateStatus {
         [$executedMigrationNames, $migrationTableMissing] = $this->executedMigrationNames();
 
         return new DatabaseUpdateStatus(
@@ -52,8 +48,7 @@ final readonly class DatabaseMigrationStateInspector
     }
 
     /** @return array{0: array<string, true>, 1: bool} */
-    private function executedMigrationNames(): array
-    {
+    private function executedMigrationNames(): array {
         try {
             $migrations = Migration::select()->all();
         } catch (QueryWasInvalid) {
@@ -69,8 +64,7 @@ final readonly class DatabaseMigrationStateInspector
     }
 
     /** @param array<string, true> $executedMigrationNames @return string[] */
-    private function pendingMigrationNames(array $executedMigrationNames): array
-    {
+    private function pendingMigrationNames(array $executedMigrationNames): array {
         $pending = [];
 
         foreach ($this->migrations->up() as $migration) {
@@ -83,8 +77,7 @@ final readonly class DatabaseMigrationStateInspector
     }
 
     /** @return string[] */
-    private function validationErrors(): array
-    {
+    private function validationErrors(): array {
         $errors = [];
         $runnableMigrations = $this->runnableMigrationsByName();
 
@@ -112,8 +105,7 @@ final readonly class DatabaseMigrationStateInspector
     }
 
     /** @return array<string, MigratesUp> */
-    private function runnableMigrationsByName(): array
-    {
+    private function runnableMigrationsByName(): array {
         $migrations = [];
 
         foreach ($this->migrations->up() as $migration) {
@@ -123,9 +115,7 @@ final readonly class DatabaseMigrationStateInspector
         return $migrations;
     }
 
-
-    private function migrationHash(MigratesUp|MigratesDown $migration): string
-    {
+    private function migrationHash(MigratesUp|MigratesDown $migration): string {
         $sql = '';
 
         if ($migration instanceof MigratesUp) {
@@ -139,8 +129,7 @@ final readonly class DatabaseMigrationStateInspector
         return hash(algo: self::MIGRATION_HASH_ALGORITHM, data: $sql);
     }
 
-    private function minifiedSqlFromStatement(?QueryStatement $statement): string
-    {
+    private function minifiedSqlFromStatement(?QueryStatement $statement): string {
         if ($statement === null) {
             return '';
         }

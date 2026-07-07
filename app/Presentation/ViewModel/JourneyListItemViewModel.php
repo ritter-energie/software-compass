@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace App\Presentation\ViewModel;
 
-final readonly class JourneyListItemViewModel
-{
+final readonly class JourneyListItemViewModel {
     public function __construct(
         public int $id,
         public string $name,

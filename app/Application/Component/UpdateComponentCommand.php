@@ -5,8 +5,7 @@ namespace App\Application\Component;
 
 use DateTimeImmutable;
 
-final readonly class UpdateComponentCommand
-{
+final readonly class UpdateComponentCommand {
     public function __construct(
         public int $id,
         public string $name,

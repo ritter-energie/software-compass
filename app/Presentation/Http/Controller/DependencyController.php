@@ -30,8 +30,7 @@ use Tempest\Router\WithMiddleware;
 use function Tempest\view;
 
 #[WithMiddleware(BasicAuthMiddleware::class)]
-final readonly class DependencyController
-{
+final readonly class DependencyController {
     public function __construct(
         private DependencyRepository $dependencies,
         private DependencyService $dependencyService,
@@ -41,8 +40,7 @@ final readonly class DependencyController
     ) {}
 
     #[Get('/dependencies')]
-    public function index(Request $request): Response
-    {
+    public function index(Request $request): Response {
         $criteria = new DependencySearchCriteria(
             query: $this->stringOrNull($request->get('q')),
             sourceComponentId: $this->intOrNull($request->get('source_component_id')),
@@ -74,14 +72,12 @@ final readonly class DependencyController
     }
 
     #[Get('/dependencies/create')]
-    public function create(): Response
-    {
+    public function create(): Response {
         return new Ok($this->formView('../../View/dependencies/create.view.php'));
     }
 
     #[Post('/dependencies')]
-    public function store(Request $request): Response
-    {
+    public function store(Request $request): Response {
         if (! Csrf::isValid($request)) {
             return new Redirect('/dependencies/create')->flash('error', Translator::translate('flash.error.invalid_security_token'));
         }
@@ -124,8 +120,7 @@ final readonly class DependencyController
     }
 
     #[Get('/dependencies/{id}')]
-    public function show(int $id): Response
-    {
+    public function show(int $id): Response {
         $dependency = $this->dependencies->findById($id);
 
         if ($dependency === null) {
@@ -147,8 +142,7 @@ final readonly class DependencyController
     }
 
     #[Get('/dependencies/{id}/edit')]
-    public function edit(int $id): Response
-    {
+    public function edit(int $id): Response {
         $dependency = $this->dependencies->findById($id);
         if ($dependency === null) {
             return new Redirect('/dependencies')->flash('error', Translator::translate('flash.error.dependency_not_found'));
@@ -158,8 +152,7 @@ final readonly class DependencyController
     }
 
     #[Post('/dependencies/{id}')]
-    public function update(int $id, Request $request): Response
-    {
+    public function update(int $id, Request $request): Response {
         if (! Csrf::isValid($request)) {
             return new Redirect("/dependencies/{$id}/edit")->flash('error', Translator::translate('flash.error.invalid_security_token'));
         }
@@ -203,8 +196,7 @@ final readonly class DependencyController
     }
 
     #[Post('/dependencies/{id}/delete')]
-    public function delete(int $id, Request $request): Response
-    {
+    public function delete(int $id, Request $request): Response {
         if (! Csrf::isValid($request)) {
             return new Redirect("/dependencies/{$id}/edit")->flash('error', Translator::translate('flash.error.invalid_security_token'));
         }
@@ -214,8 +206,7 @@ final readonly class DependencyController
         return new Redirect('/dependencies')->flash('success', Translator::translate('flash.success.dependency_deleted'));
     }
 
-    private function formView(string $view, mixed $dependency = null): mixed
-    {
+    private function formView(string $view, mixed $dependency = null): mixed {
         return view(
             $view,
             dependency: $dependency,
@@ -229,8 +220,7 @@ final readonly class DependencyController
         );
     }
 
-    private function stringOrNull(mixed $value): ?string
-    {
+    private function stringOrNull(mixed $value): ?string {
         if ($value === null) {
             return null;
         }
@@ -245,8 +235,7 @@ final readonly class DependencyController
      * @param \App\Domain\Component\Component[] $components
      * @return DependencyListItemViewModel[]
      */
-    private function dependencyListItems(array $dependencies, array $components): array
-    {
+    private function dependencyListItems(array $dependencies, array $components): array {
         return array_map(
             fn ($dependency): DependencyListItemViewModel => new DependencyListItemViewModel(
                 id: (int) $dependency->id(),
@@ -262,8 +251,7 @@ final readonly class DependencyController
     }
 
     /** @param \App\Domain\Component\Component[] $components */
-    private function componentName(array $components, int $id): string
-    {
+    private function componentName(array $components, int $id): string {
         foreach ($components as $component) {
             if ($component->id() === $id) {
                 return $component->name();
@@ -274,8 +262,7 @@ final readonly class DependencyController
     }
 
     /** @param \App\Domain\Person\Person[] $people */
-    private function personName(array $people, ?int $id): string
-    {
+    private function personName(array $people, ?int $id): string {
         if ($id === null) {
             return '—';
         }
@@ -290,8 +277,7 @@ final readonly class DependencyController
     }
 
     /** @param array<int, array<string, mixed>> $rows */
-    private function lookupName(array $rows, ?int $id): string
-    {
+    private function lookupName(array $rows, ?int $id): string {
         if ($id === null) {
             return '—';
         }
@@ -305,8 +291,7 @@ final readonly class DependencyController
         return '—';
     }
 
-    private function intOrNull(mixed $value): ?int
-    {
+    private function intOrNull(mixed $value): ?int {
         if ($value === null || $value === '') {
             return null;
         }
@@ -314,8 +299,7 @@ final readonly class DependencyController
         return (int) $value;
     }
 
-    private function boolOrNull(mixed $value): ?bool
-    {
+    private function boolOrNull(mixed $value): ?bool {
         if ($value === null || $value === '') {
             return null;
         }
@@ -324,8 +308,7 @@ final readonly class DependencyController
     }
 
     /** @return string|false|null */
-    private function urlOrNull(mixed $value): string|false|null
-    {
+    private function urlOrNull(mixed $value): string|false|null {
         $url = $this->stringOrNull($value);
 
         if ($url === null) {

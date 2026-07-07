@@ -11,25 +11,21 @@ use Tests\IntegrationTestCase;
 
 use function Tempest\Database\query;
 
-final class SystemDefaultLocaleTest extends IntegrationTestCase
-{
-    protected function setUp(): void
-    {
+final class SystemDefaultLocaleTest extends IntegrationTestCase {
+    protected function setUp(): void {
         parent::setUp();
 
         $this->database->setup();
         $this->clearData();
     }
 
-    protected function tearDown(): void
-    {
+    protected function tearDown(): void {
         $this->clearData();
 
         parent::tearDown();
     }
 
-    public function test_setup_stores_default_locale_and_applies_it_to_initial_admin(): void
-    {
+    public function test_setup_stores_default_locale_and_applies_it_to_initial_admin(): void {
         $settings = new AppSettingsRepository();
 
         new SetupService($settings)->initialize(
@@ -45,8 +41,7 @@ final class SystemDefaultLocaleTest extends IntegrationTestCase
         self::assertSame('de', (string) query('users')->select()->whereField('person_id', $personId)->first()['preferred_locale']);
     }
 
-    public function test_new_users_fall_back_to_system_default_locale(): void
-    {
+    public function test_new_users_fall_back_to_system_default_locale(): void {
         $settings = new AppSettingsRepository();
         $settings->setDefaultLocale('de');
 
@@ -62,8 +57,7 @@ final class SystemDefaultLocaleTest extends IntegrationTestCase
         self::assertSame('de', (string) query('users')->select()->whereField('person_id', $personId)->first()['preferred_locale']);
     }
 
-    private function clearData(): void
-    {
+    private function clearData(): void {
         query('user_roles')->delete()->allowAll()->execute();
         query('users')->delete()->allowAll()->execute();
         query('people')->delete()->allowAll()->execute();

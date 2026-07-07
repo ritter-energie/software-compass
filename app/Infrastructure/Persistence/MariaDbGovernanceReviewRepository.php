@@ -10,26 +10,22 @@ use DateTimeImmutable;
 
 use function Tempest\Database\query;
 
-final class MariaDbGovernanceReviewRepository implements GovernanceReviewRepository
-{
+final class MariaDbGovernanceReviewRepository implements GovernanceReviewRepository {
     use ResolvesLastInsertId;
 
-    public function findById(int $id): ?GovernanceReview
-    {
+    public function findById(int $id): ?GovernanceReview {
         $row = query('governance_reviews')->select()->whereField('id', $id)->first();
 
         return $row ? $this->toDomain($row) : null;
     }
 
-    public function findByComponentId(int $componentId): ?GovernanceReview
-    {
+    public function findByComponentId(int $componentId): ?GovernanceReview {
         $row = query('governance_reviews')->select()->whereField('component_id', $componentId)->first();
 
         return $row ? $this->toDomain($row) : null;
     }
 
-    public function openReviews(): array
-    {
+    public function openReviews(): array {
         $rows = query('governance_reviews')
             ->select()
             ->whereIn('review_status', [
@@ -43,15 +39,13 @@ final class MariaDbGovernanceReviewRepository implements GovernanceReviewReposit
         return array_map($this->toDomain(...), $rows);
     }
 
-    public function all(): array
-    {
+    public function all(): array {
         $rows = query('governance_reviews')->select()->orderBy('created_at')->all();
 
         return array_map($this->toDomain(...), $rows);
     }
 
-    public function save(GovernanceReview $review): GovernanceReview
-    {
+    public function save(GovernanceReview $review): GovernanceReview {
         $data = $this->toRow($review);
 
         if ($review->id() === null) {
@@ -66,8 +60,7 @@ final class MariaDbGovernanceReviewRepository implements GovernanceReviewReposit
     }
 
     /** @param array<string, mixed> $row */
-    private function toDomain(array $row): GovernanceReview
-    {
+    private function toDomain(array $row): GovernanceReview {
         return new GovernanceReview(
             id: (int) $row['id'],
             componentId: (int) $row['component_id'],
@@ -84,8 +77,7 @@ final class MariaDbGovernanceReviewRepository implements GovernanceReviewReposit
     }
 
     /** @return array<string, mixed> */
-    private function toRow(GovernanceReview $review): array
-    {
+    private function toRow(GovernanceReview $review): array {
         $now = new DateTimeImmutable()->format('Y-m-d H:i:s');
         $row = [
             'component_id' => $review->componentId(),

@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace App\Shared\Support;
 
-final readonly class UserInitials
-{
-    public static function fromName(?string $name): string
-    {
+final readonly class UserInitials {
+    public static function fromName(?string $name): string {
         $normalized = trim((string) $name);
         if ($normalized === '') {
             return '?';
@@ -28,8 +26,7 @@ final readonly class UserInitials
         return mb_strtoupper(mb_substr($first . $second, 0, 2), 'UTF-8');
     }
 
-    private static function characterAt(string $token, int $position): string
-    {
+    private static function characterAt(string $token, int $position): string {
         return mb_substr($token, $position, 1, 'UTF-8');
     }
 }

@@ -13,15 +13,13 @@ use InvalidArgumentException;
 use function Tempest\Database\query;
 
 /** Admin-facing user provisioning and read-model helpers. */
-final readonly class AdminUserService
-{
+final readonly class AdminUserService {
     public function __construct(
         private AppSettingsRepository $settings,
     ) {}
 
     /** @return array<int, array<string, mixed>> */
-    public function users(): array
-    {
+    public function users(): array {
         $users = query('users')->select()->orderBy('id')->all();
         if ($users === []) {
             return [];
@@ -76,19 +74,16 @@ final readonly class AdminUserService
     }
 
     /** @return string[] */
-    public function availableRoles(): array
-    {
+    public function availableRoles(): array {
         return UserRole::values();
     }
 
-    public function defaultLocale(): string
-    {
+    public function defaultLocale(): string {
         return $this->settings->defaultLocale();
     }
 
     /** @return array<string, mixed>|null */
-    public function userById(int $id): ?array
-    {
+    public function userById(int $id): ?array {
         foreach ($this->users() as $user) {
             if ((int) $user['id'] === $id) {
                 return $user;
@@ -240,8 +235,7 @@ final readonly class AdminUserService
         ])->execute();
     }
 
-    private function seedRoles(): void
-    {
+    private function seedRoles(): void {
         $now = new DateTimeImmutable()->format('Y-m-d H:i:s');
 
         foreach (UserRole::cases() as $role) {
@@ -258,8 +252,7 @@ final readonly class AdminUserService
         }
     }
 
-    public function toggleActive(int $userId): void
-    {
+    public function toggleActive(int $userId): void {
         $user = query('users')->select()->whereField('id', $userId)->first();
         if ($user === null) {
             return;
@@ -271,8 +264,7 @@ final readonly class AdminUserService
             ->execute();
     }
 
-    private function normalizeEmail(string $email): string
-    {
+    private function normalizeEmail(string $email): string {
         $normalized = strtolower(trim($email));
         if (filter_var($normalized, FILTER_VALIDATE_EMAIL) === false) {
             throw new InvalidArgumentException('Please enter a valid email address.');
@@ -282,8 +274,7 @@ final readonly class AdminUserService
     }
 
     /** @return array<string, mixed>|null */
-    private function findUserByEmail(string $email): ?array
-    {
+    private function findUserByEmail(string $email): ?array {
         $people = query('people')->select()->whereField('email', $email)->all();
         if ($people === []) {
             return null;

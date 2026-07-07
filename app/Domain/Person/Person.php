@@ -10,8 +10,7 @@ use InvalidArgumentException;
  * A person who can act as business owner, technical owner, interface owner
  * or journey owner.
  */
-final class Person
-{
+final class Person {
     public function __construct(
         private ?int $id,
         private string $name,
@@ -25,33 +24,27 @@ final class Person
         }
     }
 
-    public function id(): ?int
-    {
+    public function id(): ?int {
         return $this->id;
     }
 
-    public function name(): string
-    {
+    public function name(): string {
         return $this->name;
     }
 
-    public function email(): ?string
-    {
+    public function email(): ?string {
         return $this->email;
     }
 
-    public function department(): ?string
-    {
+    public function department(): ?string {
         return $this->department;
     }
 
-    public function roleTitle(): ?string
-    {
+    public function roleTitle(): ?string {
         return $this->roleTitle;
     }
 
-    public function isActive(): bool
-    {
+    public function isActive(): bool {
         return $this->isActive;
     }
 }

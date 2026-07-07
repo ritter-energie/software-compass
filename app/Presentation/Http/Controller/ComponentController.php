@@ -35,8 +35,7 @@ use function Tempest\view;
  * renders views, following the project's architecture rules.
  */
 #[WithMiddleware(BasicAuthMiddleware::class)]
-final readonly class ComponentController
-{
+final readonly class ComponentController {
     public function __construct(
         private ComponentRepository $components,
         private ComponentService $componentService,
@@ -45,8 +44,7 @@ final readonly class ComponentController
     ) {}
 
     #[Get('/components')]
-    public function index(Request $request): Response
-    {
+    public function index(Request $request): Response {
         $criteria = new ComponentSearchCriteria(
             query: $this->stringOrNull($request->get('q')),
             componentTypeId: $this->intOrNull($request->get('component_type_id')),
@@ -72,8 +70,7 @@ final readonly class ComponentController
     }
 
     #[Get('/components/create')]
-    public function create(): Response
-    {
+    public function create(): Response {
         return new Ok(view(
             '../../View/components/create.view.php',
             componentTypes: $this->lookups->componentTypes(),
@@ -88,8 +85,7 @@ final readonly class ComponentController
     }
 
     #[Post('/components')]
-    public function store(Request $request): Response
-    {
+    public function store(Request $request): Response {
         if (! Csrf::isValid($request)) {
             return new Redirect('/components/create')->flash('error', Translator::translate('flash.error.invalid_security_token'));
         }
@@ -136,8 +132,7 @@ final readonly class ComponentController
     }
 
     #[Get('/components/{id}')]
-    public function show(int $id): Response
-    {
+    public function show(int $id): Response {
         try {
             $detail = $this->componentService->detail($id);
         } catch (RuntimeException) {
@@ -159,8 +154,7 @@ final readonly class ComponentController
     }
 
     #[Get('/components/{id}/edit')]
-    public function edit(int $id): Response
-    {
+    public function edit(int $id): Response {
         $component = $this->components->findById($id);
 
         if ($component === null) {
@@ -182,8 +176,7 @@ final readonly class ComponentController
     }
 
     #[Post('/components/{id}')]
-    public function update(int $id, Request $request): Response
-    {
+    public function update(int $id, Request $request): Response {
         if (! Csrf::isValid($request)) {
             return new Redirect("/components/{$id}/edit")->flash('error', Translator::translate('flash.error.invalid_security_token'));
         }
@@ -232,8 +225,7 @@ final readonly class ComponentController
 
     // Delete is intentionally POST-only (never GET).
     #[Post('/components/{id}/delete')]
-    public function delete(int $id, Request $request): Response
-    {
+    public function delete(int $id, Request $request): Response {
         if (! Csrf::isValid($request)) {
             return new Redirect("/components/{$id}/edit")->flash('error', Translator::translate('flash.error.invalid_security_token'));
         }
@@ -244,8 +236,7 @@ final readonly class ComponentController
     }
 
     #[Get('/components/{id}/diagram')]
-    public function diagram(int $id): Response
-    {
+    public function diagram(int $id): Response {
         $detail = $this->componentService->detail($id);
 
         return new Ok(view(
@@ -256,8 +247,7 @@ final readonly class ComponentController
     }
 
     #[Get('/components/{id}/governance')]
-    public function governance(int $id): Response
-    {
+    public function governance(int $id): Response {
         $detail = $this->componentService->detail($id);
 
         return new Ok(view(
@@ -267,8 +257,7 @@ final readonly class ComponentController
         ));
     }
 
-    private function stringOrNull(mixed $value): ?string
-    {
+    private function stringOrNull(mixed $value): ?string {
         if ($value === null) {
             return null;
         }
@@ -279,8 +268,7 @@ final readonly class ComponentController
     }
 
     /** @param \App\Domain\Person\Person[] $people */
-    private function personName(array $people, ?int $id): string
-    {
+    private function personName(array $people, ?int $id): string {
         if ($id === null) {
             return '—';
         }
@@ -295,8 +283,7 @@ final readonly class ComponentController
     }
 
     /** @param array<int, array<string, mixed>> $rows */
-    private function lookupName(array $rows, ?int $id): string
-    {
+    private function lookupName(array $rows, ?int $id): string {
         if ($id === null) {
             return '—';
         }
@@ -310,8 +297,7 @@ final readonly class ComponentController
         return '—';
     }
 
-    private function intOrNull(mixed $value): ?int
-    {
+    private function intOrNull(mixed $value): ?int {
         if ($value === null || $value === '') {
             return null;
         }
@@ -322,8 +308,7 @@ final readonly class ComponentController
     /**
      * @return int[]
      */
-    private function intList(mixed $value, ?int $excludingId = null): array
-    {
+    private function intList(mixed $value, ?int $excludingId = null): array {
         if ($value === null || $value === '') {
             return [];
         }
@@ -348,8 +333,7 @@ final readonly class ComponentController
         return array_values($ids);
     }
 
-    private function boolOrNull(mixed $value): ?bool
-    {
+    private function boolOrNull(mixed $value): ?bool {
         if ($value === null || $value === '') {
             return null;
         }
@@ -357,8 +341,7 @@ final readonly class ComponentController
         return in_array($value, ['1', 1, true, 'true', 'on'], true);
     }
 
-    private function dateOrNull(mixed $value): ?DateTimeImmutable
-    {
+    private function dateOrNull(mixed $value): ?DateTimeImmutable {
         $string = $this->stringOrNull($value);
 
         if ($string === null) {
@@ -369,8 +352,7 @@ final readonly class ComponentController
     }
 
     /** @return string|false|null */
-    private function urlOrNull(mixed $value): string|false|null
-    {
+    private function urlOrNull(mixed $value): string|false|null {
         $url = $this->stringOrNull($value);
 
         if ($url === null) {

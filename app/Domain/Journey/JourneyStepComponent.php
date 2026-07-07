@@ -8,8 +8,7 @@ namespace App\Domain\Journey;
  * Associates a component to a journey step with a role (e.g. `leading`,
  * `supporting`, `data_source`).
  */
-final class JourneyStepComponent
-{
+final class JourneyStepComponent {
     public const string ROLE_LEADING = 'leading';
 
     public const string ROLE_SUPPORTING = 'supporting';
@@ -25,8 +24,7 @@ final class JourneyStepComponent
     /**
      * @return string[]
      */
-    public static function validRoles(): array
-    {
+    public static function validRoles(): array {
         return [
             self::ROLE_LEADING,
             self::ROLE_SUPPORTING,
@@ -45,28 +43,23 @@ final class JourneyStepComponent
         private ?string $notes,
     ) {}
 
-    public function id(): ?int
-    {
+    public function id(): ?int {
         return $this->id;
     }
 
-    public function journeyStepId(): int
-    {
+    public function journeyStepId(): int {
         return $this->journeyStepId;
     }
 
-    public function componentId(): int
-    {
+    public function componentId(): int {
         return $this->componentId;
     }
 
-    public function roleInStep(): string
-    {
+    public function roleInStep(): string {
         return $this->roleInStep;
     }
 
-    public function notes(): ?string
-    {
+    public function notes(): ?string {
         return $this->notes;
     }
 }

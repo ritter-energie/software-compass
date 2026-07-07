@@ -10,13 +10,11 @@ use Tests\IntegrationTestCase;
 use function Tempest\Database\query;
 use function Tempest\get;
 
-final class ArchitectureInventoryPagesTest extends IntegrationTestCase
-{
+final class ArchitectureInventoryPagesTest extends IntegrationTestCase {
     private int $personId;
     private int $statusId;
 
-    protected function setUp(): void
-    {
+    protected function setUp(): void {
         parent::setUp();
 
         $this->database->setup();
@@ -24,27 +22,23 @@ final class ArchitectureInventoryPagesTest extends IntegrationTestCase
         $this->authenticateAs($this->seedUser());
     }
 
-    public function test_dependencies_index_renders_for_authenticated_users(): void
-    {
+    public function test_dependencies_index_renders_for_authenticated_users(): void {
         $this->assertGreaterThan(0, query('dependencies')->count()->execute());
 
         $this->http->get('/dependencies')->assertOk();
     }
 
-    public function test_journeys_index_renders_for_authenticated_users(): void
-    {
+    public function test_journeys_index_renders_for_authenticated_users(): void {
         $this->assertGreaterThan(0, query('journeys')->count()->execute());
 
         $this->http->get('/journeys')->assertOk();
     }
 
-    private function authenticateAs(int $userId): void
-    {
+    private function authenticateAs(int $userId): void {
         get(Session::class)->set('auth_user_id', $userId);
     }
 
-    private function seedInventoryData(): void
-    {
+    private function seedInventoryData(): void {
         $this->personId = $this->seedPerson();
         $componentTypeId = $this->seedLookup('component_types', 'Application');
         $this->statusId = $this->seedLookup('component_statuses', 'Active', ['sort_order' => 1]);
@@ -85,8 +79,7 @@ final class ArchitectureInventoryPagesTest extends IntegrationTestCase
         ])->execute();
     }
 
-    private function seedPerson(): int
-    {
+    private function seedPerson(): int {
         query('people')->insert([
             'name' => 'Feature Owner',
             'email' => 'feature-owner@example.test',
@@ -98,8 +91,7 @@ final class ArchitectureInventoryPagesTest extends IntegrationTestCase
         return (int) query('people')->select()->whereField('email', 'feature-owner@example.test')->first()['id'];
     }
 
-    private function seedUser(): int
-    {
+    private function seedUser(): int {
         query('users')->insert([
             'password_hash' => password_hash('secret', PASSWORD_DEFAULT),
             'person_id' => $this->personId,
@@ -113,8 +105,7 @@ final class ArchitectureInventoryPagesTest extends IntegrationTestCase
     }
 
     /** @param array<string, mixed> $values */
-    private function seedLookup(string $table, string $name, array $values = []): int
-    {
+    private function seedLookup(string $table, string $name, array $values = []): int {
         query($table)->insert([
             'name' => $name,
             ...$values,
@@ -125,8 +116,7 @@ final class ArchitectureInventoryPagesTest extends IntegrationTestCase
         return (int) query($table)->select()->whereField('name', $name)->first()['id'];
     }
 
-    private function seedComponent(string $name, string $slug, int $componentTypeId): int
-    {
+    private function seedComponent(string $name, string $slug, int $componentTypeId): int {
         query('components')->insert([
             'name' => $name,
             'short_name' => $name,
@@ -154,8 +144,7 @@ final class ArchitectureInventoryPagesTest extends IntegrationTestCase
         return (int) query('components')->select()->whereField('slug', $slug)->first()['id'];
     }
 
-    private function now(): string
-    {
+    private function now(): string {
         return date('Y-m-d H:i:s');
     }
 }

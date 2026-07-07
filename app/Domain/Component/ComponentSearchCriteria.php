@@ -7,8 +7,7 @@ namespace App\Domain\Component;
 /**
  * Filter/search parameters for the component list.
  */
-final readonly class ComponentSearchCriteria
-{
+final readonly class ComponentSearchCriteria {
     public function __construct(
         public ?string $query = null,
         public ?int $componentTypeId = null,

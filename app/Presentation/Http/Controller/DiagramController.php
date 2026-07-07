@@ -15,38 +15,32 @@ use Tempest\Router\WithMiddleware;
 use function Tempest\view;
 
 #[WithMiddleware(BasicAuthMiddleware::class)]
-final readonly class DiagramController
-{
+final readonly class DiagramController {
     public function __construct(
         private DiagramService $diagrams,
     ) {}
 
     #[Get('/diagrams/components')]
-    public function components(Request $request): Response
-    {
+    public function components(Request $request): Response {
         return new Ok(view('../../View/diagrams/components.view.php', mermaid: $this->diagrams->componentOverview($this->filter($request))));
     }
 
     #[Get('/diagrams/components/mermaid')]
-    public function componentsMermaid(Request $request): Response
-    {
+    public function componentsMermaid(Request $request): Response {
         return new Ok($this->diagrams->componentOverview($this->filter($request)));
     }
 
     #[Get('/diagrams/journeys/{id}')]
-    public function journey(int $id): Response
-    {
+    public function journey(int $id): Response {
         return new Ok(view('../../View/diagrams/journey.view.php', journeyId: $id, mermaid: $this->diagrams->journeyDiagram($id)));
     }
 
     #[Get('/diagrams/journeys/{id}/mermaid')]
-    public function journeyMermaid(int $id): Response
-    {
+    public function journeyMermaid(int $id): Response {
         return new Ok($this->diagrams->journeyDiagram($id));
     }
 
-    private function filter(Request $request): ComponentDiagramFilter
-    {
+    private function filter(Request $request): ComponentDiagramFilter {
         return new ComponentDiagramFilter(
             componentId: $this->intOrNull($request->get('component_id')),
             statusId: $this->intOrNull($request->get('status_id')),
@@ -58,8 +52,7 @@ final readonly class DiagramController
         );
     }
 
-    private function intOrNull(mixed $value): ?int
-    {
+    private function intOrNull(mixed $value): ?int {
         return $value === null || $value === '' ? null : (int) $value;
     }
 }

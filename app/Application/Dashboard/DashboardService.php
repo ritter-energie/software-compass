@@ -9,10 +9,8 @@ use App\Domain\Governance\GovernanceReview;
 use function Tempest\Database\query;
 
 /** Builds dashboard metrics and short lists for architecture quality checks. */
-final readonly class DashboardService
-{
-    public function buildDashboard(): DashboardViewModel
-    {
+final readonly class DashboardService {
+    public function buildDashboard(): DashboardViewModel {
         $activeStatusId = $this->idByName('component_statuses', 'Active');
         $replacementPlannedStatusId = $this->idByName('component_statuses', 'Replacement Planned');
         $businessCriticalId = $this->idByName('criticality_levels', 'Business Critical');
@@ -40,23 +38,19 @@ final readonly class DashboardService
         );
     }
 
-    private function count(string $table): int
-    {
+    private function count(string $table): int {
         return query($table)->count()->execute();
     }
 
-    private function countWhere(string $table, string $field, int $value): int
-    {
+    private function countWhere(string $table, string $field, int $value): int {
         return query($table)->count()->whereField($field, $value)->execute();
     }
 
-    private function countWhereNull(string $table, string $field): int
-    {
+    private function countWhereNull(string $table, string $field): int {
         return query($table)->count()->whereNull($field)->execute();
     }
 
-    private function countMissingOwner(string $table, string $personField, string $teamField): int
-    {
+    private function countMissingOwner(string $table, string $personField, string $teamField): int {
         return query($table)
             ->count()
             ->whereGroup(static function ($group) use ($personField, $teamField): void {
@@ -67,15 +61,13 @@ final readonly class DashboardService
             ->execute();
     }
 
-    private function idByName(string $table, string $name): ?int
-    {
+    private function idByName(string $table, string $name): ?int {
         $row = query($table)->select()->whereField('name', $name)->first();
 
         return $row ? (int) $row['id'] : null;
     }
 
-    private function countCriticalDependencies(?int ...$criticalityIds): int
-    {
+    private function countCriticalDependencies(?int ...$criticalityIds): int {
         $ids = array_values(array_filter($criticalityIds));
         if ($ids === []) {
             return 0;
@@ -85,8 +77,7 @@ final readonly class DashboardService
     }
 
     /** @return array<int, array<string, mixed>> */
-    private function openReviewRows(): array
-    {
+    private function openReviewRows(): array {
         return query('governance_reviews')
             ->select()
             ->whereIn('review_status', [
@@ -100,8 +91,7 @@ final readonly class DashboardService
     }
 
     /** @return array<int, array<string, mixed>> */
-    private function incompleteComponentRows(): array
-    {
+    private function incompleteComponentRows(): array {
         return query('components')
             ->select()
             ->whereGroup(static function ($group): void {
@@ -127,8 +117,7 @@ final readonly class DashboardService
     }
 
     /** @return array<int, array<string, mixed>> */
-    private function criticalDependencyRows(?int ...$criticalityIds): array
-    {
+    private function criticalDependencyRows(?int ...$criticalityIds): array {
         $ids = array_values(array_filter($criticalityIds));
         if ($ids === []) {
             return [];

@@ -6,8 +6,7 @@ namespace App\Domain\ReferenceData;
 
 use InvalidArgumentException;
 
-enum ReferenceDataType: string
-{
+enum ReferenceDataType: string {
     case COMPONENT_TYPE = 'component-types';
     case COMPONENT_STATUS = 'component-statuses';
     case CRITICALITY_LEVEL = 'criticality-levels';
@@ -19,13 +18,11 @@ enum ReferenceDataType: string
     case TAG = 'tags';
     case TEAM = 'teams';
 
-    public static function fromRoute(string $value): self
-    {
+    public static function fromRoute(string $value): self {
         return self::tryFrom($value) ?? throw new InvalidArgumentException('flash.error.master_data_group_not_found');
     }
 
-    public function table(): string
-    {
+    public function table(): string {
         return match ($this) {
             self::COMPONENT_TYPE => 'component_types',
             self::COMPONENT_STATUS => 'component_statuses',
@@ -40,8 +37,7 @@ enum ReferenceDataType: string
         };
     }
 
-    public function titleKey(): string
-    {
+    public function titleKey(): string {
         return match ($this) {
             self::COMPONENT_TYPE => 'master_data.component_types',
             self::COMPONENT_STATUS => 'master_data.component_statuses',
@@ -56,8 +52,7 @@ enum ReferenceDataType: string
         };
     }
 
-    public function orderBy(): string
-    {
+    public function orderBy(): string {
         return match ($this) {
             self::COMPONENT_STATUS, self::CRITICALITY_LEVEL => 'sort_order',
             default => 'name',
@@ -67,8 +62,7 @@ enum ReferenceDataType: string
     /**
      * @return ReferenceDataField[]
      */
-    public function fields(): array
-    {
+    public function fields(): array {
         return match ($this) {
             self::COMPONENT_STATUS, self::CRITICALITY_LEVEL => [ReferenceDataField::NAME, ReferenceDataField::DESCRIPTION, ReferenceDataField::SORT_ORDER],
             self::DEPLOYMENT_LOCATION => [ReferenceDataField::NAME, ReferenceDataField::LOCATION_TYPE, ReferenceDataField::DESCRIPTION],

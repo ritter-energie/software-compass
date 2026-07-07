@@ -14,26 +14,22 @@ use RuntimeException;
 use function Tempest\Database\query;
 
 /** Handles one-time first-run initialization (network name + first admin user). */
-final readonly class SetupService
-{
+final readonly class SetupService {
     private const string NETWORK_NAME_KEY = 'network_name';
 
     public function __construct(
         private AppSettingsRepository $settings,
     ) {}
 
-    public function needsSetup(): bool
-    {
+    public function needsSetup(): bool {
         return $this->userCount() === 0;
     }
 
-    public function networkName(): ?string
-    {
+    public function networkName(): ?string {
         return $this->settings->get(self::NETWORK_NAME_KEY);
     }
 
-    public function defaultLocale(): string
-    {
+    public function defaultLocale(): string {
         return $this->settings->defaultLocale();
     }
 
@@ -90,13 +86,11 @@ final readonly class SetupService
         $this->settings->setDefaultLocale($defaultLocale);
     }
 
-    private function userCount(): int
-    {
+    private function userCount(): int {
         return query('users')->count()->execute();
     }
 
-    private function normalizeEmail(string $email): string
-    {
+    private function normalizeEmail(string $email): string {
         $normalized = strtolower(trim($email));
         if (filter_var($normalized, FILTER_VALIDATE_EMAIL) === false) {
             throw new InvalidArgumentException('Please enter a valid email address.');
@@ -105,8 +99,7 @@ final readonly class SetupService
         return $normalized;
     }
 
-    private function seedRoles(): void
-    {
+    private function seedRoles(): void {
         $now = new DateTimeImmutable()->format('Y-m-d H:i:s');
 
         foreach (UserRole::cases() as $role) {

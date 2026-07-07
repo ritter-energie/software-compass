@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace App\Application\Dashboard;
 
-final readonly class DashboardViewModel
-{
+final readonly class DashboardViewModel {
     /**
      * @param array<string, int> $metrics
      * @param array<int, array<string, mixed>> $recentComponents

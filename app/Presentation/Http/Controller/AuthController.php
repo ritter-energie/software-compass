@@ -18,13 +18,11 @@ use function Tempest\Database\query;
 use function Tempest\get;
 use function Tempest\view;
 
-final readonly class AuthController
-{
+final readonly class AuthController {
     private const string SESSION_USER_ID = 'auth_user_id';
 
     #[Get('/login')]
-    public function loginForm(Request $request): Response
-    {
+    public function loginForm(Request $request): Response {
         if (query('users')->count()->execute() === 0) {
             return new Redirect('/setup');
         }
@@ -33,8 +31,7 @@ final readonly class AuthController
     }
 
     #[Post('/login')]
-    public function login(Request $request): Response
-    {
+    public function login(Request $request): Response {
         if (query('users')->count()->execute() === 0) {
             return new Redirect('/setup');
         }
@@ -70,8 +67,7 @@ final readonly class AuthController
     }
 
     #[Post('/logout')]
-    public function logout(Request $request): Response
-    {
+    public function logout(Request $request): Response {
         if (! Csrf::isValid($request)) {
             return new Redirect('/dashboard')->flash('error', Translator::translate('flash.error.invalid_security_token'));
         }
@@ -82,8 +78,7 @@ final readonly class AuthController
     }
 
     /** @return array<string, mixed>|null */
-    private function findActiveUserByEmail(string $email): ?array
-    {
+    private function findActiveUserByEmail(string $email): ?array {
         $people = query('people')->select()->whereField('email', $email)->all();
         if ($people === []) {
             return null;

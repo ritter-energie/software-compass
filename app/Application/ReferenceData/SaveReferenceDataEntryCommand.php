@@ -6,8 +6,7 @@ namespace App\Application\ReferenceData;
 
 use App\Domain\ReferenceData\ReferenceDataType;
 
-final readonly class SaveReferenceDataEntryCommand
-{
+final readonly class SaveReferenceDataEntryCommand {
     public function __construct(
         public ReferenceDataType $type,
         public string $name,

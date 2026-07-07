@@ -10,33 +10,28 @@ use DateTimeImmutable;
 
 use function Tempest\Database\query;
 
-final class MariaDbPersonRepository implements PersonRepository
-{
+final class MariaDbPersonRepository implements PersonRepository {
     use ResolvesLastInsertId;
 
-    public function findById(int $id): ?Person
-    {
+    public function findById(int $id): ?Person {
         $row = query('people')->select()->whereField('id', $id)->first();
 
         return $row ? $this->toDomain($row) : null;
     }
 
-    public function all(): array
-    {
+    public function all(): array {
         $rows = query('people')->select()->orderBy('name')->all();
 
         return array_map($this->toDomain(...), $rows);
     }
 
-    public function allActive(): array
-    {
+    public function allActive(): array {
         $rows = query('people')->select()->whereField('is_active', true)->orderBy('name')->all();
 
         return array_map($this->toDomain(...), $rows);
     }
 
-    public function save(Person $person): Person
-    {
+    public function save(Person $person): Person {
         $now = new DateTimeImmutable()->format('Y-m-d H:i:s');
         $row = [
             'name' => $person->name(),
@@ -59,14 +54,12 @@ final class MariaDbPersonRepository implements PersonRepository
         return $this->findById($person->id());
     }
 
-    public function delete(int $id): void
-    {
+    public function delete(int $id): void {
         query('people')->delete()->whereField('id', $id)->execute();
     }
 
     /** @param array<string, mixed> $row */
-    private function toDomain(array $row): Person
-    {
+    private function toDomain(array $row): Person {
         return new Person(
             id: (int) $row['id'],
             name: $row['name'],

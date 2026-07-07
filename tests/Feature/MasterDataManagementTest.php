@@ -11,10 +11,8 @@ use Tests\IntegrationTestCase;
 use function Tempest\Database\query;
 use function Tempest\get;
 
-final class MasterDataManagementTest extends IntegrationTestCase
-{
-    protected function setUp(): void
-    {
+final class MasterDataManagementTest extends IntegrationTestCase {
+    protected function setUp(): void {
         parent::setUp();
 
         $this->database->setup();
@@ -25,22 +23,19 @@ final class MasterDataManagementTest extends IntegrationTestCase
         query('roles')->delete()->allowAll()->execute();
     }
 
-    public function test_admin_can_open_master_data_create_page(): void
-    {
+    public function test_admin_can_open_master_data_create_page(): void {
         $this->authenticateAs($this->seedUser('admin-user', 'admin'));
 
         $this->http->get('/master-data/component-types/create')->assertOk();
     }
 
-    public function test_non_admin_cannot_open_master_data_create_page(): void
-    {
+    public function test_non_admin_cannot_open_master_data_create_page(): void {
         $this->authenticateAs($this->seedUser('viewer-user', 'viewer'));
 
         $this->http->get('/master-data/component-types/create')->assertStatus(Status::FORBIDDEN);
     }
 
-    public function test_admin_can_create_update_and_delete_master_data_entries(): void
-    {
+    public function test_admin_can_create_update_and_delete_master_data_entries(): void {
         $this->authenticateAs($this->seedUser('admin-user', 'admin'));
 
         $this->http
@@ -75,8 +70,7 @@ final class MasterDataManagementTest extends IntegrationTestCase
         $this->assertNull(query('component_types')->select()->whereField('id', $created['id'])->first());
     }
 
-    public function test_admin_can_manage_special_master_data_fields(): void
-    {
+    public function test_admin_can_manage_special_master_data_fields(): void {
         $this->authenticateAs($this->seedUser('admin-user', 'admin'));
 
         $this->http
@@ -108,8 +102,7 @@ final class MasterDataManagementTest extends IntegrationTestCase
         $this->assertSame('Edge', $location['location_type']);
     }
 
-    public function test_invalid_csrf_token_does_not_create_master_data(): void
-    {
+    public function test_invalid_csrf_token_does_not_create_master_data(): void {
         $this->authenticateAs($this->seedUser('admin-user', 'admin'));
 
         $this->http
@@ -122,13 +115,11 @@ final class MasterDataManagementTest extends IntegrationTestCase
         $this->assertNull(query('tags')->select()->whereField('name', 'Invalid CSRF Tag')->first());
     }
 
-    private function authenticateAs(int $userId): void
-    {
+    private function authenticateAs(int $userId): void {
         get(Session::class)->set('auth_user_id', $userId);
     }
 
-    private function seedUser(string $accountName, string $role): int
-    {
+    private function seedUser(string $accountName, string $role): int {
         $email = $accountName . '@example.test';
 
         query('people')->insert([

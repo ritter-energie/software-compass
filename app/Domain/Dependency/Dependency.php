@@ -11,8 +11,7 @@ use InvalidArgumentException;
  *
  * Holds the fields and business rules this entity enforces.
  */
-final class Dependency
-{
+final class Dependency {
     public const string DIRECTION_SOURCE_TO_TARGET = 'source_to_target';
 
     public const string DIRECTION_TARGET_TO_SOURCE = 'target_to_source';
@@ -46,93 +45,75 @@ final class Dependency
         }
     }
 
-    public function id(): ?int
-    {
+    public function id(): ?int {
         return $this->id;
     }
 
-    public function sourceComponentId(): int
-    {
+    public function sourceComponentId(): int {
         return $this->sourceComponentId;
     }
 
-    public function targetComponentId(): int
-    {
+    public function targetComponentId(): int {
         return $this->targetComponentId;
     }
 
-    public function dependencyTypeId(): int
-    {
+    public function dependencyTypeId(): int {
         return $this->dependencyTypeId;
     }
 
-    public function protocolId(): ?int
-    {
+    public function protocolId(): ?int {
         return $this->protocolId;
     }
 
-    public function statusId(): int
-    {
+    public function statusId(): int {
         return $this->statusId;
     }
 
-    public function criticalityId(): ?int
-    {
+    public function criticalityId(): ?int {
         return $this->criticalityId;
     }
 
-    public function ownerId(): ?int
-    {
+    public function ownerId(): ?int {
         return $this->ownerId;
     }
 
-    public function ownerTeamId(): ?int
-    {
+    public function ownerTeamId(): ?int {
         return $this->ownerTeamId;
     }
 
-    public function name(): string
-    {
+    public function name(): string {
         return $this->name;
     }
 
-    public function description(): ?string
-    {
+    public function description(): ?string {
         return $this->description;
     }
 
-    public function dataDescription(): ?string
-    {
+    public function dataDescription(): ?string {
         return $this->dataDescription;
     }
 
-    public function frequency(): ?string
-    {
+    public function frequency(): ?string {
         return $this->frequency;
     }
 
-    public function direction(): string
-    {
+    public function direction(): string {
         return $this->direction;
     }
 
-    public function authenticationMethod(): ?string
-    {
+    public function authenticationMethod(): ?string {
         return $this->authenticationMethod;
     }
 
-    public function documentationUrl(): ?string
-    {
+    public function documentationUrl(): ?string {
         return $this->documentationUrl;
     }
 
-    public function technicalNotes(): ?string
-    {
+    public function technicalNotes(): ?string {
         return $this->technicalNotes;
     }
 
-    public function isBidirectional(): bool
-    {
+    public function isBidirectional(): bool {
         return $this->isBidirectional;
     }
 
@@ -140,8 +121,7 @@ final class Dependency
      * A short, human-readable label combining the dependency name with its
      * data description, used in diagrams.
      */
-    public function label(): string
-    {
+    public function label(): string {
         return $this->dataDescription
             ? sprintf('%s / %s', $this->name, $this->dataDescription)
             : $this->name;
@@ -151,8 +131,7 @@ final class Dependency
      * A dependency is considered incomplete when it lacks an owner or a
      * description of the data it transports.
      */
-    public function isIncomplete(): bool
-    {
+    public function isIncomplete(): bool {
         return $this->ownerId === null && $this->ownerTeamId === null || $this->dataDescription === null || trim((string) $this->dataDescription) === '';
     }
 }

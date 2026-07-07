@@ -23,8 +23,7 @@ use UnitEnum;
  * A DynamicInitializer is used because a normal Initializer can only resolve
  * a single return type; here we need to map several interfaces at once.
  */
-final readonly class RepositoryInitializer implements DynamicInitializer
-{
+final readonly class RepositoryInitializer implements DynamicInitializer {
     /** @var array<class-string, class-string> */
     private const array MAP = [
         ComponentRepository::class => MariaDbComponentRepository::class,
@@ -34,13 +33,11 @@ final readonly class RepositoryInitializer implements DynamicInitializer
         GovernanceReviewRepository::class => MariaDbGovernanceReviewRepository::class,
     ];
 
-    public function canInitialize(ClassReflector $class, null|string|UnitEnum $tag): bool
-    {
+    public function canInitialize(ClassReflector $class, null|string|UnitEnum $tag): bool {
         return array_key_exists($class->getName(), self::MAP);
     }
 
-    public function initialize(ClassReflector $class, null|string|UnitEnum $tag, Container $container): object
-    {
+    public function initialize(ClassReflector $class, null|string|UnitEnum $tag, Container $container): object {
         return $container->get(self::MAP[$class->getName()]);
     }
 }

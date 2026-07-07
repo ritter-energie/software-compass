@@ -19,10 +19,8 @@ use App\Domain\Journey\JourneyStepComponent;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-final class DiagramServiceTest extends TestCase
-{
-    public function test_component_overview_renders_nodes_and_edges(): void
-    {
+final class DiagramServiceTest extends TestCase {
+    public function test_component_overview_renders_nodes_and_edges(): void {
         $service = new DiagramService(
             components: $this->componentRepository([
                 $this->component(id: 1, name: 'CRM "Core"'),
@@ -42,8 +40,7 @@ final class DiagramServiceTest extends TestCase
         $this->assertStringContainsString('C1 -->|"Orders / Order Data"| C2', $diagram);
     }
 
-    public function test_component_overview_renders_parent_components_as_containers(): void
-    {
+    public function test_component_overview_renders_parent_components_as_containers(): void {
         $service = new DiagramService(
             components: $this->componentRepository([
                 $this->component(id: 1, name: 'Platform'),
@@ -64,8 +61,7 @@ final class DiagramServiceTest extends TestCase
         $this->assertStringContainsString('C3 -. "inherits" .-> C4', $diagram);
     }
 
-    public function test_component_neighborhood_throws_for_unknown_component(): void
-    {
+    public function test_component_neighborhood_throws_for_unknown_component(): void {
         $service = new DiagramService(
             components: $this->componentRepository([]),
             dependencies: $this->dependencyRepository([]),
@@ -78,8 +74,7 @@ final class DiagramServiceTest extends TestCase
         $service->componentNeighborhood(componentId: 999);
     }
 
-    public function test_journey_diagram_renders_steps_and_component_roles(): void
-    {
+    public function test_journey_diagram_renders_steps_and_component_roles(): void {
         $service = new DiagramService(
             components: $this->componentRepository([
                 $this->component(id: 1, name: 'Webshop'),
@@ -123,8 +118,7 @@ final class DiagramServiceTest extends TestCase
     }
 
     /** @param int[] $parentComponentIds */
-    private function component(int $id, string $name, array $parentComponentIds = []): Component
-    {
+    private function component(int $id, string $name, array $parentComponentIds = []): Component {
         return new Component(
             id: $id,
             name: $name,
@@ -152,8 +146,7 @@ final class DiagramServiceTest extends TestCase
         );
     }
 
-    private function dependency(int $id, int $source, int $target, string $name, ?string $dataDescription): Dependency
-    {
+    private function dependency(int $id, int $source, int $target, string $name, ?string $dataDescription): Dependency {
         return new Dependency(
             id: $id,
             sourceComponentId: $source,
@@ -177,28 +170,24 @@ final class DiagramServiceTest extends TestCase
     }
 
     /** @param Component[] $components */
-    private function componentRepository(array $components): ComponentRepository
-    {
+    private function componentRepository(array $components): ComponentRepository {
         return new class($components) implements ComponentRepository {
             /** @var array<int, Component> */
             private array $items;
 
             /** @param Component[] $components */
-            public function __construct(array $components)
-            {
+            public function __construct(array $components) {
                 $this->items = [];
                 foreach ($components as $component) {
                     $this->items[(int) $component->id()] = $component;
                 }
             }
 
-            public function findById(int $id): ?Component
-            {
+            public function findById(int $id): ?Component {
                 return $this->items[$id] ?? null;
             }
 
-            public function findBySlug(string $slug): ?Component
-            {
+            public function findBySlug(string $slug): ?Component {
                 foreach ($this->items as $component) {
                     if ($component->slug() === $slug) {
                         return $component;
@@ -208,18 +197,15 @@ final class DiagramServiceTest extends TestCase
                 return null;
             }
 
-            public function search(ComponentSearchCriteria $criteria): array
-            {
+            public function search(ComponentSearchCriteria $criteria): array {
                 return array_values($this->items);
             }
 
-            public function all(): array
-            {
+            public function all(): array {
                 return array_values($this->items);
             }
 
-            public function parentsOf(int $componentId): array
-            {
+            public function parentsOf(int $componentId): array {
                 $component = $this->items[$componentId] ?? null;
 
                 if ($component === null) {
@@ -232,28 +218,24 @@ final class DiagramServiceTest extends TestCase
                 ));
             }
 
-            public function childrenOf(int $componentId): array
-            {
+            public function childrenOf(int $componentId): array {
                 return array_values(array_filter(
                     $this->items,
                     static fn (Component $candidate): bool => in_array($componentId, $candidate->parentComponentIds(), true),
                 ));
             }
 
-            public function save(Component $component): Component
-            {
+            public function save(Component $component): Component {
                 $this->items[(int) $component->id()] = $component;
 
                 return $component;
             }
 
-            public function delete(int $id): void
-            {
+            public function delete(int $id): void {
                 unset($this->items[$id]);
             }
 
-            public function slugExists(string $slug, ?int $excludingId = null): bool
-            {
+            public function slugExists(string $slug, ?int $excludingId = null): bool {
                 foreach ($this->items as $id => $component) {
                     if ($excludingId !== null && $excludingId === $id) {
                         continue;
@@ -269,69 +251,59 @@ final class DiagramServiceTest extends TestCase
     }
 
     /** @param Dependency[] $dependencies */
-    private function dependencyRepository(array $dependencies): DependencyRepository
-    {
+    private function dependencyRepository(array $dependencies): DependencyRepository {
         return new class($dependencies) implements DependencyRepository {
             /** @var array<int, Dependency> */
             private array $items;
 
             /** @param Dependency[] $dependencies */
-            public function __construct(array $dependencies)
-            {
+            public function __construct(array $dependencies) {
                 $this->items = [];
                 foreach ($dependencies as $dependency) {
                     $this->items[(int) $dependency->id()] = $dependency;
                 }
             }
 
-            public function findById(int $id): ?Dependency
-            {
+            public function findById(int $id): ?Dependency {
                 return $this->items[$id] ?? null;
             }
 
-            public function findByComponentId(int $componentId): array
-            {
+            public function findByComponentId(int $componentId): array {
                 return array_values(array_filter(
                     $this->items,
                     static fn (Dependency $dependency): bool => $dependency->sourceComponentId() === $componentId || $dependency->targetComponentId() === $componentId,
                 ));
             }
 
-            public function findIncomingForComponent(int $componentId): array
-            {
+            public function findIncomingForComponent(int $componentId): array {
                 return array_values(array_filter(
                     $this->items,
                     static fn (Dependency $dependency): bool => $dependency->targetComponentId() === $componentId,
                 ));
             }
 
-            public function findOutgoingForComponent(int $componentId): array
-            {
+            public function findOutgoingForComponent(int $componentId): array {
                 return array_values(array_filter(
                     $this->items,
                     static fn (Dependency $dependency): bool => $dependency->sourceComponentId() === $componentId,
                 ));
             }
 
-            public function search(DependencySearchCriteria $criteria): array
-            {
+            public function search(DependencySearchCriteria $criteria): array {
                 return array_values($this->items);
             }
 
-            public function all(): array
-            {
+            public function all(): array {
                 return array_values($this->items);
             }
 
-            public function save(Dependency $dependency): Dependency
-            {
+            public function save(Dependency $dependency): Dependency {
                 $this->items[(int) $dependency->id()] = $dependency;
 
                 return $dependency;
             }
 
-            public function delete(int $id): void
-            {
+            public function delete(int $id): void {
                 unset($this->items[$id]);
             }
         };
@@ -342,8 +314,7 @@ final class DiagramServiceTest extends TestCase
      * @param array<int, JourneyStep[]> $stepsByJourney
      * @param array<int, JourneyStepComponent[]> $componentsByStep
      */
-    private function journeyRepository(array $journeys, array $stepsByJourney, array $componentsByStep): JourneyRepository
-    {
+    private function journeyRepository(array $journeys, array $stepsByJourney, array $componentsByStep): JourneyRepository {
         return new class($journeys, $stepsByJourney, $componentsByStep) implements JourneyRepository {
             /** @var array<int, Journey> */
             private array $journeysById = [];
@@ -359,13 +330,11 @@ final class DiagramServiceTest extends TestCase
                 }
             }
 
-            public function findById(int $id): ?Journey
-            {
+            public function findById(int $id): ?Journey {
                 return $this->journeysById[$id] ?? null;
             }
 
-            public function findBySlug(string $slug): ?Journey
-            {
+            public function findBySlug(string $slug): ?Journey {
                 foreach ($this->journeysById as $journey) {
                     if ($journey->slug() === $slug) {
                         return $journey;
@@ -375,30 +344,25 @@ final class DiagramServiceTest extends TestCase
                 return null;
             }
 
-            public function all(): array
-            {
+            public function all(): array {
                 return array_values($this->journeysById);
             }
 
-            public function save(Journey $journey): Journey
-            {
+            public function save(Journey $journey): Journey {
                 $this->journeysById[(int) $journey->id()] = $journey;
 
                 return $journey;
             }
 
-            public function delete(int $id): void
-            {
+            public function delete(int $id): void {
                 unset($this->journeysById[$id]);
             }
 
-            public function stepsForJourney(int $journeyId): array
-            {
+            public function stepsForJourney(int $journeyId): array {
                 return $this->stepsByJourney[$journeyId] ?? [];
             }
 
-            public function findStepById(int $stepId): ?JourneyStep
-            {
+            public function findStepById(int $stepId): ?JourneyStep {
                 foreach ($this->stepsByJourney as $steps) {
                     foreach ($steps as $step) {
                         if ($step->id() === $stepId) {
@@ -410,13 +374,11 @@ final class DiagramServiceTest extends TestCase
                 return null;
             }
 
-            public function saveStep(JourneyStep $step): JourneyStep
-            {
+            public function saveStep(JourneyStep $step): JourneyStep {
                 return $step;
             }
 
-            public function deleteStep(int $stepId): void
-            {
+            public function deleteStep(int $stepId): void {
                 foreach ($this->stepsByJourney as $journeyId => $steps) {
                     $this->stepsByJourney[$journeyId] = array_values(array_filter(
                         $steps,
@@ -425,13 +387,11 @@ final class DiagramServiceTest extends TestCase
                 }
             }
 
-            public function componentsForStep(int $stepId): array
-            {
+            public function componentsForStep(int $stepId): array {
                 return $this->componentsByStep[$stepId] ?? [];
             }
 
-            public function findStepComponentById(int $stepComponentId): ?JourneyStepComponent
-            {
+            public function findStepComponentById(int $stepComponentId): ?JourneyStepComponent {
                 foreach ($this->componentsByStep as $components) {
                     foreach ($components as $component) {
                         if ($component->id() === $stepComponentId) {
@@ -443,13 +403,11 @@ final class DiagramServiceTest extends TestCase
                 return null;
             }
 
-            public function saveStepComponent(JourneyStepComponent $stepComponent): JourneyStepComponent
-            {
+            public function saveStepComponent(JourneyStepComponent $stepComponent): JourneyStepComponent {
                 return $stepComponent;
             }
 
-            public function deleteStepComponent(int $stepComponentId): void
-            {
+            public function deleteStepComponent(int $stepComponentId): void {
                 foreach ($this->componentsByStep as $stepId => $components) {
                     $this->componentsByStep[$stepId] = array_values(array_filter(
                         $components,
@@ -458,8 +416,7 @@ final class DiagramServiceTest extends TestCase
                 }
             }
 
-            public function slugExists(string $slug, ?int $excludingId = null): bool
-            {
+            public function slugExists(string $slug, ?int $excludingId = null): bool {
                 foreach ($this->journeysById as $id => $journey) {
                     if ($excludingId !== null && $excludingId === $id) {
                         continue;

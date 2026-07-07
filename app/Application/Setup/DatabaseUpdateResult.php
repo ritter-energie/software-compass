@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace App\Application\Setup;
 
 /** Result object returned after an admin-triggered database update attempt. */
-final readonly class DatabaseUpdateResult
-{
+final readonly class DatabaseUpdateResult {
     /**
      * @param string[] $migratedMigrations
      * @param string[] $remainingPendingMigrations
@@ -19,8 +18,7 @@ final readonly class DatabaseUpdateResult
         public ?string $errorMessage = null,
     ) {}
 
-    public function successful(): bool
-    {
+    public function successful(): bool {
         return $this->errorMessage === null && $this->validationErrors === [];
     }
 }

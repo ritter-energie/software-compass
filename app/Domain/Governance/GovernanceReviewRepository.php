@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Governance;
 
-interface GovernanceReviewRepository
-{
+interface GovernanceReviewRepository {
     public function findById(int $id): ?GovernanceReview;
 
     public function findByComponentId(int $componentId): ?GovernanceReview;

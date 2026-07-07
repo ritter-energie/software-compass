@@ -12,8 +12,7 @@ use App\Shared\Support\LocaleSupport;
  * PHP request lifecycles are isolated, so this small context lets Application
  * Services resolve audit/reviewer person ids without coupling them to HTTP.
  */
-final class CurrentUser
-{
+final class CurrentUser {
     private static ?int $userId = null;
 
     private static ?int $personId = null;
@@ -26,8 +25,7 @@ final class CurrentUser
     private static array $roles = [];
 
     /** @param string[] $roles */
-    public static function authenticate(int $userId, ?int $personId, string $locale = 'en', array $roles = [], ?string $displayName = null): void
-    {
+    public static function authenticate(int $userId, ?int $personId, string $locale = 'en', array $roles = [], ?string $displayName = null): void {
         self::$userId = $userId;
         self::$personId = $personId;
         self::$locale = LocaleSupport::normalize($locale);
@@ -35,8 +33,7 @@ final class CurrentUser
         self::$roles = array_values(array_unique(array_filter(array_map(static fn (mixed $role): string => strtolower(trim((string) $role)), $roles))));
     }
 
-    public static function clear(): void
-    {
+    public static function clear(): void {
         self::$userId = null;
         self::$personId = null;
         self::$locale = 'en';
@@ -44,34 +41,28 @@ final class CurrentUser
         self::$roles = [];
     }
 
-    public static function userId(): ?int
-    {
+    public static function userId(): ?int {
         return self::$userId;
     }
 
-    public static function personId(): ?int
-    {
+    public static function personId(): ?int {
         return self::$personId;
     }
 
-    public static function locale(): string
-    {
+    public static function locale(): string {
         return self::$locale;
     }
 
-    public static function displayName(): ?string
-    {
+    public static function displayName(): ?string {
         return self::$displayName;
     }
 
     /** @return string[] */
-    public static function roles(): array
-    {
+    public static function roles(): array {
         return self::$roles;
     }
 
-    public static function hasRole(string $role): bool
-    {
+    public static function hasRole(string $role): bool {
         return in_array(strtolower(trim($role)), self::$roles, true);
     }
 }
