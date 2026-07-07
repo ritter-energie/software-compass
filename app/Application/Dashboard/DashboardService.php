@@ -59,8 +59,11 @@ final readonly class DashboardService
     {
         return query($table)
             ->count()
-            ->whereNull($personField)
-            ->whereNull($teamField)
+            ->whereGroup(static function ($group) use ($personField, $teamField): void {
+                $group
+                    ->whereNull($personField)
+                    ->whereNull($teamField);
+            })
             ->execute();
     }
 
@@ -99,25 +102,28 @@ final readonly class DashboardService
     /** @return array<int, array<string, mixed>> */
     private function incompleteComponentRows(): array
     {
-        $rows = query('components')->select()->orderBy('updated_at')->all();
-
-        return array_slice(
-            array_values(array_filter(
-                $rows,
-                static fn (array $row): bool => (
-                    $row['business_owner_id'] === null
-                    && $row['business_owner_team_id'] === null
-                    || $row['technical_owner_id'] === null
-                    && $row['technical_owner_team_id'] === null
-                    || $row['purpose'] === null
-                    || trim((string) $row['purpose']) === ''
-                    || $row['deployment_location_id'] === null
-                    || $row['environment_id'] === null
-                ),
-            )),
-            0,
-            10,
-        );
+        return query('components')
+            ->select()
+            ->whereGroup(static function ($group): void {
+                $group
+                    ->whereGroup(static function ($ownerGroup): void {
+                        $ownerGroup
+                            ->whereNull('business_owner_id')
+                            ->whereNull('business_owner_team_id');
+                    })
+                    ->orWhereGroup(static function ($ownerGroup): void {
+                        $ownerGroup
+                            ->whereNull('technical_owner_id')
+                            ->whereNull('technical_owner_team_id');
+                    })
+                    ->orWhereNull('purpose')
+                    ->orWhere('purpose', '', '=')
+                    ->orWhereNull('deployment_location_id')
+                    ->orWhereNull('environment_id');
+            })
+            ->orderBy('updated_at')
+            ->limit(10)
+            ->all();
     }
 
     /** @return array<int, array<string, mixed>> */

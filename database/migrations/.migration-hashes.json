@@ -1,0 +1,15 @@
+{
+    "AddPreferredLocaleToUsersTable.php": "5d0a4037b148dfdc8c57bc280154f710a5cfa50b3a8f550e66a675279ee0eeb5",
+    "AddTeamsAndTeamOwners.php": "0f1d55bd4bff2dce5951e98c8a7b9508c85d974f3ea47407605d8c5aa1acae71",
+    "CreateAppSettingsTable.php": "79790cce40669e351c6d7bfa67c9281a8c42480c2ca40b05af754f3f36a64c62",
+    "CreateAuditLogsTable.php": "04ffaf9af2e0bcf739bcc2389ea4c98aa31f89a37937ebe59cbeaa8331b3f6ef",
+    "CreateComponentInheritanceTable.php": "8f91e3f0ab212274855001621f52479177de3ea3b0a304a7cf575aa67e9dd040",
+    "CreateComponentsTable.php": "3b86de18062cbe02543b8629d62a00b31c5bb2bcf8454cf796b0532d60cb18fc",
+    "CreateDependenciesTable.php": "9feaccce7488851137a7507e2379d32456096ad8e0e844d338a2197d12fe8d12",
+    "CreateGovernanceReviewsTable.php": "9b8f08f1a05d2ba45402124486f778f0778b16c30e382384f0c37b64017ab431",
+    "CreateJourneysTable.php": "de8255a48872b176ad557026811664d450ea6a50f2d30ee09d695024174dc497",
+    "CreateLookupTables.php": "035df25750da5db360d46a3fdf1fda1bd2ef3c8d9a7dfcdf03825e7e646c6040",
+    "CreatePeopleTable.php": "c3ef8b0fe692c3a918fc2ee5dc256807319a4201c7f56ee54cff1b8fc8aaba32",
+    "CreateRoleTables.php": "432255c27bff29216e106673f10c673cd2b3ff7312a9b5a8408ecad63a1ba48c",
+    "CreateUsersTable.php": "80ada0b1fc73380e6aa355557950d2c810c95abb6f79b5602a4ab112d724f65e"
+}

@@ -43,6 +43,7 @@
         "fmt": "vendor/bin/mago fmt",
         "lint": "vendor/bin/mago lint --fix --format-after-fix",
         "analyse": "vendor/bin/phpstan analyse --memory-limit=1G",
+        "migrations:hashes": "php scripts/update-migration-hashes.php",
         "qa": [
             "composer fmt",
             "composer phpunit",

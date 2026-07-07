@@ -83,6 +83,33 @@ users:
   error:
     required_fields: Please fill in all required fields.
     invalid_email: Please enter a valid email address.
+app_settings:
+  title: App Settings
+  description: Manage global application settings and operational updates.
+  global_settings: Global Settings
+  global_settings_description: Configure defaults that apply across the application.
+  default_locale: Default Language
+  default_locale_hint: Used for setup defaults and new users when no individual language was selected.
+  success:
+    default_locale_updated: Default language updated.
+database_update:
+  title: Database Update
+  description: Review pending database schema migrations and run them after confirming the update.
+  current_status: Current Status
+  up_to_date: The database schema is up to date.
+  pending_notice: A database schema update is available. Review the pending migrations before running the update.
+  layout_notice: A database schema update is available.
+  open_update_page: Open update page
+  pending_migrations: Pending migrations
+  migration_table_missing: The migration history table is missing. The updater will create it before applying migrations.
+  validation_errors: Migration validation errors
+  run_update: Run database update
+  success:
+    applied: Database update completed. Applied {count} migration(s).
+    none_needed: No database update was needed.
+  error:
+    validation_failed: Database update was blocked because migration validation failed.
+    update_failed: Database update failed.
 footer:
   tagline: Self-hosted Enterprise Architecture repository
 dashboard:

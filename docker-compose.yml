@@ -14,6 +14,8 @@ services:
       DB_DATABASE: "${DB_DATABASE:-software_compass}"
       DB_USERNAME: "${DB_USERNAME:-software_compass}"
       DB_PASSWORD: "${DB_PASSWORD:-secret}"
+      AUTO_DISCOVERY_GENERATE: "${AUTO_DISCOVERY_GENERATE:-true}"
+      AUTO_MIGRATE: "${AUTO_MIGRATE:-true}"
     volumes:
       # Mount the source for live-reload during development. The vendor/
       # directory is kept in a named volume so container-built dependencies
@@ -22,7 +24,8 @@ services:
       - .:/var/www/html
       - vendor:/var/www/html/vendor
       - tempest-cache:/var/www/html/.tempest
-    command: ["sh", "-lc", "mkdir -p /var/www/html/.tempest/cache && chown -R www-data:www-data /var/www/html/.tempest && apache2-foreground"]
+    entrypoint: ["sh", "/var/www/html/docker/app-entrypoint.sh"]
+    command: ["apache2-foreground"]
     depends_on:
       mariadb:
         condition: service_healthy
