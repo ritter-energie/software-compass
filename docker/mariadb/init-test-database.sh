@@ -1,11 +1,10 @@
 #!/bin/sh
 set -eu
 
-TEST_DATABASE="${DB_TEST_DATABASE:-${MARIADB_DATABASE}_test}"
+TEST_DATABASE="${DB_TEST_DATABASE:-${MARIADB_DATABASE:-software_compass}_test}"
 
-mysql --protocol=socket -uroot -p"${MARIADB_ROOT_PASSWORD}" <<-EOSQL
+mariadb --protocol=socket -uroot -p"${MARIADB_ROOT_PASSWORD}" <<-EOSQL
 CREATE DATABASE IF NOT EXISTS \`${TEST_DATABASE}\`;
 GRANT ALL PRIVILEGES ON \`${TEST_DATABASE}\`.* TO '${MARIADB_USER}'@'%';
 FLUSH PRIVILEGES;
 EOSQL
-
