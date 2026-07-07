@@ -32,14 +32,14 @@ final class DiagramServiceTest extends TestCase {
             journeys: $this->journeyRepository([], [], []),
         );
 
-        $diagram = $service->componentOverview(new ComponentDiagramFilter());
+        $diagram = $service->componentOverview(new ComponentDiagramFilter(), 'Komponentendetails öffnen');
 
         $this->assertStringContainsString('flowchart LR', $diagram);
         $this->assertStringContainsString('C1["CRM #quot;Core#quot;"]', $diagram);
         $this->assertStringContainsString('C2["ERP"]', $diagram);
         $this->assertStringContainsString('C1 -->|"Orders / Order Data"| C2', $diagram);
-        $this->assertStringContainsString('click C1 "/components/1" "Open component details"', $diagram);
-        $this->assertStringContainsString('click C2 "/components/2" "Open component details"', $diagram);
+        $this->assertStringContainsString('click C1 "/components/1" "Komponentendetails öffnen"', $diagram);
+        $this->assertStringContainsString('click C2 "/components/2" "Komponentendetails öffnen"', $diagram);
     }
 
     public function test_component_overview_renders_parent_components_as_containers(): void {
@@ -54,7 +54,7 @@ final class DiagramServiceTest extends TestCase {
             journeys: $this->journeyRepository([], [], []),
         );
 
-        $diagram = $service->componentOverview(new ComponentDiagramFilter());
+        $diagram = $service->componentOverview(new ComponentDiagramFilter(), 'Open component details');
 
         $this->assertStringContainsString('subgraph SGC1["Platform"]', $diagram);
         $this->assertStringContainsString('        C2["CRM"]', $diagram);
@@ -82,7 +82,7 @@ final class DiagramServiceTest extends TestCase {
             journeys: $this->journeyRepository([], [], []),
         );
 
-        $diagram = $service->componentOverview(new ComponentDiagramFilter());
+        $diagram = $service->componentOverview(new ComponentDiagramFilter(), 'Open component details');
 
         $this->assertStringContainsString('subgraph SGC2["Website"]', $diagram);
         $this->assertStringNotContainsString("\n    C2[\"Website\"]\n", $diagram);
@@ -99,7 +99,7 @@ final class DiagramServiceTest extends TestCase {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Component not found.');
 
-        $service->componentNeighborhood(componentId: 999);
+        $service->componentNeighborhood(componentId: 999, componentDetailTooltip: 'Open component details');
     }
 
     public function test_journey_diagram_renders_steps_and_component_roles(): void {

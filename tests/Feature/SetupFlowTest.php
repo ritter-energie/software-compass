@@ -49,9 +49,14 @@ final class SetupFlowTest extends IntegrationTestCase {
         $this->database->setup(migrate: false);
         get(Database::class)->execute(new Query('CREATE TABLE bootstrap_probe (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY)'));
 
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('table `users` is missing while the database is not empty');
+        $expectedMessage = 'Database schema is inconsistent: table `users` is missing while the database is not empty.';
 
-        get(SetupService::class)->needsSetup();
+        try {
+            get(SetupService::class)->needsSetup();
+
+            self::fail('Expected RuntimeException was not thrown.');
+        } catch (RuntimeException $exception) {
+            self::assertSame($expectedMessage, $exception->getMessage());
+        }
     }
 }

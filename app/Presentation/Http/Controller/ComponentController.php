@@ -135,7 +135,7 @@ final readonly class ComponentController {
     #[Get('/components/{id}')]
     public function show(int $id): Response {
         try {
-            $detail = $this->componentService->detail($id);
+            $detail = $this->componentService->detail($id, $this->componentDetailTooltip());
         } catch (RuntimeException) {
             return new Ok(view('../../View/components/show.view.php', component: null))
                 ->setStatus(Status::NOT_FOUND);
@@ -240,7 +240,7 @@ final readonly class ComponentController {
 
     #[Get('/components/{id}/diagram')]
     public function diagram(int $id): Response {
-        $detail = $this->componentService->detail($id);
+        $detail = $this->componentService->detail($id, $this->componentDetailTooltip());
 
         return new Ok(view(
             '../../View/components/diagram.view.php',
@@ -251,7 +251,7 @@ final readonly class ComponentController {
 
     #[Get('/components/{id}/governance')]
     public function governance(int $id): Response {
-        $detail = $this->componentService->detail($id);
+        $detail = $this->componentService->detail($id, $this->componentDetailTooltip());
 
         return new Ok(view(
             '../../View/components/governance.view.php',
@@ -298,6 +298,10 @@ final readonly class ComponentController {
         }
 
         return '—';
+    }
+
+    private function componentDetailTooltip(): string {
+        return Translator::translate('diagrams.component_detail_tooltip');
     }
 
     private function intOrNull(mixed $value): ?int {

@@ -20,15 +20,13 @@ use RuntimeException;
  * the latest components, dependencies and journey assignments.
  */
 final readonly class DiagramService {
-    private const string COMPONENT_DETAIL_TOOLTIP = 'Open component details';
-
     public function __construct(
         private ComponentRepository $components,
         private DependencyRepository $dependencies,
         private JourneyRepository $journeys,
     ) {}
 
-    public function componentOverview(ComponentDiagramFilter $filter): string {
+    public function componentOverview(ComponentDiagramFilter $filter, string $componentDetailTooltip): string {
         $components = $this->components->search(new ComponentSearchCriteria(
             componentTypeId: $filter->componentTypeId,
             statusId: $filter->statusId,
@@ -50,10 +48,10 @@ final readonly class DiagramService {
             static fn (Dependency $dependency): bool => isset($componentIds[$dependency->sourceComponentId()], $componentIds[$dependency->targetComponentId()]),
         );
 
-        return $this->renderComponentGraph($components, $dependencies);
+        return $this->renderComponentGraph($components, $dependencies, $componentDetailTooltip);
     }
 
-    public function componentNeighborhood(int $componentId, int $depth = 1): string {
+    public function componentNeighborhood(int $componentId, string $componentDetailTooltip, int $depth = 1): string {
         $center = $this->components->findById($componentId) ?? throw new RuntimeException('Component not found.');
 
         $dependencies = $this->dependencies->findByComponentId($componentId);
@@ -92,7 +90,7 @@ final readonly class DiagramService {
             }
         }
 
-        return $this->renderComponentGraph(array_values($components), $dependencies);
+        return $this->renderComponentGraph(array_values($components), $dependencies, $componentDetailTooltip);
     }
 
     public function journeyDiagram(int $journeyId): string {
@@ -198,7 +196,7 @@ final readonly class DiagramService {
      * @param Component[] $components
      * @param Dependency[] $dependencies
      */
-    private function renderComponentGraph(array $components, array $dependencies): string {
+    private function renderComponentGraph(array $components, array $dependencies, string $componentDetailTooltip): string {
         $lines = ['flowchart LR'];
         $defined = [];
         $componentsById = [];
@@ -280,7 +278,12 @@ final readonly class DiagramService {
             }
 
             $componentId = $componentIdByRenderId[$renderId];
-            $lines[] = sprintf('    click %s "/components/%d" "%s"', $renderId, $componentId, self::COMPONENT_DETAIL_TOOLTIP);
+            $lines[] = sprintf(
+                '    click %s "/components/%d" "%s"',
+                $renderId,
+                $componentId,
+                MermaidSanitizer::label($componentDetailTooltip),
+            );
         }
 
         return implode(PHP_EOL, $lines) . PHP_EOL;

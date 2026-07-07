@@ -11,8 +11,10 @@ use Tempest\Support\Arr\ImmutableArray;
 
 final class ComponentControllerRequestParsingTest extends TestCase {
     public function test_int_list_accepts_tempest_immutable_array_values_from_multi_select_fields(): void {
-        $controller = new ReflectionClass(ComponentController::class)->newInstanceWithoutConstructor();
-        $method = new ReflectionClass(ComponentController::class)->getMethod('intList');
+        $reflection = new ReflectionClass(ComponentController::class);
+        $controller = $reflection->newInstanceWithoutConstructor();
+        $method = $reflection->getMethod('intList');
+        $method->setAccessible(true);
 
         $ids = $method->invoke($controller, new ImmutableArray(['2', '3', '', '2', '4']), 3);
 

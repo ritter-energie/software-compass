@@ -317,6 +317,7 @@ diagrams:
   global_customer_journey_title: Globale Customer Journey
   global_customer_journey_description: Zeigt alle dokumentierten Customer Journeys in einer globalen Map, wobei jede Journey in der übergreifenden Customer Journey verortet ist.
   description: Erkunde die dokumentierte Architektur visuell als Mermaid-Diagramm. Diese Seite hilft, Komponentenbeziehungen schneller zu verstehen und die generierte Quelle in Dokumentation zu übernehmen.
+  component_detail_tooltip: Komponentendetails öffnen
   mermaid_source: Mermaid-Quelle
   copy_mermaid_source: Mermaid-Quelle kopieren
 form:

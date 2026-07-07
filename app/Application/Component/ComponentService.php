@@ -128,7 +128,7 @@ final readonly class ComponentService {
         }
     }
 
-    public function detail(int $id): ComponentDetailViewModel {
+    public function detail(int $id, string $componentDetailTooltip): ComponentDetailViewModel {
         $component = $this->components->findById($id) ?? throw new RuntimeException('Component not found.');
 
         $incoming = $this->dependencies->findIncomingForComponent($id);
@@ -149,7 +149,10 @@ final readonly class ComponentService {
             childComponents: $this->components->childrenOf($id),
             governanceReview: $this->governanceReviews->findByComponentId($id),
             warnings: $warnings,
-            mermaidDiagram: $this->diagramService->componentNeighborhood($id),
+            mermaidDiagram: $this->diagramService->componentNeighborhood(
+                componentId: $id,
+                componentDetailTooltip: $componentDetailTooltip,
+            ),
         );
     }
 

@@ -23,12 +23,12 @@ final readonly class DiagramController {
 
     #[Get('/diagrams/components')]
     public function components(Request $request): Response {
-        return new Ok(view('../../View/diagrams/components.view.php', mermaid: $this->diagrams->componentOverview($this->filter($request))));
+        return new Ok(view('../../View/diagrams/components.view.php', mermaid: $this->componentOverview($request)));
     }
 
     #[Get('/diagrams/components/mermaid')]
     public function componentsMermaid(Request $request): Response {
-        return new Ok($this->diagrams->componentOverview($this->filter($request)));
+        return new Ok($this->componentOverview($request));
     }
 
     #[Get('/diagrams/global-customer-journey')]
@@ -68,6 +68,13 @@ final readonly class DiagramController {
             rootLabel: Translator::translate('diagrams.global_customer_journey_title'),
             emptyJourneysLabel: Translator::translate('common.no_journeys_yet'),
             emptyStepsLabel: Translator::translate('common.no_steps_yet'),
+        );
+    }
+
+    private function componentOverview(Request $request): string {
+        return $this->diagrams->componentOverview(
+            filter: $this->filter($request),
+            componentDetailTooltip: Translator::translate('diagrams.component_detail_tooltip'),
         );
     }
 
