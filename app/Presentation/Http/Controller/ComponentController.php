@@ -24,6 +24,7 @@ use Tempest\Http\Status;
 use Tempest\Router\Get;
 use Tempest\Router\Post;
 use Tempest\Router\WithMiddleware;
+use Traversable;
 
 use function Tempest\view;
 
@@ -315,7 +316,7 @@ final readonly class ComponentController {
             return [];
         }
 
-        $values = is_array($value) ? $value : [$value];
+        $values = $value instanceof Traversable ? iterator_to_array($value) : (is_array($value) ? $value : [$value]);
         $ids = [];
 
         foreach ($values as $item) {
