@@ -165,5 +165,3 @@ final class ComponentRelationshipUiPersistenceTest extends IntegrationTestCase {
         return date('Y-m-d H:i:s');
     }
 }
-
-
