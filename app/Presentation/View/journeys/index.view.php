@@ -11,6 +11,7 @@
         <thead><tr><th><?= htmlspecialchars(\App\Shared\Support\Translator::translate('table.name')) ?></th><th><?= htmlspecialchars(\App\Shared\Support\Translator::translate(
             'table.owner',
         )) ?></th><th><?= htmlspecialchars(\App\Shared\Support\Translator::translate('form.owner_team')) ?></th><th><?= htmlspecialchars(\App\Shared\Support\Translator::translate(
+            'table.owner_team')) ?></th><th><?= htmlspecialchars(\App\Shared\Support\Translator::translate(
             'table.status_id',
         )) ?></th><th><?= htmlspecialchars(\App\Shared\Support\Translator::translate(
             'table.sort',
