@@ -20,6 +20,8 @@ use RuntimeException;
  * the latest components, dependencies and journey assignments.
  */
 final readonly class DiagramService {
+    private const string COMPONENT_DETAIL_TOOLTIP = 'Open component details';
+
     public function __construct(
         private ComponentRepository $components,
         private DependencyRepository $dependencies,
@@ -202,6 +204,7 @@ final readonly class DiagramService {
         $componentsById = [];
         $childrenByParent = [];
         $renderIdByComponentId = [];
+        $componentIdByRenderId = [];
 
         foreach ($components as $component) {
             if ($component->id() === null) {
@@ -213,6 +216,7 @@ final readonly class DiagramService {
 
         foreach ($componentsById as $componentId => $component) {
             $renderIdByComponentId[$componentId] = MermaidSanitizer::nodeId('C', $componentId);
+            $componentIdByRenderId[$renderIdByComponentId[$componentId]] = $componentId;
             $parentComponentId = $component->parentComponentId();
             if ($parentComponentId === null || ! isset($componentsById[$parentComponentId])) {
                 continue;
@@ -225,6 +229,7 @@ final readonly class DiagramService {
             $parentComponent = $componentsById[$parentComponentId];
             $subgraphId = MermaidSanitizer::nodeId('SGC', $parentComponentId);
             $renderIdByComponentId[$parentComponentId] = $subgraphId;
+            $componentIdByRenderId[$subgraphId] = $parentComponentId;
             $defined[$subgraphId] = true;
             $lines[] = sprintf('    subgraph %s["%s"]', $subgraphId, MermaidSanitizer::label($parentComponent->name()));
 
@@ -267,6 +272,15 @@ final readonly class DiagramService {
             if ($dependency->isBidirectional()) {
                 $lines[] = sprintf('    %s -->|"%s"| %s', $target, $label, $source);
             }
+        }
+
+        foreach ($defined as $renderId => $_) {
+            if (! isset($componentIdByRenderId[$renderId])) {
+                continue;
+            }
+
+            $componentId = $componentIdByRenderId[$renderId];
+            $lines[] = sprintf('    click %s "/components/%d" "%s"', $renderId, $componentId, self::COMPONENT_DETAIL_TOOLTIP);
         }
 
         return implode(PHP_EOL, $lines) . PHP_EOL;

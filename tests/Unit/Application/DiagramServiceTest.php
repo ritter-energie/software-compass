@@ -38,6 +38,8 @@ final class DiagramServiceTest extends TestCase {
         $this->assertStringContainsString('C1["CRM #quot;Core#quot;"]', $diagram);
         $this->assertStringContainsString('C2["ERP"]', $diagram);
         $this->assertStringContainsString('C1 -->|"Orders / Order Data"| C2', $diagram);
+        $this->assertStringContainsString('click C1 "/components/1" "Open component details"', $diagram);
+        $this->assertStringContainsString('click C2 "/components/2" "Open component details"', $diagram);
     }
 
     public function test_component_overview_renders_parent_components_as_containers(): void {
@@ -58,6 +60,10 @@ final class DiagramServiceTest extends TestCase {
         $this->assertStringContainsString('        C2["CRM"]', $diagram);
         $this->assertStringContainsString('        C3["Shared Services"]', $diagram);
         $this->assertStringContainsString('subgraph SGC4["Operations"]', $diagram);
+        $this->assertStringContainsString('click SGC1 "/components/1" "Open component details"', $diagram);
+        $this->assertStringContainsString('click C2 "/components/2" "Open component details"', $diagram);
+        $this->assertStringContainsString('click SGC4 "/components/4" "Open component details"', $diagram);
+        $this->assertStringContainsString('click C3 "/components/3" "Open component details"', $diagram);
         $this->assertStringNotContainsString("\n    C1[\"Platform\"]\n", $diagram);
         $this->assertStringNotContainsString("\n    C4[\"Operations\"]\n", $diagram);
         $this->assertStringNotContainsString('inherits', $diagram);
