@@ -7,9 +7,12 @@ namespace Tests\Feature;
 use App\Application\Setup\SetupService;
 use App\Application\User\AdminUserService;
 use App\Infrastructure\Persistence\AppSettingsRepository;
+use Tempest\Database\Database;
+use Tempest\Database\Migrations\MigrationManager;
 use Tests\IntegrationTestCase;
 
 use function Tempest\Database\query;
+use function Tempest\get;
 
 final class SystemDefaultLocaleTest extends IntegrationTestCase {
     protected function setUp(): void {
@@ -28,7 +31,7 @@ final class SystemDefaultLocaleTest extends IntegrationTestCase {
     public function test_setup_stores_default_locale_and_applies_it_to_initial_admin(): void {
         $settings = new AppSettingsRepository();
 
-        new SetupService($settings)->initialize(
+        new SetupService($settings, get(MigrationManager::class), get(Database::class))->initialize(
             networkName: 'Architecture Network',
             adminName: 'Admin User',
             adminEmail: 'admin@example.test',

@@ -135,6 +135,63 @@ final readonly class DiagramService {
         return implode(PHP_EOL, $lines) . PHP_EOL;
     }
 
+    public function globalJourneyDiagram(
+        string $rootLabel = 'Global Customer Journey',
+        string $emptyJourneysLabel = 'No journeys yet',
+        string $emptyStepsLabel = 'No steps yet',
+    ): string {
+        $lines = [
+            'flowchart LR',
+            sprintf('    GJ["%s"]', MermaidSanitizer::label($rootLabel)),
+        ];
+
+        $journeys = $this->journeys->all();
+        if ($journeys === []) {
+            $lines[] = sprintf('    EMPTY["%s"]', MermaidSanitizer::label($emptyJourneysLabel));
+            $lines[] = '    GJ -.-> EMPTY';
+
+            return implode(PHP_EOL, $lines) . PHP_EOL;
+        }
+
+        foreach ($journeys as $journey) {
+            if ($journey->id() === null) {
+                continue;
+            }
+
+            $journeyId = (int) $journey->id();
+            $journeyNodeId = MermaidSanitizer::nodeId('J', $journeyId);
+            $lines[] = sprintf('    subgraph %s["%s"]', $journeyNodeId, MermaidSanitizer::label($journey->name()));
+            $lines[] = '        direction LR';
+
+            $steps = $this->journeys->stepsForJourney($journeyId);
+            $firstStepNodeId = null;
+            $previousStepNodeId = null;
+
+            if ($steps === []) {
+                $firstStepNodeId = MermaidSanitizer::nodeId('JE', $journeyId);
+                $lines[] = sprintf('        %s["%s"]', $firstStepNodeId, MermaidSanitizer::label($emptyStepsLabel));
+            }
+
+            foreach ($steps as $index => $step) {
+                $stepNodeId = MermaidSanitizer::nodeId('J' . $journeyId . 'S', (int) $step->id());
+                $label = MermaidSanitizer::label(sprintf('%d. %s', $index + 1, $step->name()));
+                $lines[] = sprintf('        %s["%s"]', $stepNodeId, $label);
+
+                if ($previousStepNodeId !== null) {
+                    $lines[] = sprintf('        %s --> %s', $previousStepNodeId, $stepNodeId);
+                }
+
+                $firstStepNodeId ??= $stepNodeId;
+                $previousStepNodeId = $stepNodeId;
+            }
+
+            $lines[] = '    end';
+            $lines[] = sprintf('    GJ --> %s', $firstStepNodeId);
+        }
+
+        return implode(PHP_EOL, $lines) . PHP_EOL;
+    }
+
     /**
      * @param Component[] $components
      * @param Dependency[] $dependencies
@@ -144,7 +201,7 @@ final readonly class DiagramService {
         $defined = [];
         $componentsById = [];
         $childrenByParent = [];
-        $primaryParentByChild = [];
+        $renderIdByComponentId = [];
 
         foreach ($components as $component) {
             if ($component->id() === null) {
@@ -155,31 +212,23 @@ final readonly class DiagramService {
         }
 
         foreach ($componentsById as $componentId => $component) {
-            foreach ($component->parentComponentIds() as $parentComponentId) {
-                if (! isset($componentsById[$parentComponentId])) {
-                    continue;
-                }
-
-                $childrenByParent[$parentComponentId][] = $componentId;
-                $primaryParentByChild[$componentId] ??= $parentComponentId;
+            $renderIdByComponentId[$componentId] = MermaidSanitizer::nodeId('C', $componentId);
+            $parentComponentId = $component->parentComponentId();
+            if ($parentComponentId === null || ! isset($componentsById[$parentComponentId])) {
+                continue;
             }
+
+            $childrenByParent[$parentComponentId][] = $componentId;
         }
 
         foreach ($childrenByParent as $parentComponentId => $childComponentIds) {
             $parentComponent = $componentsById[$parentComponentId];
-            $lines[] = sprintf('    subgraph %s["%s"]', MermaidSanitizer::nodeId('SGC', $parentComponentId), MermaidSanitizer::label($parentComponent->name()));
-
-            if (! isset($primaryParentByChild[$parentComponentId])) {
-                $parentNodeId = MermaidSanitizer::nodeId('C', $parentComponentId);
-                $defined[$parentNodeId] = true;
-                $lines[] = sprintf('        %s["%s"]', $parentNodeId, MermaidSanitizer::label($parentComponent->name()));
-            }
+            $subgraphId = MermaidSanitizer::nodeId('SGC', $parentComponentId);
+            $renderIdByComponentId[$parentComponentId] = $subgraphId;
+            $defined[$subgraphId] = true;
+            $lines[] = sprintf('    subgraph %s["%s"]', $subgraphId, MermaidSanitizer::label($parentComponent->name()));
 
             foreach ($childComponentIds as $childComponentId) {
-                if (($primaryParentByChild[$childComponentId] ?? null) !== $parentComponentId) {
-                    continue;
-                }
-
                 $childComponent = $componentsById[$childComponentId];
                 $childNodeId = MermaidSanitizer::nodeId('C', $childComponentId);
                 $defined[$childNodeId] = true;
@@ -190,6 +239,10 @@ final readonly class DiagramService {
         }
 
         foreach ($componentsById as $componentId => $component) {
+            if (isset($childrenByParent[$componentId])) {
+                continue;
+            }
+
             $nodeId = MermaidSanitizer::nodeId('C', (int) $component->id());
 
             if (isset($defined[$nodeId])) {
@@ -201,8 +254,8 @@ final readonly class DiagramService {
         }
 
         foreach ($dependencies as $dependency) {
-            $source = MermaidSanitizer::nodeId('C', $dependency->sourceComponentId());
-            $target = MermaidSanitizer::nodeId('C', $dependency->targetComponentId());
+            $source = $renderIdByComponentId[$dependency->sourceComponentId()] ?? MermaidSanitizer::nodeId('C', $dependency->sourceComponentId());
+            $target = $renderIdByComponentId[$dependency->targetComponentId()] ?? MermaidSanitizer::nodeId('C', $dependency->targetComponentId());
 
             if (! isset($defined[$source], $defined[$target])) {
                 continue;
@@ -213,30 +266,6 @@ final readonly class DiagramService {
 
             if ($dependency->isBidirectional()) {
                 $lines[] = sprintf('    %s -->|"%s"| %s', $target, $label, $source);
-            }
-        }
-
-        $inheritanceEdges = [];
-        foreach ($components as $component) {
-            if ($component->id() === null) {
-                continue;
-            }
-
-            $child = MermaidSanitizer::nodeId('C', (int) $component->id());
-            foreach ($component->parentComponentIds() as $parentComponentId) {
-                $parent = MermaidSanitizer::nodeId('C', $parentComponentId);
-
-                if (! isset($defined[$child], $defined[$parent])) {
-                    continue;
-                }
-
-                $edgeKey = $child . '->' . $parent;
-                if (isset($inheritanceEdges[$edgeKey])) {
-                    continue;
-                }
-
-                $inheritanceEdges[$edgeKey] = true;
-                $lines[] = sprintf('    %s -. "%s" .-> %s', $child, MermaidSanitizer::label('inherits'), $parent);
             }
         }
 

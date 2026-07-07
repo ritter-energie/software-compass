@@ -124,7 +124,7 @@ final readonly class ComponentController {
             vendor: $this->stringOrNull($request->get('vendor')),
             lifecycleNotes: $this->stringOrNull($request->get('lifecycle_notes')),
             isExternal: $this->boolOrNull($request->get('is_external')) ?? false,
-            parentComponentIds: $this->intList($request->get('parent_component_ids')),
+            parentComponentId: $this->intOrNull($request->get('parent_component_id')),
             childComponentIds: $this->intList($request->get('child_component_ids')),
         ));
 
@@ -216,7 +216,9 @@ final readonly class ComponentController {
             vendor: $this->stringOrNull($request->get('vendor')),
             lifecycleNotes: $this->stringOrNull($request->get('lifecycle_notes')),
             isExternal: $this->boolOrNull($request->get('is_external')) ?? false,
-            parentComponentIds: $this->intList($request->get('parent_component_ids'), $id),
+            parentComponentId: $this->intOrNull($request->get('parent_component_id')) === $id
+                ? null
+                : $this->intOrNull($request->get('parent_component_id')),
             childComponentIds: $this->intList($request->get('child_component_ids'), $id),
         ));
 
@@ -308,7 +310,7 @@ final readonly class ComponentController {
     /**
      * @return int[]
      */
-    private function intList(mixed $value, ?int $excludingId = null): array {
+    private function intList(mixed $value, ?int $excludingId = null, ?int $maxCount = null): array {
         if ($value === null || $value === '') {
             return [];
         }
@@ -330,7 +332,13 @@ final readonly class ComponentController {
             $ids[$id] = $id;
         }
 
-        return array_values($ids);
+        $result = array_values($ids);
+
+        if ($maxCount !== null) {
+            return array_slice($result, 0, $maxCount);
+        }
+
+        return $result;
     }
 
     private function boolOrNull(mixed $value): ?bool {

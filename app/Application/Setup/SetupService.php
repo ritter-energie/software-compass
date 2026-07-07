@@ -9,7 +9,12 @@ use App\Shared\Enum\UserRole;
 use App\Shared\Support\LocaleSupport;
 use DateTimeImmutable;
 use InvalidArgumentException;
+use PDOException;
 use RuntimeException;
+use Tempest\Database\Database;
+use Tempest\Database\Exceptions\QueryWasInvalid;
+use Tempest\Database\Migrations\MigrationManager;
+use Tempest\Database\Query;
 
 use function Tempest\Database\query;
 
@@ -19,6 +24,8 @@ final readonly class SetupService {
 
     public function __construct(
         private AppSettingsRepository $settings,
+        private MigrationManager $migrationManager,
+        private Database $database,
     ) {}
 
     public function needsSetup(): bool {
@@ -87,7 +94,45 @@ final readonly class SetupService {
     }
 
     private function userCount(): int {
-        return query('users')->count()->execute();
+        try {
+            return query('users')->count()->execute();
+        } catch (QueryWasInvalid $exception) {
+            if (! $this->isMissingUsersTable($exception)) {
+                throw $exception;
+            }
+
+            if (! $this->databaseHasNoTables()) {
+                throw new RuntimeException(
+                    'Database schema is inconsistent: table `users` is missing while the database is not empty.',
+                    previous: $exception,
+                );
+            }
+
+            $this->migrationManager->up();
+
+            return query('users')->count()->execute();
+        }
+    }
+
+    private function isMissingUsersTable(QueryWasInvalid $exception): bool {
+        $previous = $exception->getPrevious();
+        if ($previous instanceof PDOException && (string) $previous->getCode() === '42S02') {
+            return true;
+        }
+
+        $message = strtolower($exception->getMessage());
+
+        return str_contains($message, 'users') && (str_contains($message, "doesn't exist") || str_contains($message, 'base table or view not found'));
+    }
+
+    private function databaseHasNoTables(): bool {
+        $result = new Query(
+            'SELECT COUNT(*) AS table_count FROM information_schema.tables WHERE table_schema = DATABASE()',
+        )
+            ->onDatabase($this->database->tag)
+            ->fetchFirst();
+
+        return (int) ($result['table_count'] ?? 0) === 0;
     }
 
     private function normalizeEmail(string $email): string {

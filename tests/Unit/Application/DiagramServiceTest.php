@@ -44,8 +44,8 @@ final class DiagramServiceTest extends TestCase {
         $service = new DiagramService(
             components: $this->componentRepository([
                 $this->component(id: 1, name: 'Platform'),
-                $this->component(id: 2, name: 'CRM', parentComponentIds: [1]),
-                $this->component(id: 3, name: 'Shared Services', parentComponentIds: [1, 4]),
+                $this->component(id: 2, name: 'CRM', parentComponentId: 1),
+                $this->component(id: 3, name: 'Shared Services', parentComponentId: 4),
                 $this->component(id: 4, name: 'Operations'),
             ]),
             dependencies: $this->dependencyRepository([]),
@@ -58,7 +58,29 @@ final class DiagramServiceTest extends TestCase {
         $this->assertStringContainsString('        C2["CRM"]', $diagram);
         $this->assertStringContainsString('        C3["Shared Services"]', $diagram);
         $this->assertStringContainsString('subgraph SGC4["Operations"]', $diagram);
-        $this->assertStringContainsString('C3 -. "inherits" .-> C4', $diagram);
+        $this->assertStringNotContainsString("\n    C1[\"Platform\"]\n", $diagram);
+        $this->assertStringNotContainsString("\n    C4[\"Operations\"]\n", $diagram);
+        $this->assertStringNotContainsString('inherits', $diagram);
+    }
+
+    public function test_component_overview_targets_parent_container_in_dependencies(): void {
+        $service = new DiagramService(
+            components: $this->componentRepository([
+                $this->component(id: 1, name: 'SAP'),
+                $this->component(id: 2, name: 'Website'),
+                $this->component(id: 3, name: 'Marketing Budget Display', parentComponentId: 2),
+            ]),
+            dependencies: $this->dependencyRepository([
+                $this->dependency(id: 1, source: 1, target: 2, name: 'Marketing-Budget Web-Service', dataDescription: null),
+            ]),
+            journeys: $this->journeyRepository([], [], []),
+        );
+
+        $diagram = $service->componentOverview(new ComponentDiagramFilter());
+
+        $this->assertStringContainsString('subgraph SGC2["Website"]', $diagram);
+        $this->assertStringNotContainsString("\n    C2[\"Website\"]\n", $diagram);
+        $this->assertStringContainsString('C1 -->|"Marketing-Budget Web-Service"| SGC2', $diagram);
     }
 
     public function test_component_neighborhood_throws_for_unknown_component(): void {
@@ -117,8 +139,57 @@ final class DiagramServiceTest extends TestCase {
         $this->assertStringContainsString('S101 -. "target_system" .-> C2', $diagram);
     }
 
-    /** @param int[] $parentComponentIds */
-    private function component(int $id, string $name, array $parentComponentIds = []): Component {
+    public function test_global_journey_diagram_positions_all_journeys_in_one_map(): void {
+        $service = new DiagramService(
+            components: $this->componentRepository([]),
+            dependencies: $this->dependencyRepository([]),
+            journeys: $this->journeyRepository(
+                journeys: [
+                    new Journey(
+                        id: 10,
+                        name: 'Order to Delivery',
+                        slug: 'order-to-delivery',
+                        description: null,
+                        ownerId: null,
+                        ownerTeamId: null,
+                        statusId: 1,
+                        sortOrder: 1,
+                    ),
+                    new Journey(
+                        id: 20,
+                        name: 'Support',
+                        slug: 'support',
+                        description: null,
+                        ownerId: null,
+                        ownerTeamId: null,
+                        statusId: 1,
+                        sortOrder: 2,
+                    ),
+                ],
+                stepsByJourney: [
+                    10 => [
+                        new JourneyStep(id: 100, journeyId: 10, name: 'Customer places order', description: null, sortOrder: 1),
+                        new JourneyStep(id: 101, journeyId: 10, name: 'ERP creates order', description: null, sortOrder: 2),
+                    ],
+                ],
+                componentsByStep: [],
+            ),
+        );
+
+        $diagram = $service->globalJourneyDiagram();
+
+        $this->assertStringContainsString('GJ["Global Customer Journey"]', $diagram);
+        $this->assertStringContainsString('subgraph J10["Order to Delivery"]', $diagram);
+        $this->assertStringContainsString('J10S100["1. Customer places order"]', $diagram);
+        $this->assertStringContainsString('J10S101["2. ERP creates order"]', $diagram);
+        $this->assertStringContainsString('J10S100 --> J10S101', $diagram);
+        $this->assertStringContainsString('GJ --> J10S100', $diagram);
+        $this->assertStringContainsString('subgraph J20["Support"]', $diagram);
+        $this->assertStringContainsString('JE20["No steps yet"]', $diagram);
+        $this->assertStringContainsString('GJ --> JE20', $diagram);
+    }
+
+    private function component(int $id, string $name, ?int $parentComponentId = null): Component {
         return new Component(
             id: $id,
             name: $name,
@@ -142,7 +213,7 @@ final class DiagramServiceTest extends TestCase {
             vendor: null,
             lifecycleNotes: null,
             isExternal: false,
-            parentComponentIds: $parentComponentIds,
+            parentComponentId: $parentComponentId,
         );
     }
 
@@ -214,14 +285,14 @@ final class DiagramServiceTest extends TestCase {
 
                 return array_values(array_filter(
                     $this->items,
-                    static fn (Component $candidate): bool => in_array($candidate->id(), $component->parentComponentIds(), true),
+                    static fn (Component $candidate): bool => $component->parentComponentId() === $candidate->id(),
                 ));
             }
 
             public function childrenOf(int $componentId): array {
                 return array_values(array_filter(
                     $this->items,
-                    static fn (Component $candidate): bool => in_array($componentId, $candidate->parentComponentIds(), true),
+                    static fn (Component $candidate): bool => $candidate->parentComponentId() === $componentId,
                 ));
             }
 

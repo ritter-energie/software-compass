@@ -13,6 +13,7 @@ use function Tempest\get;
 $session = get(Session::class);
 $success = $session->consume('success');
 $error = $session->consume('error');
+$warning = $session->consume('warning');
 $locale = \App\Shared\Support\Translator::locale();
 $networkName = get(AppSettingsRepository::class)->get('network_name');
 $currentUserDisplayName = CurrentUser::displayName();
@@ -77,6 +78,7 @@ $databaseUpdateStatus = CurrentUser::hasRole('admin') ? get(DatabaseUpdateServic
 <main class="container">
     <?php if ($success): ?><div class="alert alert-success"><?= htmlspecialchars((string) $success) ?></div><?php endif; ?>
     <?php if ($error): ?><div class="alert alert-error"><?= htmlspecialchars((string) $error) ?></div><?php endif; ?>
+    <?php if ($warning): ?><div class="alert alert-warning"><?= htmlspecialchars((string) $warning) ?></div><?php endif; ?>
     <?php if ($databaseUpdateStatus !== null && $databaseUpdateStatus->hasPendingMigrations()): ?>
         <div class="alert alert-warning">
             <?= htmlspecialchars(\App\Shared\Support\Translator::translate('database_update.layout_notice')) ?>

@@ -54,7 +54,7 @@ final readonly class ComponentService {
             vendor: $command->vendor,
             lifecycleNotes: $command->lifecycleNotes,
             isExternal: $command->isExternal,
-            parentComponentIds: $command->parentComponentIds,
+            parentComponentId: $command->parentComponentId,
             childComponentIds: $command->childComponentIds,
         );
 
@@ -109,7 +109,7 @@ final readonly class ComponentService {
             vendor: $command->vendor,
             lifecycleNotes: $command->lifecycleNotes,
             isExternal: $command->isExternal,
-            parentComponentIds: $command->parentComponentIds,
+            parentComponentId: $command->parentComponentId,
             childComponentIds: $command->childComponentIds,
         );
 
@@ -209,7 +209,7 @@ final readonly class ComponentService {
             'environment_id' => $component->environmentId(),
             'purpose' => $component->purpose(),
             'documentation_url' => $component->documentationUrl(),
-            'parent_component_ids' => $component->parentComponentIds(),
+            'parent_component_id' => $component->parentComponentId(),
             'child_component_ids' => $component->childComponentIds(),
         ];
     }

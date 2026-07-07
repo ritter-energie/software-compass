@@ -25,25 +25,24 @@ final class ComponentInheritancePersistenceTest extends IntegrationTestCase {
         $this->statusId = $this->lookupId('component_statuses', 'Active');
     }
 
-    public function test_it_persists_multiple_parent_and_child_components(): void {
+    public function test_it_persists_single_parent_and_multiple_child_components(): void {
         $parentA = $this->components->save($this->component('Parent A', 'parent-a'));
-        $parentB = $this->components->save($this->component('Parent B', 'parent-b'));
         $childA = $this->components->save($this->component('Child A', 'child-a'));
         $childB = $this->components->save($this->component('Child B', 'child-b'));
 
         $center = $this->components->save($this->component(
             name: 'Center',
             slug: 'center',
-            parentComponentIds: [(int) $parentA->id(), (int) $parentB->id()],
+            parentComponentId: (int) $parentA->id(),
             childComponentIds: [(int) $childA->id(), (int) $childB->id()],
         ));
 
         $stored = $this->components->findById((int) $center->id());
 
         $this->assertNotNull($stored);
-        $this->assertSame([(int) $parentA->id(), (int) $parentB->id()], $stored->parentComponentIds());
+        $this->assertSame((int) $parentA->id(), $stored->parentComponentId());
         $this->assertSame([(int) $childA->id(), (int) $childB->id()], $stored->childComponentIds());
-        $this->assertSame(['Parent A', 'Parent B'], array_map(static fn (Component $component): string => $component->name(), $this->components->parentsOf((int) $center->id())));
+        $this->assertSame(['Parent A'], array_map(static fn (Component $component): string => $component->name(), $this->components->parentsOf((int) $center->id())));
         $this->assertSame(['Child A', 'Child B'], array_map(static fn (Component $component): string => $component->name(), $this->components->childrenOf((int) $center->id())));
     }
 
@@ -56,7 +55,7 @@ final class ComponentInheritancePersistenceTest extends IntegrationTestCase {
         $center = $this->components->save($this->component(
             name: 'Replace Center',
             slug: 'replace-center',
-            parentComponentIds: [(int) $parentA->id()],
+            parentComponentId: (int) $parentA->id(),
             childComponentIds: [(int) $childA->id()],
         ));
 
@@ -64,20 +63,43 @@ final class ComponentInheritancePersistenceTest extends IntegrationTestCase {
             id: $center->id(),
             name: 'Replace Center',
             slug: 'replace-center',
-            parentComponentIds: [(int) $parentB->id()],
+            parentComponentId: (int) $parentB->id(),
             childComponentIds: [(int) $childB->id()],
         ));
 
-        $this->assertSame([(int) $parentB->id()], $updated->parentComponentIds());
+        $this->assertSame((int) $parentB->id(), $updated->parentComponentId());
         $this->assertSame([(int) $childB->id()], $updated->childComponentIds());
         $this->assertSame(2, count(query('component_inheritance')->select()->all()));
+    }
+
+    public function test_it_reassigns_children_when_a_new_parent_claims_them(): void {
+        $parentA = $this->components->save($this->component('Parent A Claim', 'parent-a-claim'));
+        $parentB = $this->components->save($this->component('Parent B Claim', 'parent-b-claim'));
+        $child = $this->components->save($this->component(
+            name: 'Child Claim',
+            slug: 'child-claim',
+            parentComponentId: (int) $parentA->id(),
+        ));
+
+        $this->components->save($this->component(
+            id: $parentB->id(),
+            name: 'Parent B Claim',
+            slug: 'parent-b-claim',
+            childComponentIds: [(int) $child->id()],
+        ));
+
+        $updatedChild = $this->components->findById((int) $child->id());
+
+        $this->assertNotNull($updatedChild);
+        $this->assertSame((int) $parentB->id(), $updatedChild->parentComponentId());
+        $this->assertSame(1, count(query('component_inheritance')->select()->all()));
     }
 
     private function component(
         string $name,
         string $slug,
         ?int $id = null,
-        array $parentComponentIds = [],
+        ?int $parentComponentId = null,
         array $childComponentIds = [],
     ): Component {
         return new Component(
@@ -103,7 +125,7 @@ final class ComponentInheritancePersistenceTest extends IntegrationTestCase {
             vendor: null,
             lifecycleNotes: null,
             isExternal: false,
-            parentComponentIds: $parentComponentIds,
+            parentComponentId: $parentComponentId,
             childComponentIds: $childComponentIds,
         );
     }

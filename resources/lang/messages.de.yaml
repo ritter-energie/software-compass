@@ -99,6 +99,7 @@ database_update:
   up_to_date: Das Datenbankschema ist aktuell.
   pending_notice: Ein Datenbankschema-Update ist verfügbar. Prüfe die ausstehenden Migrationen, bevor du das Update startest.
   layout_notice: Ein Datenbankschema-Update ist verfügbar.
+  login_notice: Datenbank-Update erforderlich. Öffne die App-Einstellungen, um ausstehende Migrationen auszuführen.
   open_update_page: Update-Seite öffnen
   pending_migrations: Ausstehende Migrationen
   migration_table_missing: Die Migration-Historientabelle fehlt. Der Updater legt sie an, bevor Migrationen angewendet werden.
@@ -238,6 +239,7 @@ journeys:
   confirm_remove_assignment: Diese Zuordnung entfernen?
   diagram: Journey-Diagramm
   back_to_journey: Zurück zur Journey
+  back_to_list: Zurück zu Journeys
 components:
   title: Komponenten
   description: Pflege das Inventar von Anwendungen, Systemen, Services, Datenbanken und anderen Architekturbausteinen inklusive Zweck, Verantwortung, Status und Kritikalität.
@@ -312,6 +314,8 @@ master_data:
 diagrams:
   components_title: Komponenten-Übersichtsdiagramm
   journey_title: Customer-Journey-Diagramm
+  global_customer_journey_title: Globale Customer Journey
+  global_customer_journey_description: Zeigt alle dokumentierten Customer Journeys in einer globalen Map, wobei jede Journey in der übergreifenden Customer Journey verortet ist.
   description: Erkunde die dokumentierte Architektur visuell als Mermaid-Diagramm. Diese Seite hilft, Komponentenbeziehungen schneller zu verstehen und die generierte Quelle in Dokumentation zu übernehmen.
   mermaid_source: Mermaid-Quelle
   copy_mermaid_source: Mermaid-Quelle kopieren
@@ -337,7 +341,7 @@ form:
   repository_url: Repository-URL
   lifecycle_notes: Lebenszyklusnotizen
   parent_components: Parent-Komponenten
-  parent_components_hint: Optional. Strg/Cmd gedrückt halten, um mehrere Parent-Komponenten auszuwählen.
+  parent_components_hint: Optional. Es kann höchstens eine Parent-Komponente ausgewählt werden.
   child_components: Child-Komponenten
   child_components_hint: Optional. Strg/Cmd gedrückt halten, um mehrere Child-Komponenten auszuwählen.
   source_component_required: Quellkomponente *
@@ -397,4 +401,3 @@ flash:
     master_data_created: Stammdateneintrag erstellt.
     master_data_updated: Stammdateneintrag aktualisiert.
     master_data_deleted: Stammdateneintrag gelöscht.
-

@@ -12,7 +12,7 @@
  * @var array<int, array<string, mixed>> $teams
  * @var \App\Domain\Component\Component[] $availableComponents
  */
-$selectedParentIds = array_flip($component?->parentComponentIds() ?? []);
+$selectedParentId = $component?->parentComponentId();
 $selectedChildIds = array_flip($component?->childComponentIds() ?? []);
 $personOptions = array_map(static fn (\App\Domain\Person\Person $person): array => ['id' => $person->id(), 'name' => $person->name()], $people);
 $teamOptions = array_map(static fn (array $team): array => ['id' => (int) $team['id'], 'name' => (string) $team['name']], $teams);
@@ -143,13 +143,14 @@ $teamOptions = array_map(static fn (array $team): array => ['id' => (int) $team[
     </div>
 
     <div class="form-field form-field-wide">
-        <label for="parent_component_ids"><?= htmlspecialchars(\App\Shared\Support\Translator::translate('form.parent_components')) ?></label>
-        <select id="parent_component_ids" name="parent_component_ids[]" multiple size="6">
+        <label for="parent_component_id"><?= htmlspecialchars(\App\Shared\Support\Translator::translate('form.parent_components')) ?></label>
+        <select id="parent_component_id" name="parent_component_id">
+            <option value=""><?= htmlspecialchars(\App\Shared\Support\Translator::translate('common.none_option')) ?></option>
             <?php foreach ($availableComponents as $availableComponent): ?>
                 <?php if ($component?->id() === $availableComponent->id()) {
                     continue;
                 } ?>
-                <option value="<?= $availableComponent->id() ?>" <?= isset($selectedParentIds[(int) $availableComponent->id()]) ? 'selected' : '' ?>><?= htmlspecialchars($availableComponent->name()) ?></option>
+                <option value="<?= $availableComponent->id() ?>" <?= $selectedParentId === (int) $availableComponent->id() ? 'selected' : '' ?>><?= htmlspecialchars($availableComponent->name()) ?></option>
             <?php endforeach; ?>
         </select>
         <p class="hint"><?= htmlspecialchars(\App\Shared\Support\Translator::translate('form.parent_components_hint')) ?></p>

@@ -11,5 +11,6 @@
     "CreateLookupTables.php": "035df25750da5db360d46a3fdf1fda1bd2ef3c8d9a7dfcdf03825e7e646c6040",
     "CreatePeopleTable.php": "c3ef8b0fe692c3a918fc2ee5dc256807319a4201c7f56ee54cff1b8fc8aaba32",
     "CreateRoleTables.php": "432255c27bff29216e106673f10c673cd2b3ff7312a9b5a8408ecad63a1ba48c",
-    "CreateUsersTable.php": "80ada0b1fc73380e6aa355557950d2c810c95abb6f79b5602a4ab112d724f65e"
+    "CreateUsersTable.php": "80ada0b1fc73380e6aa355557950d2c810c95abb6f79b5602a4ab112d724f65e",
+    "EnforceSingleParentComponentInheritance.php": "fa1c6d04400bb116446ad7437a943a4f1703a532f9ea7db5869fdca05334a717"
 }

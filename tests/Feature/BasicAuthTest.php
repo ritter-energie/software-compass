@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
+use Tempest\Database\Migrations\Migration;
 use Tempest\Http\Session\Session;
 use Tempest\Http\Status;
 use Tests\IntegrationTestCase;
@@ -83,5 +84,46 @@ final class BasicAuthTest extends IntegrationTestCase {
                 'password' => 'secret',
             ])
             ->assertRedirect('/dashboard');
+    }
+
+    public function test_admin_sees_database_update_notice_after_login_when_migrations_are_pending(): void {
+        $personId = (int) query('people')->select()->whereField('email', 'ada@example.test')->first()['id'];
+        $userId = (int) query('users')->select()->whereField('person_id', $personId)->first()['id'];
+
+        $existingAdminRole = query('roles')->select()->whereField('name', 'admin')->first();
+        if ($existingAdminRole === null) {
+            query('roles')->insert([
+                'name' => 'admin',
+                'description' => 'Administrator role',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
+            ])->execute();
+            $existingAdminRole = query('roles')->select()->whereField('name', 'admin')->first();
+        }
+        $adminRoleId = (int) $existingAdminRole['id'];
+
+        query('user_roles')->insert([
+            'user_id' => $userId,
+            'role_id' => $adminRoleId,
+            'created_at' => date('Y-m-d H:i:s'),
+            'updated_at' => date('Y-m-d H:i:s'),
+        ])->execute();
+
+        $executedMigrations = Migration::select()->all();
+        $lastMigration = $executedMigrations[array_key_last($executedMigrations)];
+        $lastMigration->delete();
+
+        $this->http
+            ->post('/login', [
+                Session::CSRF_TOKEN_KEY => get(Session::class)->token,
+                'email' => 'ada@example.test',
+                'password' => 'secret',
+            ])
+            ->assertRedirect('/dashboard');
+
+        $this->http
+            ->get('/dashboard')
+            ->assertOk()
+            ->assertSee('Database update required. Open App Settings to run pending migrations.');
     }
 }
