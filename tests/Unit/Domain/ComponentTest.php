@@ -8,18 +8,15 @@ use App\Domain\Component\Component;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
-final class ComponentTest extends TestCase
-{
-    public function test_it_rejects_a_blank_name(): void
-    {
+final class ComponentTest extends TestCase {
+    public function test_it_rejects_a_blank_name(): void {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('A component name must not be blank.');
 
         $this->makeComponent(name: '   ');
     }
 
-    public function test_it_is_incomplete_without_owners_purpose_location_or_environment(): void
-    {
+    public function test_it_is_incomplete_without_owners_purpose_location_or_environment(): void {
         $component = $this->makeComponent(
             businessOwnerId: null,
             businessOwnerTeamId: null,
@@ -33,8 +30,7 @@ final class ComponentTest extends TestCase
         $this->assertCount(5, $component->incompletenessReasons());
     }
 
-    public function test_it_is_complete_when_all_governance_fields_are_set(): void
-    {
+    public function test_it_is_complete_when_all_governance_fields_are_set(): void {
         $component = $this->makeComponent(
             businessOwnerId: 1,
             technicalOwnerId: 2,
@@ -47,8 +43,7 @@ final class ComponentTest extends TestCase
         $this->assertSame([], $component->incompletenessReasons());
     }
 
-    public function test_team_owners_satisfy_governance_ownership(): void
-    {
+    public function test_team_owners_satisfy_governance_ownership(): void {
         $component = $this->makeComponent(
             businessOwnerId: null,
             businessOwnerTeamId: 10,
@@ -60,16 +55,14 @@ final class ComponentTest extends TestCase
         $this->assertSame([], $component->incompletenessReasons());
     }
 
-    public function test_rename_updates_the_name(): void
-    {
+    public function test_rename_updates_the_name(): void {
         $component = $this->makeComponent(name: 'CRM');
         $component->rename('CRM v2');
 
         $this->assertSame('CRM v2', $component->name());
     }
 
-    public function test_rename_rejects_a_blank_name(): void
-    {
+    public function test_rename_rejects_a_blank_name(): void {
         $component = $this->makeComponent();
 
         $this->expectException(InvalidArgumentException::class);
@@ -77,8 +70,7 @@ final class ComponentTest extends TestCase
         $component->rename('   ');
     }
 
-    public function test_it_can_have_multiple_parent_and_child_components(): void
-    {
+    public function test_it_can_have_multiple_parent_and_child_components(): void {
         $component = $this->makeComponent(
             parentComponentIds: [2, 3, 2],
             childComponentIds: [4, 5, 4],
@@ -88,16 +80,14 @@ final class ComponentTest extends TestCase
         $this->assertSame([4, 5], $component->childComponentIds());
     }
 
-    public function test_it_rejects_self_references(): void
-    {
+    public function test_it_rejects_self_references(): void {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('A component cannot inherit from itself.');
 
         $this->makeComponent(id: 1, parentComponentIds: [1]);
     }
 
-    public function test_it_rejects_the_same_component_as_parent_and_child(): void
-    {
+    public function test_it_rejects_the_same_component_as_parent_and_child(): void {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('A component cannot inherit from and be parent of the same component.');
 

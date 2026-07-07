@@ -13,17 +13,14 @@ use Tempest\Router\Post;
 use Tempest\Router\WithMiddleware;
 
 #[WithMiddleware(BasicAuthMiddleware::class)]
-final readonly class AdminDatabaseUpdateController
-{
+final readonly class AdminDatabaseUpdateController {
     #[Get('/admin/database')]
-    public function index(): Response
-    {
+    public function index(): Response {
         return new Redirect('/admin/settings');
     }
 
     #[Post('/admin/database/update')]
-    public function update(Request $request): Response
-    {
+    public function update(Request $request): Response {
         return new Redirect('/admin/settings');
     }
 }

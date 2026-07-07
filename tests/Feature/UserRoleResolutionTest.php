@@ -11,10 +11,8 @@ use Tests\IntegrationTestCase;
 use function Tempest\Database\query;
 use function Tempest\get;
 
-final class UserRoleResolutionTest extends IntegrationTestCase
-{
-    protected function setUp(): void
-    {
+final class UserRoleResolutionTest extends IntegrationTestCase {
+    protected function setUp(): void {
         parent::setUp();
 
         $this->database->setup();
@@ -56,8 +54,7 @@ final class UserRoleResolutionTest extends IntegrationTestCase
         ])->execute();
     }
 
-    public function test_authenticated_user_roles_are_loaded_into_current_user_context(): void
-    {
+    public function test_authenticated_user_roles_are_loaded_into_current_user_context(): void {
         $personId = (int) query('people')->select()->whereField('email', 'robin@example.test')->first()['id'];
         $userId = (int) query('users')->select()->whereField('person_id', $personId)->first()['id'];
         get(Session::class)->set('auth_user_id', $userId);

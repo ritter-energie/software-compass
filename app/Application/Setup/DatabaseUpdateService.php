@@ -8,25 +8,21 @@ use Tempest\Database\Migrations\MigrationManager;
 use Throwable;
 
 /** Detects pending database migrations and runs them when an administrator confirms the update. */
-final readonly class DatabaseUpdateService
-{
+final readonly class DatabaseUpdateService {
     public function __construct(
         private DatabaseMigrationStateInspector $migrationState,
         private MigrationManager $migrationManager,
     ) {}
 
-    public function status(): DatabaseUpdateStatus
-    {
+    public function status(): DatabaseUpdateStatus {
         return $this->migrationState->status();
     }
 
-    public function validatedStatus(): DatabaseUpdateStatus
-    {
+    public function validatedStatus(): DatabaseUpdateStatus {
         return $this->migrationState->validatedStatus();
     }
 
-    public function runPendingMigrations(): DatabaseUpdateResult
-    {
+    public function runPendingMigrations(): DatabaseUpdateResult {
         $status = $this->validatedStatus();
 
         if ($status->hasValidationErrors()) {
@@ -63,8 +59,7 @@ final readonly class DatabaseUpdateService
     }
 
     /** @param string[] $pendingBeforeUpdate @param string[] $remainingPendingMigrations @return string[] */
-    private function migratedMigrationNames(array $pendingBeforeUpdate, array $remainingPendingMigrations): array
-    {
+    private function migratedMigrationNames(array $pendingBeforeUpdate, array $remainingPendingMigrations): array {
         return array_values(array_diff($pendingBeforeUpdate, $remainingPendingMigrations));
     }
 }

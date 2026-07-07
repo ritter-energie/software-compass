@@ -16,11 +16,9 @@ use function Tempest\Database\query;
 use function Tempest\view;
 
 #[WithMiddleware(BasicAuthMiddleware::class)]
-final readonly class AccountController
-{
+final readonly class AccountController {
     #[Get('/account')]
-    public function index(): Response
-    {
+    public function index(): Response {
         $userId = CurrentUser::userId();
         if ($userId === null) {
             return new Redirect('/login');

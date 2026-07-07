@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\ReferenceData;
 
-enum ReferenceDataField: string
-{
+enum ReferenceDataField: string {
     case NAME = 'name';
     case DESCRIPTION = 'description';
     case SORT_ORDER = 'sort_order';
@@ -13,8 +12,7 @@ enum ReferenceDataField: string
     case CONTAINS_PERSONAL_DATA = 'contains_personal_data';
     case CONTAINS_SENSITIVE_DATA = 'contains_sensitive_data';
 
-    public function labelKey(): string
-    {
+    public function labelKey(): string {
         return match ($this) {
             self::NAME => 'form.name_required',
             self::DESCRIPTION => 'form.description',
@@ -25,8 +23,7 @@ enum ReferenceDataField: string
         };
     }
 
-    public function type(): ReferenceDataFieldType
-    {
+    public function type(): ReferenceDataFieldType {
         return match ($this) {
             self::DESCRIPTION => ReferenceDataFieldType::TEXTAREA,
             self::SORT_ORDER => ReferenceDataFieldType::NUMBER,
@@ -35,8 +32,7 @@ enum ReferenceDataField: string
         };
     }
 
-    public function isRequired(): bool
-    {
+    public function isRequired(): bool {
         return in_array($this, [self::NAME, self::LOCATION_TYPE], true);
     }
 }

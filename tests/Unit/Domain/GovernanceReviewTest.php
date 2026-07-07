@@ -7,10 +7,8 @@ namespace Tests\Unit\Domain;
 use App\Domain\Governance\GovernanceReview;
 use PHPUnit\Framework\TestCase;
 
-final class GovernanceReviewTest extends TestCase
-{
-    public function test_checklist_update_moves_review_from_open_to_in_progress(): void
-    {
+final class GovernanceReviewTest extends TestCase {
+    public function test_checklist_update_moves_review_from_open_to_in_progress(): void {
         $review = $this->review(status: GovernanceReview::STATUS_OPEN);
 
         $review->updateChecklist(
@@ -27,8 +25,7 @@ final class GovernanceReviewTest extends TestCase
         $this->assertTrue($review->duplicateCheckDone());
     }
 
-    public function test_approve_sets_terminal_status_reviewer_and_timestamp(): void
-    {
+    public function test_approve_sets_terminal_status_reviewer_and_timestamp(): void {
         $review = $this->review(status: GovernanceReview::STATUS_IN_PROGRESS);
 
         $review->approve(reviewerId: 42, notes: 'Looks good');
@@ -40,8 +37,7 @@ final class GovernanceReviewTest extends TestCase
         $this->assertFalse($review->isOpen());
     }
 
-    public function test_reject_sets_terminal_status_reviewer_and_timestamp(): void
-    {
+    public function test_reject_sets_terminal_status_reviewer_and_timestamp(): void {
         $review = $this->review(status: GovernanceReview::STATUS_IN_PROGRESS);
 
         $review->reject(reviewerId: 7, notes: 'Owner missing');
@@ -53,8 +49,7 @@ final class GovernanceReviewTest extends TestCase
         $this->assertFalse($review->isOpen());
     }
 
-    private function review(string $status): GovernanceReview
-    {
+    private function review(string $status): GovernanceReview {
         return new GovernanceReview(
             id: 1,
             componentId: 10,

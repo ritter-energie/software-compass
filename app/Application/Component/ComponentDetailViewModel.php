@@ -7,8 +7,7 @@ use App\Domain\Component\Component;
 use App\Domain\Dependency\Dependency;
 use App\Domain\Governance\GovernanceReview;
 
-final readonly class ComponentDetailViewModel
-{
+final readonly class ComponentDetailViewModel {
     /**
      * @param Dependency[] $incomingDependencies
      * @param Dependency[] $outgoingDependencies

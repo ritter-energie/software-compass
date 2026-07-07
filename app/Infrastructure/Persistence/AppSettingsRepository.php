@@ -10,12 +10,10 @@ use DateTimeImmutable;
 use function Tempest\Database\query;
 
 /** Stores small application-wide key/value settings. */
-final class AppSettingsRepository
-{
+final class AppSettingsRepository {
     private const string DEFAULT_LOCALE_KEY = 'default_locale';
 
-    public function get(string $key): ?string
-    {
+    public function get(string $key): ?string {
         $row = query('app_settings')->select()->whereField('setting_key', $key)->first();
 
         if ($row === null) {
@@ -27,8 +25,7 @@ final class AppSettingsRepository
         return $value !== null ? (string) $value : null;
     }
 
-    public function set(string $key, ?string $value): void
-    {
+    public function set(string $key, ?string $value): void {
         $now = new DateTimeImmutable()->format('Y-m-d H:i:s');
         $existing = query('app_settings')->select()->whereField('setting_key', $key)->first();
 
@@ -49,13 +46,11 @@ final class AppSettingsRepository
         ])->execute();
     }
 
-    public function defaultLocale(): string
-    {
+    public function defaultLocale(): string {
         return LocaleSupport::normalize($this->get(self::DEFAULT_LOCALE_KEY));
     }
 
-    public function setDefaultLocale(string $locale): void
-    {
+    public function setDefaultLocale(string $locale): void {
         $this->set(self::DEFAULT_LOCALE_KEY, LocaleSupport::normalize($locale));
     }
 }

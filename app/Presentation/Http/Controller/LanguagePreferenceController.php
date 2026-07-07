@@ -19,11 +19,9 @@ use function Tempest\Database\query;
 
 /** Stores the authenticated user's preferred UI language. */
 #[WithMiddleware(BasicAuthMiddleware::class)]
-final readonly class LanguagePreferenceController
-{
+final readonly class LanguagePreferenceController {
     #[Post('/preferences/language')]
-    public function update(Request $request): Response
-    {
+    public function update(Request $request): Response {
         if (! Csrf::isValid($request)) {
             return new Redirect('/dashboard')->flash('error', Translator::translate('flash.error.invalid_security_token'));
         }

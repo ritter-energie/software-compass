@@ -12,10 +12,8 @@ use Tests\IntegrationTestCase;
 use function Tempest\Database\query;
 use function Tempest\get;
 
-final class AdminDatabaseUpdateTest extends IntegrationTestCase
-{
-    protected function setUp(): void
-    {
+final class AdminDatabaseUpdateTest extends IntegrationTestCase {
+    protected function setUp(): void {
         parent::setUp();
 
         $this->database->setup();
@@ -27,8 +25,7 @@ final class AdminDatabaseUpdateTest extends IntegrationTestCase
         query('app_settings')->delete()->allowAll()->execute();
     }
 
-    public function test_admin_can_open_app_settings_page(): void
-    {
+    public function test_admin_can_open_app_settings_page(): void {
         $this->authenticateAs($this->seedUser('admin-user', 'admin'));
 
         $this->http
@@ -38,15 +35,13 @@ final class AdminDatabaseUpdateTest extends IntegrationTestCase
             ->assertSee('Database Update');
     }
 
-    public function test_non_admin_cannot_open_app_settings_page(): void
-    {
+    public function test_non_admin_cannot_open_app_settings_page(): void {
         $this->authenticateAs($this->seedUser('viewer-user', 'viewer'));
 
         $this->http->get('/admin/settings')->assertStatus(Status::FORBIDDEN);
     }
 
-    public function test_admin_sees_app_settings_link_in_account_menu(): void
-    {
+    public function test_admin_sees_app_settings_link_in_account_menu(): void {
         $this->authenticateAs($this->seedUser('admin-user', 'admin'));
 
         $this->http
@@ -56,8 +51,7 @@ final class AdminDatabaseUpdateTest extends IntegrationTestCase
             ->assertSee('App Settings');
     }
 
-    public function test_admin_sees_pending_migration_when_migration_history_is_missing_entry(): void
-    {
+    public function test_admin_sees_pending_migration_when_migration_history_is_missing_entry(): void {
         $this->authenticateAs($this->seedUser('admin-user', 'admin'));
 
         $executedMigrations = Migration::select()->all();
@@ -71,8 +65,7 @@ final class AdminDatabaseUpdateTest extends IntegrationTestCase
             ->assertSee($lastMigration->name);
     }
 
-    public function test_admin_can_submit_update_when_no_migrations_are_pending(): void
-    {
+    public function test_admin_can_submit_update_when_no_migrations_are_pending(): void {
         $this->authenticateAs($this->seedUser('admin-user', 'admin'));
 
         $this->http
@@ -82,8 +75,7 @@ final class AdminDatabaseUpdateTest extends IntegrationTestCase
             ->assertRedirect('/admin/settings');
     }
 
-    public function test_invalid_csrf_token_does_not_start_database_update(): void
-    {
+    public function test_invalid_csrf_token_does_not_start_database_update(): void {
         $this->authenticateAs($this->seedUser('admin-user', 'admin'));
 
         $this->http
@@ -93,8 +85,7 @@ final class AdminDatabaseUpdateTest extends IntegrationTestCase
             ->assertRedirect('/admin/settings');
     }
 
-    public function test_admin_can_update_default_locale_from_app_settings(): void
-    {
+    public function test_admin_can_update_default_locale_from_app_settings(): void {
         $this->authenticateAs($this->seedUser('admin-user', 'admin'));
 
         $this->http
@@ -107,20 +98,17 @@ final class AdminDatabaseUpdateTest extends IntegrationTestCase
         self::assertSame('de', (string) query('app_settings')->select()->whereField('setting_key', 'default_locale')->first()['setting_value']);
     }
 
-    public function test_legacy_database_update_page_redirects_to_app_settings(): void
-    {
+    public function test_legacy_database_update_page_redirects_to_app_settings(): void {
         $this->authenticateAs($this->seedUser('admin-user', 'admin'));
 
         $this->http->get('/admin/database')->assertRedirect('/admin/settings');
     }
 
-    private function authenticateAs(int $userId): void
-    {
+    private function authenticateAs(int $userId): void {
         get(Session::class)->set('auth_user_id', $userId);
     }
 
-    private function seedUser(string $accountName, string $role): int
-    {
+    private function seedUser(string $accountName, string $role): int {
         $email = $accountName . '@example.test';
 
         query('people')->insert([

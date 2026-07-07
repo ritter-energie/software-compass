@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\ReferenceData;
 
-final readonly class ReferenceDataEntry
-{
+final readonly class ReferenceDataEntry {
     public function __construct(
         public ?int $id,
         public string $name,
@@ -16,8 +15,7 @@ final readonly class ReferenceDataEntry
         public bool $containsSensitiveData = false,
     ) {}
 
-    public function value(ReferenceDataField $field): string|int|bool|null
-    {
+    public function value(ReferenceDataField $field): string|int|bool|null {
         return match ($field) {
             ReferenceDataField::NAME => $this->name,
             ReferenceDataField::DESCRIPTION => $this->description,

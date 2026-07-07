@@ -17,15 +17,13 @@ use Tempest\Router\Post;
 use function Tempest\view;
 
 /** Public first-run setup flow for creating the first admin and network name. */
-final readonly class SetupController
-{
+final readonly class SetupController {
     public function __construct(
         private SetupService $setup,
     ) {}
 
     #[Get('/setup')]
-    public function index(): Response
-    {
+    public function index(): Response {
         if (! $this->setup->needsSetup()) {
             return new Redirect('/dashboard');
         }
@@ -34,8 +32,7 @@ final readonly class SetupController
     }
 
     #[Post('/setup')]
-    public function store(Request $request): Response
-    {
+    public function store(Request $request): Response {
         if (! $this->setup->needsSetup()) {
             return new Redirect('/dashboard');
         }
@@ -78,8 +75,7 @@ final readonly class SetupController
         return new Redirect('/login')->flash('success', Translator::translate('setup.success.completed'));
     }
 
-    private function stringOrNull(mixed $value): ?string
-    {
+    private function stringOrNull(mixed $value): ?string {
         $trimmed = trim((string) ($value ?? ''));
 
         return $trimmed === '' ? null : $trimmed;

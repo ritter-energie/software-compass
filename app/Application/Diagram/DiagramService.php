@@ -19,16 +19,14 @@ use RuntimeException;
  * Mermaid source is never persisted. This ensures diagrams immediately reflect
  * the latest components, dependencies and journey assignments.
  */
-final readonly class DiagramService
-{
+final readonly class DiagramService {
     public function __construct(
         private ComponentRepository $components,
         private DependencyRepository $dependencies,
         private JourneyRepository $journeys,
     ) {}
 
-    public function componentOverview(ComponentDiagramFilter $filter): string
-    {
+    public function componentOverview(ComponentDiagramFilter $filter): string {
         $components = $this->components->search(new ComponentSearchCriteria(
             componentTypeId: $filter->componentTypeId,
             statusId: $filter->statusId,
@@ -53,8 +51,7 @@ final readonly class DiagramService
         return $this->renderComponentGraph($components, $dependencies);
     }
 
-    public function componentNeighborhood(int $componentId, int $depth = 1): string
-    {
+    public function componentNeighborhood(int $componentId, int $depth = 1): string {
         $center = $this->components->findById($componentId) ?? throw new RuntimeException('Component not found.');
 
         $dependencies = $this->dependencies->findByComponentId($componentId);
@@ -96,8 +93,7 @@ final readonly class DiagramService
         return $this->renderComponentGraph(array_values($components), $dependencies);
     }
 
-    public function journeyDiagram(int $journeyId): string
-    {
+    public function journeyDiagram(int $journeyId): string {
         $journey = $this->journeys->findById($journeyId) ?? throw new RuntimeException('Journey not found.');
 
         $lines = [
@@ -143,8 +139,7 @@ final readonly class DiagramService
      * @param Component[] $components
      * @param Dependency[] $dependencies
      */
-    private function renderComponentGraph(array $components, array $dependencies): string
-    {
+    private function renderComponentGraph(array $components, array $dependencies): string {
         $lines = ['flowchart LR'];
         $defined = [];
         $componentsById = [];

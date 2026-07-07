@@ -11,8 +11,7 @@ use InvalidArgumentException;
  * attached to steps via `journey_step_components` with a role (see
  * `JourneyStepComponent`).
  */
-final class JourneyStep
-{
+final class JourneyStep {
     public function __construct(
         private ?int $id,
         private int $journeyId,
@@ -25,28 +24,23 @@ final class JourneyStep
         }
     }
 
-    public function id(): ?int
-    {
+    public function id(): ?int {
         return $this->id;
     }
 
-    public function journeyId(): int
-    {
+    public function journeyId(): int {
         return $this->journeyId;
     }
 
-    public function name(): string
-    {
+    public function name(): string {
         return $this->name;
     }
 
-    public function description(): ?string
-    {
+    public function description(): ?string {
         return $this->description;
     }
 
-    public function sortOrder(): int
-    {
+    public function sortOrder(): int {
         return $this->sortOrder;
     }
 }

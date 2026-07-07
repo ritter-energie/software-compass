@@ -10,17 +10,14 @@ use Tempest\Http\Session\Session;
 use function Tempest\get;
 
 /** Small view/controller helper around Tempest's session CSRF token. */
-final readonly class Csrf
-{
+final readonly class Csrf {
     public const string FIELD = Session::CSRF_TOKEN_KEY;
 
-    public static function token(): string
-    {
+    public static function token(): string {
         return get(Session::class)->token;
     }
 
-    public static function input(): string
-    {
+    public static function input(): string {
         return sprintf(
             '<input type="hidden" name="%s" value="%s">',
             self::FIELD,
@@ -28,8 +25,7 @@ final readonly class Csrf
         );
     }
 
-    public static function isValid(Request $request): bool
-    {
+    public static function isValid(Request $request): bool {
         $submitted = (string) ($request->get(self::FIELD) ?? '');
 
         return $submitted !== '' && hash_equals(self::token(), $submitted);

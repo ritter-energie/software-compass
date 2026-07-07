@@ -13,16 +13,14 @@ use Tempest\Router\WithMiddleware;
 use function Tempest\view;
 
 #[WithMiddleware(BasicAuthMiddleware::class)]
-final readonly class DashboardController
-{
+final readonly class DashboardController {
     public function __construct(
         private DashboardService $dashboard,
     ) {}
 
     #[Get('/')]
     #[Get('/dashboard')]
-    public function index(): Response
-    {
+    public function index(): Response {
         return new Ok(view('../../View/dashboard/index.view.php', dashboard: $this->dashboard->buildDashboard()));
     }
 }

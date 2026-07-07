@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Dependency;
 
-interface DependencyRepository
-{
+interface DependencyRepository {
     public function findById(int $id): ?Dependency;
 
     /**

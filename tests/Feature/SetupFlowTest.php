@@ -9,10 +9,8 @@ use Tests\IntegrationTestCase;
 
 use function Tempest\Database\query;
 
-final class SetupFlowTest extends IntegrationTestCase
-{
-    protected function setUp(): void
-    {
+final class SetupFlowTest extends IntegrationTestCase {
+    protected function setUp(): void {
         parent::setUp();
 
         $this->database->setup();
@@ -23,16 +21,14 @@ final class SetupFlowTest extends IntegrationTestCase
         query('app_settings')->delete()->allowAll()->execute();
     }
 
-    public function test_dashboard_redirects_to_setup_when_no_users_exist(): void
-    {
+    public function test_dashboard_redirects_to_setup_when_no_users_exist(): void {
         $this->http
             ->get('/dashboard')
             ->assertStatus(Status::FOUND)
             ->assertHeaderContains('Location', '/setup');
     }
 
-    public function test_setup_page_is_public_when_no_users_exist(): void
-    {
+    public function test_setup_page_is_public_when_no_users_exist(): void {
         $this->http->get('/setup')->assertOk();
     }
 }

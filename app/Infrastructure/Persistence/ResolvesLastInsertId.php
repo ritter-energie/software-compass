@@ -19,10 +19,8 @@ use function Tempest\get;
  * returns `null` after an insert. We work around this by reading back
  * MariaDB's `LAST_INSERT_ID()` directly from the database connection.
  */
-trait ResolvesLastInsertId
-{
-    private function lastInsertId(): int
-    {
+trait ResolvesLastInsertId {
+    private function lastInsertId(): int {
         $id = get(Database::class)->getLastInsertId();
 
         return $id instanceof PrimaryKey ? (int) $id->value : (int) $id;

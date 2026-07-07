@@ -11,14 +11,12 @@ use Tests\IntegrationTestCase;
 
 use function Tempest\Database\query;
 
-final class ComponentInheritancePersistenceTest extends IntegrationTestCase
-{
+final class ComponentInheritancePersistenceTest extends IntegrationTestCase {
     private MariaDbComponentRepository $components;
     private int $componentTypeId;
     private int $statusId;
 
-    protected function setUp(): void
-    {
+    protected function setUp(): void {
         parent::setUp();
 
         $this->database->setup();
@@ -27,8 +25,7 @@ final class ComponentInheritancePersistenceTest extends IntegrationTestCase
         $this->statusId = $this->lookupId('component_statuses', 'Active');
     }
 
-    public function test_it_persists_multiple_parent_and_child_components(): void
-    {
+    public function test_it_persists_multiple_parent_and_child_components(): void {
         $parentA = $this->components->save($this->component('Parent A', 'parent-a'));
         $parentB = $this->components->save($this->component('Parent B', 'parent-b'));
         $childA = $this->components->save($this->component('Child A', 'child-a'));
@@ -50,8 +47,7 @@ final class ComponentInheritancePersistenceTest extends IntegrationTestCase
         $this->assertSame(['Child A', 'Child B'], array_map(static fn (Component $component): string => $component->name(), $this->components->childrenOf((int) $center->id())));
     }
 
-    public function test_it_replaces_parent_and_child_assignments_on_update(): void
-    {
+    public function test_it_replaces_parent_and_child_assignments_on_update(): void {
         $parentA = $this->components->save($this->component('Replace Parent A', 'replace-parent-a'));
         $parentB = $this->components->save($this->component('Replace Parent B', 'replace-parent-b'));
         $childA = $this->components->save($this->component('Replace Child A', 'replace-child-a'));
@@ -112,8 +108,7 @@ final class ComponentInheritancePersistenceTest extends IntegrationTestCase
         );
     }
 
-    private function lookupId(string $table, string $name): int
-    {
+    private function lookupId(string $table, string $name): int {
         $existing = query($table)->select()->whereField('name', $name)->first();
 
         if ($existing !== null) {

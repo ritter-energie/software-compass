@@ -12,12 +12,10 @@ use Stringable;
  * Slugs are used for human-readable, stable URLs for components and
  * journeys (e.g. `/components/customer-relationship-management`).
  */
-final readonly class Slug implements Stringable
-{
+final readonly class Slug implements Stringable {
     private string $value;
 
-    public function __construct(string $value)
-    {
+    public function __construct(string $value) {
         $normalized = $this->normalize($value);
 
         if ($normalized === '') {
@@ -27,8 +25,7 @@ final readonly class Slug implements Stringable
         $this->value = $normalized;
     }
 
-    public static function fromText(string $text): self
-    {
+    public static function fromText(string $text): self {
         return new self($text);
     }
 
@@ -36,23 +33,19 @@ final readonly class Slug implements Stringable
      * Appends a numeric suffix, used by repositories to resolve slug
      * collisions (e.g. `crm`, `crm-2`, `crm-3`, ...).
      */
-    public function withSuffix(int $suffix): self
-    {
+    public function withSuffix(int $suffix): self {
         return new self("{$this->value}-{$suffix}");
     }
 
-    public function value(): string
-    {
+    public function value(): string {
         return $this->value;
     }
 
-    public function __toString(): string
-    {
+    public function __toString(): string {
         return $this->value;
     }
 
-    private function normalize(string $value): string
-    {
+    private function normalize(string $value): string {
         $value = strtolower(trim($value));
         $value = preg_replace('/[^a-z0-9]+/', '-', $value) ?? '';
 

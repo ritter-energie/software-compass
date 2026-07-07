@@ -6,8 +6,7 @@ namespace App\Presentation\ViewModel;
 
 use App\Domain\Governance\GovernanceReview;
 
-final readonly class GovernanceReviewListItemViewModel
-{
+final readonly class GovernanceReviewListItemViewModel {
     public function __construct(
         public GovernanceReview $review,
         public string $componentName,

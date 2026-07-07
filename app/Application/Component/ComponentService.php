@@ -21,8 +21,7 @@ use RuntimeException;
  * Controllers delegate to this service so HTTP-specific code never contains
  * domain or persistence logic.
  */
-final readonly class ComponentService
-{
+final readonly class ComponentService {
     public function __construct(
         private ComponentRepository $components,
         private DependencyRepository $dependencies,
@@ -31,8 +30,7 @@ final readonly class ComponentService
         private AuditLogger $audit,
     ) {}
 
-    public function create(CreateComponentCommand $command): Component
-    {
+    public function create(CreateComponentCommand $command): Component {
         $component = new Component(
             id: null,
             name: $command->name,
@@ -85,8 +83,7 @@ final readonly class ComponentService
         return $component;
     }
 
-    public function update(UpdateComponentCommand $command): Component
-    {
+    public function update(UpdateComponentCommand $command): Component {
         $existing = $this->components->findById($command->id) ?? throw new RuntimeException('Component not found.');
 
         $component = new Component(
@@ -122,8 +119,7 @@ final readonly class ComponentService
         return $updated;
     }
 
-    public function delete(int $id): void
-    {
+    public function delete(int $id): void {
         $existing = $this->components->findById($id);
         $this->components->delete($id);
 
@@ -132,8 +128,7 @@ final readonly class ComponentService
         }
     }
 
-    public function detail(int $id): ComponentDetailViewModel
-    {
+    public function detail(int $id): ComponentDetailViewModel {
         $component = $this->components->findById($id) ?? throw new RuntimeException('Component not found.');
 
         $incoming = $this->dependencies->findIncomingForComponent($id);
@@ -159,8 +154,7 @@ final readonly class ComponentService
     }
 
     /** @return Component[] */
-    public function search(ComponentSearchCriteria $criteria): array
-    {
+    public function search(ComponentSearchCriteria $criteria): array {
         return $this->components->search($criteria);
     }
 
@@ -169,8 +163,7 @@ final readonly class ComponentService
      * LIKE/token search. Good enough for the MVP and easy to replace with
      * MariaDB fulltext search later.
      */
-    public function findSimilar(string $purpose, ?string $name = null): array
-    {
+    public function findSimilar(string $purpose, ?string $name = null): array {
         $tokens = array_filter(preg_split('/\W+/', strtolower($purpose . ' ' . ($name ?? ''))) ?: []);
         $matches = [];
 
@@ -187,8 +180,7 @@ final readonly class ComponentService
         return array_values($matches);
     }
 
-    private function uniqueSlug(string $name): string
-    {
+    private function uniqueSlug(string $name): string {
         $slug = Slug::fromText($name);
         $candidate = (string) $slug;
         $suffix = 2;
@@ -201,8 +193,7 @@ final readonly class ComponentService
     }
 
     /** @return array<string, mixed> */
-    private function snapshot(Component $component): array
-    {
+    private function snapshot(Component $component): array {
         return [
             'id' => $component->id(),
             'name' => $component->name(),

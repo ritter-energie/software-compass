@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Dependency;
 
-final readonly class DependencySearchCriteria
-{
+final readonly class DependencySearchCriteria {
     public function __construct(
         public ?string $query = null,
         public ?int $sourceComponentId = null,

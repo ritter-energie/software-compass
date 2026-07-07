@@ -30,8 +30,7 @@ use Tempest\Router\WithMiddleware;
 use function Tempest\view;
 
 #[WithMiddleware(BasicAuthMiddleware::class)]
-final readonly class JourneyController
-{
+final readonly class JourneyController {
     public function __construct(
         private JourneyService $journeyService,
         private JourneyRepository $journeys,
@@ -42,8 +41,7 @@ final readonly class JourneyController
     ) {}
 
     #[Get('/journeys')]
-    public function index(): Response
-    {
+    public function index(): Response {
         return new Ok(view(
             '../../View/journeys/index.view.php',
             journeys: $this->journeyListItems($this->journeyService->all(), $this->people->all()),
@@ -51,14 +49,12 @@ final readonly class JourneyController
     }
 
     #[Get('/journeys/create')]
-    public function create(): Response
-    {
+    public function create(): Response {
         return new Ok($this->formView('../../View/journeys/create.view.php'));
     }
 
     #[Post('/journeys')]
-    public function store(Request $request): Response
-    {
+    public function store(Request $request): Response {
         if (! Csrf::isValid($request)) {
             return new Redirect('/journeys/create')->flash('error', Translator::translate('flash.error.invalid_security_token'));
         }
@@ -80,8 +76,7 @@ final readonly class JourneyController
     }
 
     #[Get('/journeys/{id}')]
-    public function show(int $id): Response
-    {
+    public function show(int $id): Response {
         try {
             $journey = $this->journeyService->detail($id);
         } catch (RuntimeException) {
@@ -110,8 +105,7 @@ final readonly class JourneyController
     }
 
     #[Get('/journeys/{id}/edit')]
-    public function edit(int $id): Response
-    {
+    public function edit(int $id): Response {
         $journey = $this->journeys->findById($id);
         if ($journey === null) {
             return new Redirect('/journeys')->flash('error', Translator::translate('flash.error.journey_not_found'));
@@ -121,8 +115,7 @@ final readonly class JourneyController
     }
 
     #[Post('/journeys/{id}')]
-    public function update(int $id, Request $request): Response
-    {
+    public function update(int $id, Request $request): Response {
         if (! Csrf::isValid($request)) {
             return new Redirect("/journeys/{$id}/edit")->flash('error', Translator::translate('flash.error.invalid_security_token'));
         }
@@ -145,8 +138,7 @@ final readonly class JourneyController
     }
 
     #[Post('/journeys/{id}/delete')]
-    public function delete(int $id, Request $request): Response
-    {
+    public function delete(int $id, Request $request): Response {
         if (! Csrf::isValid($request)) {
             return new Redirect("/journeys/{$id}/edit")->flash('error', Translator::translate('flash.error.invalid_security_token'));
         }
@@ -155,8 +147,7 @@ final readonly class JourneyController
         return new Redirect('/journeys')->flash('success', Translator::translate('flash.success.journey_deleted'));
     }
 
-    private function formView(string $view, mixed $journey = null): mixed
-    {
+    private function formView(string $view, mixed $journey = null): mixed {
         return view($view, journey: $journey, statuses: $this->lookups->componentStatuses(), people: $this->people->allActive(), teams: $this->lookups->teams());
     }
 
@@ -165,8 +156,7 @@ final readonly class JourneyController
      * @param \App\Domain\Person\Person[] $people
      * @return JourneyListItemViewModel[]
      */
-    private function journeyListItems(array $journeys, array $people): array
-    {
+    private function journeyListItems(array $journeys, array $people): array {
         return array_map(
             fn ($journey): JourneyListItemViewModel => new JourneyListItemViewModel(
                 id: (int) $journey->id(),
@@ -185,8 +175,7 @@ final readonly class JourneyController
      * @param \App\Domain\Component\Component[] $components
      * @return JourneyStepAssignmentViewModel[]
      */
-    private function assignmentListItems(array $assignments, array $components): array
-    {
+    private function assignmentListItems(array $assignments, array $components): array {
         return array_map(
             fn ($assignment): JourneyStepAssignmentViewModel => new JourneyStepAssignmentViewModel(
                 assignment: $assignment,
@@ -197,8 +186,7 @@ final readonly class JourneyController
     }
 
     /** @param \App\Domain\Component\Component[] $components */
-    private function componentName(array $components, int $id): string
-    {
+    private function componentName(array $components, int $id): string {
         foreach ($components as $component) {
             if ($component->id() === $id) {
                 return $component->name();
@@ -209,8 +197,7 @@ final readonly class JourneyController
     }
 
     /** @param \App\Domain\Person\Person[] $people */
-    private function personName(array $people, ?int $id): string
-    {
+    private function personName(array $people, ?int $id): string {
         if ($id === null) {
             return '—';
         }
@@ -225,8 +212,7 @@ final readonly class JourneyController
     }
 
     /** @param array<int, array<string, mixed>> $rows */
-    private function lookupName(array $rows, ?int $id): string
-    {
+    private function lookupName(array $rows, ?int $id): string {
         if ($id === null) {
             return '—';
         }
@@ -240,14 +226,12 @@ final readonly class JourneyController
         return '—';
     }
 
-    private function stringOrNull(mixed $value): ?string
-    {
+    private function stringOrNull(mixed $value): ?string {
         $trimmed = trim((string) ($value ?? ''));
         return $trimmed === '' ? null : $trimmed;
     }
 
-    private function intOrNull(mixed $value): ?int
-    {
+    private function intOrNull(mixed $value): ?int {
         return $value === null || $value === '' ? null : (int) $value;
     }
 }

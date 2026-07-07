@@ -23,16 +23,14 @@ use Tempest\Router\WithMiddleware;
 use function Tempest\view;
 
 #[WithMiddleware(BasicAuthMiddleware::class)]
-final readonly class AdminSettingsController
-{
+final readonly class AdminSettingsController {
     public function __construct(
         private DatabaseUpdateService $databaseUpdates,
         private AppSettingsRepository $settings,
     ) {}
 
     #[Get('/admin/settings')]
-    public function index(): Response
-    {
+    public function index(): Response {
         if (! CurrentUser::hasRole('admin')) {
             return new Ok('Admin role required.')->setStatus(Status::FORBIDDEN);
         }
@@ -45,8 +43,7 @@ final readonly class AdminSettingsController
     }
 
     #[Post('/admin/settings/database-update')]
-    public function updateDatabase(Request $request): Response
-    {
+    public function updateDatabase(Request $request): Response {
         if (! CurrentUser::hasRole('admin')) {
             return new Ok('Admin role required.')->setStatus(Status::FORBIDDEN);
         }
@@ -83,8 +80,7 @@ final readonly class AdminSettingsController
     }
 
     #[Post('/admin/settings/default-locale')]
-    public function updateDefaultLocale(Request $request): Response
-    {
+    public function updateDefaultLocale(Request $request): Response {
         if (! CurrentUser::hasRole('admin')) {
             return new Ok('Admin role required.')->setStatus(Status::FORBIDDEN);
         }

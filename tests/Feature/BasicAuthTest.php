@@ -18,10 +18,8 @@ use function Tempest\get;
  * @internal This resets and re-migrates the configured database; do not
  *           run against a database containing data you want to keep.
  */
-final class BasicAuthTest extends IntegrationTestCase
-{
-    protected function setUp(): void
-    {
+final class BasicAuthTest extends IntegrationTestCase {
+    protected function setUp(): void {
         parent::setUp();
 
         $this->database->setup();
@@ -47,16 +45,14 @@ final class BasicAuthTest extends IntegrationTestCase
         ])->execute();
     }
 
-    public function test_it_redirects_unauthenticated_requests_to_login(): void
-    {
+    public function test_it_redirects_unauthenticated_requests_to_login(): void {
         $this->http
             ->get('/dashboard')
             ->assertStatus(Status::FOUND)
             ->assertHeaderContains('Location', '/login');
     }
 
-    public function test_it_redirects_to_login_when_session_user_is_unknown(): void
-    {
+    public function test_it_redirects_to_login_when_session_user_is_unknown(): void {
         get(Session::class)->set('auth_user_id', 999999);
 
         $this->http
@@ -65,15 +61,13 @@ final class BasicAuthTest extends IntegrationTestCase
             ->assertHeaderContains('Location', '/login');
     }
 
-    public function test_login_form_is_accessible_with_stale_session_user_id(): void
-    {
+    public function test_login_form_is_accessible_with_stale_session_user_id(): void {
         get(Session::class)->set('auth_user_id', 999999);
 
         $this->http->get('/login')->assertOk();
     }
 
-    public function test_it_accepts_requests_with_valid_session_user(): void
-    {
+    public function test_it_accepts_requests_with_valid_session_user(): void {
         $personId = (int) query('people')->select()->whereField('email', 'ada@example.test')->first()['id'];
         $userId = (int) query('users')->select()->whereField('person_id', $personId)->first()['id'];
         get(Session::class)->set('auth_user_id', $userId);
@@ -81,8 +75,7 @@ final class BasicAuthTest extends IntegrationTestCase
         $this->http->get('/dashboard')->assertOk();
     }
 
-    public function test_it_logs_in_with_email_and_password(): void
-    {
+    public function test_it_logs_in_with_email_and_password(): void {
         $this->http
             ->post('/login', [
                 Session::CSRF_TOKEN_KEY => get(Session::class)->token,

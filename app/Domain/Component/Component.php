@@ -15,8 +15,7 @@ use InvalidArgumentException;
  * HTTP, views or the database. Domain invariants (e.g. "name must not be
  * blank") are enforced here, not in controllers or repositories.
  */
-final class Component
-{
+final class Component {
     public function __construct(
         private ?int $id,
         private string $name,
@@ -50,166 +49,135 @@ final class Component
         $this->guardInheritanceDoesNotConflict();
     }
 
-    public function id(): ?int
-    {
+    public function id(): ?int {
         return $this->id;
     }
 
-    public function name(): string
-    {
+    public function name(): string {
         return $this->name;
     }
 
-    public function shortName(): ?string
-    {
+    public function shortName(): ?string {
         return $this->shortName;
     }
 
-    public function slug(): string
-    {
+    public function slug(): string {
         return $this->slug;
     }
 
-    public function componentTypeId(): int
-    {
+    public function componentTypeId(): int {
         return $this->componentTypeId;
     }
 
-    public function statusId(): int
-    {
+    public function statusId(): int {
         return $this->statusId;
     }
 
-    public function criticalityId(): ?int
-    {
+    public function criticalityId(): ?int {
         return $this->criticalityId;
     }
 
-    public function businessOwnerId(): ?int
-    {
+    public function businessOwnerId(): ?int {
         return $this->businessOwnerId;
     }
 
-    public function businessOwnerTeamId(): ?int
-    {
+    public function businessOwnerTeamId(): ?int {
         return $this->businessOwnerTeamId;
     }
 
-    public function technicalOwnerId(): ?int
-    {
+    public function technicalOwnerId(): ?int {
         return $this->technicalOwnerId;
     }
 
-    public function technicalOwnerTeamId(): ?int
-    {
+    public function technicalOwnerTeamId(): ?int {
         return $this->technicalOwnerTeamId;
     }
 
-    public function deploymentLocationId(): ?int
-    {
+    public function deploymentLocationId(): ?int {
         return $this->deploymentLocationId;
     }
 
-    public function environmentId(): ?int
-    {
+    public function environmentId(): ?int {
         return $this->environmentId;
     }
 
-    public function projectName(): ?string
-    {
+    public function projectName(): ?string {
         return $this->projectName;
     }
 
-    public function startedOn(): ?DateTimeImmutable
-    {
+    public function startedOn(): ?DateTimeImmutable {
         return $this->startedOn;
     }
 
-    public function purpose(): ?string
-    {
+    public function purpose(): ?string {
         return $this->purpose;
     }
 
-    public function description(): ?string
-    {
+    public function description(): ?string {
         return $this->description;
     }
 
-    public function documentationUrl(): ?string
-    {
+    public function documentationUrl(): ?string {
         return $this->documentationUrl;
     }
 
-    public function repositoryUrl(): ?string
-    {
+    public function repositoryUrl(): ?string {
         return $this->repositoryUrl;
     }
 
-    public function vendor(): ?string
-    {
+    public function vendor(): ?string {
         return $this->vendor;
     }
 
-    public function lifecycleNotes(): ?string
-    {
+    public function lifecycleNotes(): ?string {
         return $this->lifecycleNotes;
     }
 
-    public function isExternal(): bool
-    {
+    public function isExternal(): bool {
         return $this->isExternal;
     }
 
     /**
      * @return int[]
      */
-    public function parentComponentIds(): array
-    {
+    public function parentComponentIds(): array {
         return $this->parentComponentIds;
     }
 
     /**
      * @return int[]
      */
-    public function childComponentIds(): array
-    {
+    public function childComponentIds(): array {
         return $this->childComponentIds;
     }
 
-    public function rename(string $name): void
-    {
+    public function rename(string $name): void {
         $this->guardNameIsNotBlank($name);
 
         $this->name = $name;
     }
 
-    public function changePurpose(?string $purpose): void
-    {
+    public function changePurpose(?string $purpose): void {
         $this->purpose = $purpose;
     }
 
-    public function assignBusinessOwner(?int $personId): void
-    {
+    public function assignBusinessOwner(?int $personId): void {
         $this->businessOwnerId = $personId;
     }
 
-    public function assignBusinessOwnerTeam(?int $teamId): void
-    {
+    public function assignBusinessOwnerTeam(?int $teamId): void {
         $this->businessOwnerTeamId = $teamId;
     }
 
-    public function assignTechnicalOwner(?int $personId): void
-    {
+    public function assignTechnicalOwner(?int $personId): void {
         $this->technicalOwnerId = $personId;
     }
 
-    public function assignTechnicalOwnerTeam(?int $teamId): void
-    {
+    public function assignTechnicalOwnerTeam(?int $teamId): void {
         $this->technicalOwnerTeamId = $teamId;
     }
 
-    public function markExternal(bool $isExternal): void
-    {
+    public function markExternal(bool $isExternal): void {
         $this->isExternal = $isExternal;
     }
 
@@ -217,8 +185,7 @@ final class Component
      * A component is considered incomplete when it is missing information
      * that governance requires before it may go live.
      */
-    public function isIncomplete(): bool
-    {
+    public function isIncomplete(): bool {
         return (
             $this->businessOwnerId === null
             && $this->businessOwnerTeamId === null
@@ -234,8 +201,7 @@ final class Component
     /**
      * @return string[] Human-readable reasons this component is incomplete.
      */
-    public function incompletenessReasons(): array
-    {
+    public function incompletenessReasons(): array {
         $reasons = [];
 
         if ($this->businessOwnerId === null && $this->businessOwnerTeamId === null) {
@@ -261,8 +227,7 @@ final class Component
         return $reasons;
     }
 
-    private function guardNameIsNotBlank(string $name): void
-    {
+    private function guardNameIsNotBlank(string $name): void {
         if (trim($name) === '') {
             throw new InvalidArgumentException('A component name must not be blank.');
         }
@@ -272,8 +237,7 @@ final class Component
      * @param int[] $componentIds
      * @return int[]
      */
-    private function normalizeRelatedComponentIds(array $componentIds): array
-    {
+    private function normalizeRelatedComponentIds(array $componentIds): array {
         $normalized = [];
 
         foreach ($componentIds as $componentId) {
@@ -289,8 +253,7 @@ final class Component
         return array_values($normalized);
     }
 
-    private function guardInheritanceDoesNotReferenceSelf(): void
-    {
+    private function guardInheritanceDoesNotReferenceSelf(): void {
         if ($this->id === null) {
             return;
         }
@@ -300,8 +263,7 @@ final class Component
         }
     }
 
-    private function guardInheritanceDoesNotConflict(): void
-    {
+    private function guardInheritanceDoesNotConflict(): void {
         if (array_intersect($this->parentComponentIds, $this->childComponentIds) !== []) {
             throw new InvalidArgumentException('A component cannot inherit from and be parent of the same component.');
         }

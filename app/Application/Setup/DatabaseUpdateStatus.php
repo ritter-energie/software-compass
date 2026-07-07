@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace App\Application\Setup;
 
 /** Describes the current database migration state for the admin UI. */
-final readonly class DatabaseUpdateStatus
-{
+final readonly class DatabaseUpdateStatus {
     /**
      * @param string[] $pendingMigrations
      * @param string[] $validationErrors
@@ -17,13 +16,11 @@ final readonly class DatabaseUpdateStatus
         public bool $migrationTableMissing = false,
     ) {}
 
-    public function hasPendingMigrations(): bool
-    {
+    public function hasPendingMigrations(): bool {
         return $this->pendingMigrations !== [];
     }
 
-    public function hasValidationErrors(): bool
-    {
+    public function hasValidationErrors(): bool {
         return $this->validationErrors !== [];
     }
 }

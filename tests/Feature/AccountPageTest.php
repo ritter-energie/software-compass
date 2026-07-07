@@ -11,10 +11,8 @@ use Tests\IntegrationTestCase;
 use function Tempest\Database\query;
 use function Tempest\get;
 
-final class AccountPageTest extends IntegrationTestCase
-{
-    protected function setUp(): void
-    {
+final class AccountPageTest extends IntegrationTestCase {
+    protected function setUp(): void {
         parent::setUp();
 
         $this->database->setup();
@@ -32,8 +30,7 @@ final class AccountPageTest extends IntegrationTestCase
         ])->execute();
     }
 
-    public function test_account_page_requires_authentication(): void
-    {
+    public function test_account_page_requires_authentication(): void {
         $this->seedUser('existing-user@example.test', 'secret');
 
         $this->http
@@ -42,8 +39,7 @@ final class AccountPageTest extends IntegrationTestCase
             ->assertHeaderContains('Location', '/login');
     }
 
-    public function test_authenticated_user_can_open_account_page(): void
-    {
+    public function test_authenticated_user_can_open_account_page(): void {
         $userId = $this->seedUser('account-user@example.test', 'secret');
         get(Session::class)->set('auth_user_id', $userId);
 
@@ -53,8 +49,7 @@ final class AccountPageTest extends IntegrationTestCase
             ->assertSee('account-user@example.test');
     }
 
-    public function test_authenticated_header_shows_initials_account_menu(): void
-    {
+    public function test_authenticated_header_shows_initials_account_menu(): void {
         $userId = $this->seedUser('account-menu-user@example.test', 'secret');
         get(Session::class)->set('auth_user_id', $userId);
 
@@ -67,8 +62,7 @@ final class AccountPageTest extends IntegrationTestCase
             ->assertSee('Sign out');
     }
 
-    private function seedUser(string $email, string $password): int
-    {
+    private function seedUser(string $email, string $password): int {
         query('people')->insert([
             'name' => 'Account User',
             'email' => $email,

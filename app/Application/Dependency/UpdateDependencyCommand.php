@@ -3,8 +3,7 @@ declare(strict_types=1);
 
 namespace App\Application\Dependency;
 
-final readonly class UpdateDependencyCommand
-{
+final readonly class UpdateDependencyCommand {
     public function __construct(
         public int $id,
         public int $sourceComponentId,

@@ -6,8 +6,7 @@ namespace App\Presentation\ViewModel;
 
 use App\Domain\Dependency\Dependency;
 
-final readonly class DependencyDetailViewModel
-{
+final readonly class DependencyDetailViewModel {
     public function __construct(
         public Dependency $dependency,
         public string $sourceComponentName,

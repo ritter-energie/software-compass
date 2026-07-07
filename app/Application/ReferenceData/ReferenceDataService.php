@@ -12,8 +12,7 @@ use InvalidArgumentException;
 use RuntimeException;
 use Throwable;
 
-final readonly class ReferenceDataService
-{
+final readonly class ReferenceDataService {
     public function __construct(
         private LookupRepository $lookups,
     ) {}
@@ -21,24 +20,21 @@ final readonly class ReferenceDataService
     /**
      * @return ReferenceDataType[]
      */
-    public function types(): array
-    {
+    public function types(): array {
         return ReferenceDataType::cases();
     }
 
     /**
      * @return ReferenceDataEntry[]
      */
-    public function entries(ReferenceDataType $type): array
-    {
+    public function entries(ReferenceDataType $type): array {
         return array_map(
             $this->entryFromRow(...),
             $this->lookups->allFrom($type->table(), $type->orderBy()),
         );
     }
 
-    public function entry(ReferenceDataType $type, int $id): ReferenceDataEntry
-    {
+    public function entry(ReferenceDataType $type, int $id): ReferenceDataEntry {
         $row = $this->lookups->findIn($type->table(), $id);
 
         return $row !== null
@@ -46,18 +42,15 @@ final readonly class ReferenceDataService
             : throw new RuntimeException('flash.error.master_data_entry_not_found');
     }
 
-    public function create(SaveReferenceDataEntryCommand $command): int
-    {
+    public function create(SaveReferenceDataEntryCommand $command): int {
         return $this->lookups->insertInto($command->type->table(), $this->rowFromCommand($command));
     }
 
-    public function update(int $id, SaveReferenceDataEntryCommand $command): void
-    {
+    public function update(int $id, SaveReferenceDataEntryCommand $command): void {
         $this->lookups->updateIn($command->type->table(), $id, $this->rowFromCommand($command));
     }
 
-    public function delete(ReferenceDataType $type, int $id): void
-    {
+    public function delete(ReferenceDataType $type, int $id): void {
         try {
             $this->lookups->deleteFrom($type->table(), $id);
         } catch (Throwable) {
@@ -68,8 +61,7 @@ final readonly class ReferenceDataService
     /**
      * @param array<string, mixed> $row
      */
-    private function entryFromRow(array $row): ReferenceDataEntry
-    {
+    private function entryFromRow(array $row): ReferenceDataEntry {
         return new ReferenceDataEntry(
             id: (int) $row['id'],
             name: (string) $row['name'],
@@ -82,8 +74,7 @@ final readonly class ReferenceDataService
     }
 
     /** @return array<string, mixed> */
-    private function rowFromCommand(SaveReferenceDataEntryCommand $command): array
-    {
+    private function rowFromCommand(SaveReferenceDataEntryCommand $command): array {
         $this->validate($command);
         $row = [];
 
@@ -101,8 +92,7 @@ final readonly class ReferenceDataService
         return $row;
     }
 
-    private function validate(SaveReferenceDataEntryCommand $command): void
-    {
+    private function validate(SaveReferenceDataEntryCommand $command): void {
         foreach ($command->type->fields() as $field) {
             if (! $field->isRequired()) {
                 continue;

@@ -6,7 +6,6 @@ namespace Tests;
 
 use Tempest\Framework\Testing\IntegrationTest;
 
-abstract class IntegrationTestCase extends IntegrationTest
-{
+abstract class IntegrationTestCase extends IntegrationTest {
     protected string $root = __DIR__ . '/../';
 }

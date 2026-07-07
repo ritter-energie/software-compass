@@ -25,15 +25,13 @@ use Tempest\Router\WithMiddleware;
 use function Tempest\view;
 
 #[WithMiddleware(BasicAuthMiddleware::class)]
-final readonly class ReferenceDataController
-{
+final readonly class ReferenceDataController {
     public function __construct(
         private ReferenceDataService $referenceData,
     ) {}
 
     #[Get('/master-data')]
-    public function index(): Response
-    {
+    public function index(): Response {
         $entriesByType = [];
 
         foreach ($this->referenceData->types() as $type) {
@@ -49,8 +47,7 @@ final readonly class ReferenceDataController
     }
 
     #[Get('/master-data/{type}/create')]
-    public function create(string $type): Response
-    {
+    public function create(string $type): Response {
         if (! CurrentUser::hasRole('admin')) {
             return new Ok('Admin role required.')->setStatus(Status::FORBIDDEN);
         }
@@ -67,8 +64,7 @@ final readonly class ReferenceDataController
     }
 
     #[Post('/master-data/{type}')]
-    public function store(string $type, Request $request): Response
-    {
+    public function store(string $type, Request $request): Response {
         if (! CurrentUser::hasRole('admin')) {
             return new Ok('Admin role required.')->setStatus(Status::FORBIDDEN);
         }
@@ -88,8 +84,7 @@ final readonly class ReferenceDataController
     }
 
     #[Get('/master-data/{type}/{id}/edit')]
-    public function edit(string $type, int $id): Response
-    {
+    public function edit(string $type, int $id): Response {
         if (! CurrentUser::hasRole('admin')) {
             return new Ok('Admin role required.')->setStatus(Status::FORBIDDEN);
         }
@@ -110,8 +105,7 @@ final readonly class ReferenceDataController
     }
 
     #[Post('/master-data/{type}/{id}')]
-    public function update(string $type, int $id, Request $request): Response
-    {
+    public function update(string $type, int $id, Request $request): Response {
         if (! CurrentUser::hasRole('admin')) {
             return new Ok('Admin role required.')->setStatus(Status::FORBIDDEN);
         }
@@ -131,8 +125,7 @@ final readonly class ReferenceDataController
     }
 
     #[Post('/master-data/{type}/{id}/delete')]
-    public function delete(string $type, int $id, Request $request): Response
-    {
+    public function delete(string $type, int $id, Request $request): Response {
         if (! CurrentUser::hasRole('admin')) {
             return new Ok('Admin role required.')->setStatus(Status::FORBIDDEN);
         }
@@ -150,8 +143,7 @@ final readonly class ReferenceDataController
         return new Redirect('/master-data')->flash('success', Translator::translate('flash.success.master_data_deleted'));
     }
 
-    private function command(ReferenceDataType $type, Request $request): SaveReferenceDataEntryCommand
-    {
+    private function command(ReferenceDataType $type, Request $request): SaveReferenceDataEntryCommand {
         return new SaveReferenceDataEntryCommand(
             type: $type,
             name: trim((string) $request->get('name', '')),
@@ -163,15 +155,13 @@ final readonly class ReferenceDataController
         );
     }
 
-    private function stringOrNull(mixed $value): ?string
-    {
+    private function stringOrNull(mixed $value): ?string {
         $trimmed = trim((string) ($value ?? ''));
 
         return $trimmed === '' ? null : $trimmed;
     }
 
-    private function bool(mixed $value): bool
-    {
+    private function bool(mixed $value): bool {
         return in_array($value, ['1', 1, true, 'true', 'on'], true);
     }
 }

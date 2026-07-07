@@ -16,21 +16,18 @@ use function Tempest\Database\query;
  * components. All filtering is done through Tempest's query builder so user
  * input is parameterized and never concatenated into SQL directly.
  */
-final class MariaDbDependencyRepository implements DependencyRepository
-{
+final class MariaDbDependencyRepository implements DependencyRepository {
     use ResolvesLastInsertId;
 
     private const string TABLE = 'dependencies';
 
-    public function findById(int $id): ?Dependency
-    {
+    public function findById(int $id): ?Dependency {
         $row = query(self::TABLE)->select()->whereField('id', $id)->first();
 
         return $row ? $this->toDomain($row) : null;
     }
 
-    public function findByComponentId(int $componentId): array
-    {
+    public function findByComponentId(int $componentId): array {
         $rows = query(self::TABLE)
             ->select()
             ->whereGroup(static function ($group) use ($componentId): void {
@@ -44,8 +41,7 @@ final class MariaDbDependencyRepository implements DependencyRepository
         return array_map($this->toDomain(...), $rows);
     }
 
-    public function findIncomingForComponent(int $componentId): array
-    {
+    public function findIncomingForComponent(int $componentId): array {
         $rows = query(self::TABLE)
             ->select()
             ->whereField('target_component_id', $componentId)
@@ -55,8 +51,7 @@ final class MariaDbDependencyRepository implements DependencyRepository
         return array_map($this->toDomain(...), $rows);
     }
 
-    public function findOutgoingForComponent(int $componentId): array
-    {
+    public function findOutgoingForComponent(int $componentId): array {
         $rows = query(self::TABLE)
             ->select()
             ->whereField('source_component_id', $componentId)
@@ -66,8 +61,7 @@ final class MariaDbDependencyRepository implements DependencyRepository
         return array_map($this->toDomain(...), $rows);
     }
 
-    public function search(DependencySearchCriteria $criteria): array
-    {
+    public function search(DependencySearchCriteria $criteria): array {
         $builder = query(self::TABLE)->select();
 
         if ($criteria->query !== null && trim($criteria->query) !== '') {
@@ -107,15 +101,13 @@ final class MariaDbDependencyRepository implements DependencyRepository
         return array_map($this->toDomain(...), $rows);
     }
 
-    public function all(): array
-    {
+    public function all(): array {
         $rows = query(self::TABLE)->select()->orderBy('name')->all();
 
         return array_map($this->toDomain(...), $rows);
     }
 
-    public function save(Dependency $dependency): Dependency
-    {
+    public function save(Dependency $dependency): Dependency {
         $data = $this->toRow($dependency);
 
         if ($dependency->id() === null) {
@@ -132,14 +124,12 @@ final class MariaDbDependencyRepository implements DependencyRepository
         return $this->findById($dependency->id());
     }
 
-    public function delete(int $id): void
-    {
+    public function delete(int $id): void {
         query(self::TABLE)->delete()->whereField('id', $id)->execute();
     }
 
     /** @param array<string, mixed> $row */
-    private function toDomain(array $row): Dependency
-    {
+    private function toDomain(array $row): Dependency {
         return new Dependency(
             id: (int) $row['id'],
             sourceComponentId: (int) $row['source_component_id'],
@@ -163,8 +153,7 @@ final class MariaDbDependencyRepository implements DependencyRepository
     }
 
     /** @return array<string, mixed> */
-    private function toRow(Dependency $dependency): array
-    {
+    private function toRow(Dependency $dependency): array {
         $now = new DateTimeImmutable()->format('Y-m-d H:i:s');
 
         $row = [

@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Journey;
 
-interface JourneyRepository
-{
+interface JourneyRepository {
     public function findById(int $id): ?Journey;
 
     public function findBySlug(string $slug): ?Journey;
