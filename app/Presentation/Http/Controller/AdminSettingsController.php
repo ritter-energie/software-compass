@@ -39,7 +39,7 @@ final readonly class AdminSettingsController
 
         return new Ok(view(
             '../../View/admin/settings/index.view.php',
-            status: $this->databaseUpdates->status(validate: true),
+            status: $this->databaseUpdates->validatedStatus(),
             defaultLocale: $this->settings->defaultLocale(),
         ));
     }
