@@ -99,6 +99,7 @@ database_update:
   up_to_date: The database schema is up to date.
   pending_notice: A database schema update is available. Review the pending migrations before running the update.
   layout_notice: A database schema update is available.
+  login_notice: Database update required. Open App Settings to run pending migrations.
   open_update_page: Open update page
   pending_migrations: Pending migrations
   migration_table_missing: The migration history table is missing. The updater will create it before applying migrations.
@@ -238,6 +239,7 @@ journeys:
   confirm_remove_assignment: Remove this assignment?
   diagram: Journey diagram
   back_to_journey: Back to journey
+  back_to_list: Back to journeys
 components:
   title: Components
   description: Maintain the inventory of applications, systems, services, databases and other architecture building blocks, including purpose, ownership, status and criticality.
@@ -312,7 +314,10 @@ master_data:
 diagrams:
   components_title: Component Overview Diagram
   journey_title: Customer Journey Diagram
+  global_customer_journey_title: Global Customer Journey
+  global_customer_journey_description: Shows every documented Customer Journey in one global map, with each Journey positioned inside the overall Customer Journey.
   description: Explore the documented architecture visually as Mermaid diagrams. Use this page to understand component relationships and copy the generated source for documentation.
+  component_detail_tooltip: Open component details
   mermaid_source: Mermaid source
   copy_mermaid_source: Copy Mermaid source
 form:
@@ -337,7 +342,7 @@ form:
   repository_url: Repository URL
   lifecycle_notes: Lifecycle notes
   parent_components: Parent components
-  parent_components_hint: Optional. Hold Ctrl/Cmd to select multiple parent components.
+  parent_components_hint: Optional. Select at most one parent component.
   child_components: Child components
   child_components_hint: Optional. Hold Ctrl/Cmd to select multiple child components.
   source_component_required: Source Component *
@@ -397,4 +402,3 @@ flash:
     master_data_created: Master data entry created.
     master_data_updated: Master data entry updated.
     master_data_deleted: Master data entry deleted.
-

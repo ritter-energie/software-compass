@@ -24,6 +24,7 @@ use Tempest\Http\Status;
 use Tempest\Router\Get;
 use Tempest\Router\Post;
 use Tempest\Router\WithMiddleware;
+use Traversable;
 
 use function Tempest\view;
 
@@ -124,7 +125,7 @@ final readonly class ComponentController {
             vendor: $this->stringOrNull($request->get('vendor')),
             lifecycleNotes: $this->stringOrNull($request->get('lifecycle_notes')),
             isExternal: $this->boolOrNull($request->get('is_external')) ?? false,
-            parentComponentIds: $this->intList($request->get('parent_component_ids')),
+            parentComponentId: $this->intOrNull($request->get('parent_component_id')),
             childComponentIds: $this->intList($request->get('child_component_ids')),
         ));
 
@@ -134,7 +135,7 @@ final readonly class ComponentController {
     #[Get('/components/{id}')]
     public function show(int $id): Response {
         try {
-            $detail = $this->componentService->detail($id);
+            $detail = $this->componentService->detail($id, $this->componentDetailTooltip());
         } catch (RuntimeException) {
             return new Ok(view('../../View/components/show.view.php', component: null))
                 ->setStatus(Status::NOT_FOUND);
@@ -216,7 +217,9 @@ final readonly class ComponentController {
             vendor: $this->stringOrNull($request->get('vendor')),
             lifecycleNotes: $this->stringOrNull($request->get('lifecycle_notes')),
             isExternal: $this->boolOrNull($request->get('is_external')) ?? false,
-            parentComponentIds: $this->intList($request->get('parent_component_ids'), $id),
+            parentComponentId: $this->intOrNull($request->get('parent_component_id')) === $id
+                ? null
+                : $this->intOrNull($request->get('parent_component_id')),
             childComponentIds: $this->intList($request->get('child_component_ids'), $id),
         ));
 
@@ -237,7 +240,7 @@ final readonly class ComponentController {
 
     #[Get('/components/{id}/diagram')]
     public function diagram(int $id): Response {
-        $detail = $this->componentService->detail($id);
+        $detail = $this->componentService->detail($id, $this->componentDetailTooltip());
 
         return new Ok(view(
             '../../View/components/diagram.view.php',
@@ -248,7 +251,7 @@ final readonly class ComponentController {
 
     #[Get('/components/{id}/governance')]
     public function governance(int $id): Response {
-        $detail = $this->componentService->detail($id);
+        $detail = $this->componentService->detail($id, $this->componentDetailTooltip());
 
         return new Ok(view(
             '../../View/components/governance.view.php',
@@ -297,6 +300,10 @@ final readonly class ComponentController {
         return '—';
     }
 
+    private function componentDetailTooltip(): string {
+        return Translator::translate('diagrams.component_detail_tooltip');
+    }
+
     private function intOrNull(mixed $value): ?int {
         if ($value === null || $value === '') {
             return null;
@@ -308,12 +315,12 @@ final readonly class ComponentController {
     /**
      * @return int[]
      */
-    private function intList(mixed $value, ?int $excludingId = null): array {
+    private function intList(mixed $value, ?int $excludingId = null, ?int $maxCount = null): array {
         if ($value === null || $value === '') {
             return [];
         }
 
-        $values = is_array($value) ? $value : [$value];
+        $values = $value instanceof Traversable ? iterator_to_array($value) : (is_array($value) ? $value : [$value]);
         $ids = [];
 
         foreach ($values as $item) {
@@ -330,7 +337,13 @@ final readonly class ComponentController {
             $ids[$id] = $id;
         }
 
-        return array_values($ids);
+        $result = array_values($ids);
+
+        if ($maxCount !== null) {
+            return array_slice($result, 0, $maxCount);
+        }
+
+        return $result;
     }
 
     private function boolOrNull(mixed $value): ?bool {

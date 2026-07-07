@@ -39,12 +39,13 @@ final class Component {
         private ?string $vendor,
         private ?string $lifecycleNotes,
         private bool $isExternal,
-        private array $parentComponentIds = [],
+        private ?int $parentComponentId = null,
         private array $childComponentIds = [],
     ) {
         $this->guardNameIsNotBlank($name);
-        $this->parentComponentIds = $this->normalizeRelatedComponentIds($parentComponentIds);
+        $this->parentComponentId = $parentComponentId;
         $this->childComponentIds = $this->normalizeRelatedComponentIds($childComponentIds);
+        $this->guardParentIdIsPositive();
         $this->guardInheritanceDoesNotReferenceSelf();
         $this->guardInheritanceDoesNotConflict();
     }
@@ -137,11 +138,8 @@ final class Component {
         return $this->isExternal;
     }
 
-    /**
-     * @return int[]
-     */
-    public function parentComponentIds(): array {
-        return $this->parentComponentIds;
+    public function parentComponentId(): ?int {
+        return $this->parentComponentId;
     }
 
     /**
@@ -258,14 +256,20 @@ final class Component {
             return;
         }
 
-        if (in_array($this->id, $this->parentComponentIds, true) || in_array($this->id, $this->childComponentIds, true)) {
+        if ($this->parentComponentId === $this->id || in_array($this->id, $this->childComponentIds, true)) {
             throw new InvalidArgumentException('A component cannot inherit from itself.');
         }
     }
 
     private function guardInheritanceDoesNotConflict(): void {
-        if (array_intersect($this->parentComponentIds, $this->childComponentIds) !== []) {
+        if ($this->parentComponentId !== null && in_array($this->parentComponentId, $this->childComponentIds, true)) {
             throw new InvalidArgumentException('A component cannot inherit from and be parent of the same component.');
+        }
+    }
+
+    private function guardParentIdIsPositive(): void {
+        if ($this->parentComponentId !== null && $this->parentComponentId <= 0) {
+            throw new InvalidArgumentException('Related component IDs must be positive integers.');
         }
     }
 }

@@ -70,28 +70,35 @@ final class ComponentTest extends TestCase {
         $component->rename('   ');
     }
 
-    public function test_it_can_have_multiple_parent_and_child_components(): void {
+    public function test_it_allows_a_single_parent_and_multiple_children(): void {
         $component = $this->makeComponent(
-            parentComponentIds: [2, 3, 2],
+            parentComponentId: 2,
             childComponentIds: [4, 5, 4],
         );
 
-        $this->assertSame([2, 3], $component->parentComponentIds());
+        $this->assertSame(2, $component->parentComponentId());
         $this->assertSame([4, 5], $component->childComponentIds());
+    }
+
+    public function test_it_rejects_invalid_parent_ids(): void {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Related component IDs must be positive integers.');
+
+        $this->makeComponent(parentComponentId: 0);
     }
 
     public function test_it_rejects_self_references(): void {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('A component cannot inherit from itself.');
 
-        $this->makeComponent(id: 1, parentComponentIds: [1]);
+        $this->makeComponent(id: 1, parentComponentId: 1);
     }
 
     public function test_it_rejects_the_same_component_as_parent_and_child(): void {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('A component cannot inherit from and be parent of the same component.');
 
-        $this->makeComponent(parentComponentIds: [2], childComponentIds: [2]);
+        $this->makeComponent(parentComponentId: 2, childComponentIds: [2]);
     }
 
     private function makeComponent(
@@ -104,7 +111,7 @@ final class ComponentTest extends TestCase {
         ?string $purpose = 'Manages customers.',
         ?int $deploymentLocationId = 1,
         ?int $environmentId = 1,
-        array $parentComponentIds = [],
+        ?int $parentComponentId = null,
         array $childComponentIds = [],
     ): Component {
         return new Component(
@@ -130,7 +137,7 @@ final class ComponentTest extends TestCase {
             vendor: null,
             lifecycleNotes: null,
             isExternal: false,
-            parentComponentIds: $parentComponentIds,
+            parentComponentId: $parentComponentId,
             childComponentIds: $childComponentIds,
         );
     }

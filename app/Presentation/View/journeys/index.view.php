@@ -5,7 +5,12 @@
             <h2><?= htmlspecialchars(\App\Shared\Support\Translator::translate('journeys.title')) ?></h2>
             <p class="muted"><?= htmlspecialchars(\App\Shared\Support\Translator::translate('journeys.description')) ?></p>
         </div>
-        <a class="button-primary" href="/journeys/create">+ <?= htmlspecialchars(\App\Shared\Support\Translator::translate('journeys.new')) ?></a>
+        <div class="actions">
+            <a class="button-secondary" href="/diagrams/global-customer-journey"><?= htmlspecialchars(\App\Shared\Support\Translator::translate(
+                'diagrams.global_customer_journey_title',
+            )) ?></a>
+            <a class="button-primary" href="/journeys/create">+ <?= htmlspecialchars(\App\Shared\Support\Translator::translate('journeys.new')) ?></a>
+        </div>
     </div>
     <table class="data-table">
         <thead><tr><th><?= htmlspecialchars(\App\Shared\Support\Translator::translate('table.name')) ?></th><th><?= htmlspecialchars(\App\Shared\Support\Translator::translate(
@@ -13,8 +18,8 @@
         )) ?></th><th><?= htmlspecialchars(\App\Shared\Support\Translator::translate('form.owner_team')) ?></th><th><?= htmlspecialchars(\App\Shared\Support\Translator::translate(
             'table.owner_team',
         )) ?></th><th><?= htmlspecialchars(\App\Shared\Support\Translator::translate(
-                'table.status_id',
-            )) ?></th><th><?= htmlspecialchars(\App\Shared\Support\Translator::translate(
+            'table.status_id',
+        )) ?></th><th><?= htmlspecialchars(\App\Shared\Support\Translator::translate(
             'table.sort',
         )) ?></th><th><?= htmlspecialchars(\App\Shared\Support\Translator::translate('table.actions')) ?></th></tr></thead>
         <tbody>

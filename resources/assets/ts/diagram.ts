@@ -9,7 +9,7 @@ export function initializeMermaid(): void {
 
   mermaid.initialize({
     startOnLoad: true,
-    securityLevel: 'strict',
+    securityLevel: 'loose',
     theme: 'default',
     flowchart: {
       useMaxWidth: true,

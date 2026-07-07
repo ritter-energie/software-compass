@@ -103,7 +103,9 @@ final class MariaDbComponentRepository implements ComponentRepository {
     }
 
     public function parentsOf(int $componentId): array {
-        return $this->componentsByIds($this->parentIdsForComponent($componentId));
+        $parentComponentId = $this->parentIdForComponent($componentId);
+
+        return $parentComponentId === null ? [] : $this->componentsByIds([$parentComponentId]);
     }
 
     public function childrenOf(int $componentId): array {
@@ -116,7 +118,7 @@ final class MariaDbComponentRepository implements ComponentRepository {
         if ($component->id() === null) {
             query(self::TABLE)->insert($data)->execute();
             $componentId = $this->lastInsertId();
-            $this->syncInheritance($componentId, $component->parentComponentIds(), $component->childComponentIds());
+            $this->syncInheritance($componentId, $component->parentComponentId(), $component->childComponentIds());
 
             return $this->findById($componentId);
         }
@@ -125,7 +127,7 @@ final class MariaDbComponentRepository implements ComponentRepository {
             ->update(...$data)
             ->whereField('id', $component->id())
             ->execute();
-        $this->syncInheritance($component->id(), $component->parentComponentIds(), $component->childComponentIds());
+        $this->syncInheritance($component->id(), $component->parentComponentId(), $component->childComponentIds());
 
         return $this->findById($component->id());
     }
@@ -171,18 +173,17 @@ final class MariaDbComponentRepository implements ComponentRepository {
             vendor: $row['vendor'],
             lifecycleNotes: $row['lifecycle_notes'],
             isExternal: (bool) $row['is_external'],
-            parentComponentIds: $this->parentIdsForComponent((int) $row['id']),
+            parentComponentId: $this->parentIdForComponent((int) $row['id']),
             childComponentIds: $this->childIdsForComponent((int) $row['id']),
         );
     }
 
     /**
-     * @param int[] $parentComponentIds
      * @param int[] $childComponentIds
      */
-    private function syncInheritance(int $componentId, array $parentComponentIds, array $childComponentIds): void {
+    private function syncInheritance(int $componentId, ?int $parentComponentId, array $childComponentIds): void {
         query(self::INHERITANCE_TABLE)->delete()->whereField('child_component_id', $componentId)->execute();
-        foreach ($this->normalizeRelatedComponentIds($parentComponentIds, $componentId) as $parentComponentId) {
+        if ($parentComponentId !== null && $parentComponentId > 0 && $parentComponentId !== $componentId) {
             query(self::INHERITANCE_TABLE)->insert([
                 'parent_component_id' => $parentComponentId,
                 'child_component_id' => $componentId,
@@ -191,6 +192,7 @@ final class MariaDbComponentRepository implements ComponentRepository {
 
         query(self::INHERITANCE_TABLE)->delete()->whereField('parent_component_id', $componentId)->execute();
         foreach ($this->normalizeRelatedComponentIds($childComponentIds, $componentId) as $childComponentId) {
+            query(self::INHERITANCE_TABLE)->delete()->whereField('child_component_id', $childComponentId)->execute();
             query(self::INHERITANCE_TABLE)->insert([
                 'parent_component_id' => $componentId,
                 'child_component_id' => $childComponentId,
@@ -198,17 +200,16 @@ final class MariaDbComponentRepository implements ComponentRepository {
         }
     }
 
-    /**
-     * @return int[]
-     */
-    private function parentIdsForComponent(int $componentId): array {
+    private function parentIdForComponent(int $componentId): ?int {
         $rows = query(self::INHERITANCE_TABLE)
             ->select()
             ->whereField('child_component_id', $componentId)
             ->orderBy('parent_component_id')
             ->all();
 
-        return array_map(static fn (array $row): int => (int) $row['parent_component_id'], $rows);
+        $row = $rows[0] ?? null;
+
+        return $row !== null ? (int) $row['parent_component_id'] : null;
     }
 
     /**

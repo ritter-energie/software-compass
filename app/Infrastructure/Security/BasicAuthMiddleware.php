@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Security;
 
+use App\Application\Setup\SetupService;
 use Tempest\Http\Request;
 use Tempest\Http\Response;
 use Tempest\Http\Responses\Redirect;
@@ -23,6 +24,10 @@ use function Tempest\get;
 final readonly class BasicAuthMiddleware implements HttpMiddleware {
     private const string SESSION_USER_ID = 'auth_user_id';
 
+    public function __construct(
+        private SetupService $setup,
+    ) {}
+
     public function __invoke(Request $request, HttpMiddlewareCallable $next): Response {
         CurrentUser::clear();
 
@@ -31,7 +36,7 @@ final readonly class BasicAuthMiddleware implements HttpMiddleware {
         }
 
         // First-run UX: if no users exist yet, route protected pages to setup.
-        if (query('users')->count()->execute() === 0) {
+        if ($this->setup->needsSetup()) {
             return new Redirect('/setup');
         }
 

@@ -28,8 +28,7 @@ final readonly class UpdateComponentCommand {
         public ?string $vendor,
         public ?string $lifecycleNotes,
         public bool $isExternal,
-        /** @var int[] */
-        public array $parentComponentIds = [],
+        public ?int $parentComponentId = null,
         /** @var int[] */
         public array $childComponentIds = [],
     ) {}

@@ -6,6 +6,7 @@ namespace App\Presentation\Http\Controller;
 use App\Application\Diagram\ComponentDiagramFilter;
 use App\Application\Diagram\DiagramService;
 use App\Infrastructure\Security\BasicAuthMiddleware;
+use App\Shared\Support\Translator;
 use Tempest\Http\Request;
 use Tempest\Http\Response;
 use Tempest\Http\Responses\Ok;
@@ -22,12 +23,22 @@ final readonly class DiagramController {
 
     #[Get('/diagrams/components')]
     public function components(Request $request): Response {
-        return new Ok(view('../../View/diagrams/components.view.php', mermaid: $this->diagrams->componentOverview($this->filter($request))));
+        return new Ok(view('../../View/diagrams/components.view.php', mermaid: $this->componentOverview($request)));
     }
 
     #[Get('/diagrams/components/mermaid')]
     public function componentsMermaid(Request $request): Response {
-        return new Ok($this->diagrams->componentOverview($this->filter($request)));
+        return new Ok($this->componentOverview($request));
+    }
+
+    #[Get('/diagrams/global-customer-journey')]
+    public function globalCustomerJourney(): Response {
+        return new Ok(view('../../View/diagrams/global-customer-journey.view.php', mermaid: $this->globalJourneyDiagram()));
+    }
+
+    #[Get('/diagrams/global-customer-journey/mermaid')]
+    public function globalCustomerJourneyMermaid(): Response {
+        return new Ok($this->globalJourneyDiagram());
     }
 
     #[Get('/diagrams/journeys/{id}')]
@@ -49,6 +60,21 @@ final readonly class DiagramController {
             ownerId: $this->intOrNull($request->get('owner_id')),
             ownerTeamId: $this->intOrNull($request->get('owner_team_id')),
             maxNodes: (int) ($request->get('max_nodes') ?? 80),
+        );
+    }
+
+    private function globalJourneyDiagram(): string {
+        return $this->diagrams->globalJourneyDiagram(
+            rootLabel: Translator::translate('diagrams.global_customer_journey_title'),
+            emptyJourneysLabel: Translator::translate('common.no_journeys_yet'),
+            emptyStepsLabel: Translator::translate('common.no_steps_yet'),
+        );
+    }
+
+    private function componentOverview(Request $request): string {
+        return $this->diagrams->componentOverview(
+            filter: $this->filter($request),
+            componentDetailTooltip: Translator::translate('diagrams.component_detail_tooltip'),
         );
     }
 
