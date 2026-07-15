@@ -1,6 +1,26 @@
 import mermaid from 'mermaid';
+import svgPanZoom from 'svg-pan-zoom';
 
 let initialized = false;
+
+function initializePanZoom(svgId: string): void {
+  const svg = document.getElementById(svgId);
+  if (!(svg instanceof SVGSVGElement)) {
+    return;
+  }
+
+  svgPanZoom(svg, {
+    panEnabled: true,
+    zoomEnabled: true,
+    controlIconsEnabled: true,
+    mouseWheelZoomEnabled: true,
+    dblClickZoomEnabled: true,
+    fit: true,
+    center: true,
+    minZoom: 0.1,
+    maxZoom: 10,
+  });
+}
 
 export function initializeMermaid(): void {
   if (initialized) {
@@ -8,9 +28,9 @@ export function initializeMermaid(): void {
   }
 
   mermaid.initialize({
-    startOnLoad: true,
+    startOnLoad: false,
     securityLevel: 'loose',
-    theme: 'default',
+    theme: 'base',
     flowchart: {
       useMaxWidth: true,
       htmlLabels: false,
@@ -18,6 +38,12 @@ export function initializeMermaid(): void {
   });
 
   initialized = true;
+  void mermaid.run({
+    querySelector: '.mermaid',
+    postRenderCallback: initializePanZoom,
+  }).catch((error: unknown) => {
+    console.error('Failed to render Mermaid diagrams.', error);
+  });
 }
 
 export function registerMermaidCopyButtons(): void {
